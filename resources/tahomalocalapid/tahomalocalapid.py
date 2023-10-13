@@ -99,7 +99,9 @@ parser.add_argument("--callback", help="Callback", type=str)
 parser.add_argument("--apikey", help="Apikey", type=str)
 parser.add_argument("--cycle", help="Cycle to send event", type=str)
 parser.add_argument("--pid", help="Pid file", type=str)
-parser.add_argument("--socketport", help="Port for Zigbee server", type=str)
+parser.add_argument("--socketport", help="Daemon port", type=str)
+parser.add_argument("--user", help="User for local api Tahoma", type=str)
+parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 args = parser.parse_args()
 
 if args.device:
