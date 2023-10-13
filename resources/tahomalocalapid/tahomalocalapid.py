@@ -135,9 +135,10 @@ signal.signal(signal.SIGTERM, handler)
 try:
 	jeedom_utils.write_pid(str(_pidfile))
 	jeedom_com = jeedom_com(apikey = _apikey,url = _callback,cycle=_cycle) # création de l'objet jeedom_com
-    if not jeedom_com.test(): #premier test pour vérifier que l'url de callback est correcte
-        logging.error('Network communication issues. Please fixe your Jeedom network configuration.')
-        shutdown()
+	if not jeedom_com.test(): #premier test pour vérifier que l'url de callback est correcte
+		logging.error('Network communication issues. Please fixe your Jeedom network configuration.')
+		shutdown()
+
 	jeedom_socket = jeedom_socket(port=_socket_port,address=_socket_host)
 	listen()
 except Exception as e:
