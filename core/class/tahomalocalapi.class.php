@@ -72,6 +72,7 @@ public static function deamon_start() {
   $i = 0;
   while ($i < 20) {
       $deamon_info = self::deamon_info();
+      log::add(__CLASS__, 'info', 'Daemon_info -> '. json_encode($deamon_info));
       if ($deamon_info['state'] == 'ok') {
           break;
       }
