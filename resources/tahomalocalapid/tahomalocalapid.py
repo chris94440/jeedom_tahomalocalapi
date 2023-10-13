@@ -129,7 +129,7 @@ _socket_port = int(_socket_port)
 
 jeedom_utils.set_log_level(_log_level)
 
-logging.info('Start demond')
+logging.info('Start demond ChD')
 logging.info('Log level: %s', _log_level)
 logging.info('Socket port: %s', _socket_port)
 logging.info('Socket host: %s', _socket_host)
