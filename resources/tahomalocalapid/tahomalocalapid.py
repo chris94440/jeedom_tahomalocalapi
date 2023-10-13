@@ -122,8 +122,8 @@ if args.socketport:
 	_socketport = args.socketport
 if args.user:
 	_user = args.user
-if args.pwd:
-	_pwd=args.pwd
+if args.pswd:
+	_pwd=args.pswd
 
 _socket_port = int(_socket_port)
 
