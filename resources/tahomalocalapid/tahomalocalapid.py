@@ -90,6 +90,8 @@ _pidfile = '/tmp/tahomalocalapid.pid'
 _apikey = ''
 _callback = ''
 _cycle = 0.3
+_user = ''
+_pwd = ''
 
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
@@ -118,6 +120,10 @@ if args.cycle:
     _cycle = float(args.cycle)
 if args.socketport:
 	_socketport = args.socketport
+if args.user:
+	_user = args.user
+if args.pwd:
+	_pwd=args.pwd
 
 _socket_port = int(_socket_port)
 
@@ -130,6 +136,8 @@ logging.info('Socket host: %s', _socket_host)
 logging.info('PID file: %s', _pidfile)
 logging.info('Apikey: %s', _apikey)
 logging.info('Device: %s', _device)
+logging.info('User: %s', _user)
+logging.info('Pwd: %s', _pwd)
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
