@@ -1,1 +1,0 @@
-# jeedom_tahomalocalapi
