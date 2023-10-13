@@ -24,7 +24,7 @@ class tahomalocalapi extends eqLogic {
     $return = array();
     $return['log'] = __CLASS__;
     $return['state'] = 'nok';
-    $pid_file = jeedom::getTmpFolder(__CLASS__) . '/deamon.pid';
+    $pid_file = jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid';
     if (file_exists($pid_file)) {
         if (@posix_getsid(trim(file_get_contents($pid_file)))) {
             $return['state'] = 'ok';
