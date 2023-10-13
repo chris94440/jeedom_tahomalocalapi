@@ -26,26 +26,26 @@ if (!isConnect()) {
   <fieldset>
     <div class="form-group">
       <label class="col-md-4 control-label">{{Global param 1}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le paramètre 1 du plugin}}"></i></sup>
+        <sup><i class="fas fa-question-circle tooltips" title="{{Nom utilisateur Tahoma}}"></i></sup>
       </label>
       <div class="col-md-4">
-        <input class="configKey form-control" data-l1key="param1"/>
+        <input class="configKey form-control" data-l1key="user"/>
       </div>
     </div>
     <div class="form-group">
       <label class="col-md-4 control-label">{{Global param 2}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Renseignez le paramètre 2 du plugin}}"></i></sup>
+        <sup><i class="fas fa-question-circle tooltips" title="{{Mot de passe }}"></i></sup>
       </label>
       <div class="col-md-4">
-        <input class="configKey form-control" data-l1key="param2"/>
+        <input class="configKey form-control" data-l1key="password"/>
       </div>
     </div>
     <div class="form-group">
       <label class="col-md-4 control-label">{{Global param 3}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Sélectionnez du paramètre 3 du plugin}}"></i></sup>
+        <sup><i class="fas fa-question-circle tooltips" title="{{Port du daemon}}"></i></sup>
       </label>
       <div class="col-md-4">
-        <select class="configKey form-control" data-l1key="param3">
+        <select class="configKey form-control" data-l1key="daemonPort">
           <option value=""></option>
           <option value="value1">value1</option>
           <option value="value2">value2</option>

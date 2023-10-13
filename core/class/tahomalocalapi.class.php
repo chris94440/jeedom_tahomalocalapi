@@ -35,16 +35,17 @@ class tahomalocalapi extends eqLogic {
     $return['launchable'] = 'ok';
     $user = config::byKey('user', __CLASS__); // exemple si votre démon à besoin de la config user,
     $pswd = config::byKey('password', __CLASS__); // password,
-    $clientId = config::byKey('clientId', __CLASS__); // et clientId
+    // $clientId = config::byKey('clientId', __CLASS__); // et clientId
+    $portDaemon=config::byKey('daemonPort', __CLASS__);
     if ($user == '') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas configuré', __FILE__);
     } elseif ($pswd == '') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
-    } elseif ($clientId == '') {
-        $return['launchable'] = 'nok';
-        $return['launchable_message'] = __('La clé d\'application n\'est pas configurée', __FILE__);
+    // } elseif ($clientId == '') {
+    //     $return['launchable'] = 'nok';
+    //     $return['launchable_message'] = __('La clé d\'application n\'est pas configurée', __FILE__);
     }
     return $return;
 }
