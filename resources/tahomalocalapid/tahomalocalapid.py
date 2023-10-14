@@ -90,16 +90,18 @@ def loginTahoma():
 
 		# resp = requests.get(url)
 		# print(resp.status_code)
-		# h = {
-		# 	"Content-Type":"application/x-www-form-urlencoded"
-		# }
-		params = {
-			"userId":_user,
-			"userPassword":_pwd
+		h = {
+			"Content-Type":"application/x-www-form-urlencoded"
 		}
+		# params = {
+		# 	"userId":_user,
+		# 	"userPassword":_pwd
+		# }
 
-		# r = requests.post(url, headers=h, params=params)
-		r = requests.post(url, params=params)
+		params = 'userId=cdemonge91800%40gmail.com&userPassword=Cd041080%24'
+
+		r = requests.post(url, headers=h, params=params)
+		# r = requests.post(url, params=params)
 		r.raise_for_status()
 		logging.debug("Http code : %s", r.status_code)
 		logging.debug("Response : %s", r.json())
