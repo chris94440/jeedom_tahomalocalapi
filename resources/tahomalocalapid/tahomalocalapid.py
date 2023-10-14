@@ -113,15 +113,15 @@ def loginTahoma():
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
-def tahoma_token():
-	logging.debug(' * tahoma_token | ' + _pincode + '|' + _jsessionid)
+def tahoma_token(jsessionid):
+	logging.debug(' * tahoma_token | ' + _pincode + '|' + jsessionid)
 	try:
 
 		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens/generate'
 
 		headers = {
 			'Content-Type' : 'application/json',
-			'Cookie: JSESSIONID=' : _jsessionid
+			'Cookie: JSESSIONID=' : jsessionid
 		}
 
 		response = requests.request("GET", url, headers=headers)
