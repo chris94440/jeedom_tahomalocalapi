@@ -26,6 +26,7 @@ from optparse import OptionParser
 from os.path import join
 import json
 import argparse
+import requests
 
 try:
 	from jeedom.jeedom import *
@@ -80,6 +81,34 @@ def shutdown():
 	sys.stdout.flush()
 	os._exit(0)
 
+def loginTahoma():
+	logging.debug(" * logging tahoma")
+
+	try:
+		url="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/login"
+
+		# resp = requests.get(url)
+		print(resp.status_code)
+		h = {
+			"Content-Type":"application/x-www-form-urlencoded"
+		}
+		params = {
+			"userId":_user,
+			"userPassword":_pwd
+		}
+
+		r = request.post(url, headers=h, params=params)
+		print(r.status_code)
+		print(r.json())
+
+		# r = requests.post(url, data = {'key':'value'}, auth=('user', 'passwd'))
+		# r.text      # response as a string
+		# r.content   # response as a byte string
+		# #     gzip and deflate transfer-encodings automatically decoded 
+		# r.json()    # return python object from json! this is what you probably want!
+
+	except:
+		logging.debug("Error when connection to tahoma")
 # ----------------------------------------------------------------------------
 
 _log_level = "error"
@@ -103,6 +132,7 @@ parser.add_argument("--cycle", help="Cycle to send event", type=str)
 parser.add_argument("--pid", help="Pid file", type=str)
 parser.add_argument("--socketport", help="Daemon port", type=str)
 parser.add_argument("--user", help="User for local api Tahoma", type=str)
+parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 args = parser.parse_args()
 
