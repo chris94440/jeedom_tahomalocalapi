@@ -104,6 +104,8 @@ def loginTahoma():
 		logging.debug("Response : %s", response.json())
 		logging.debug("Response header : %s", response.headers)
 		logging.debug("Response header[Set-Cookie] : %s", response.headers['Set-Cookie'])
+		logging.debug("Cookie JSESSIONID : %s", response.cookies.get("JSESSIONID"))
+		
 		
 
 		# r = requests.post(url, data = {'key':'value'}, auth=('user', 'passwd'))
