@@ -90,9 +90,9 @@ def loginTahoma():
 
 		# resp = requests.get(url)
 		# print(resp.status_code)
-		h = {
-			"Content-Type":"application/x-www-form-urlencoded"
-		}
+		# h = {
+		# 	"Content-Type":"application/x-www-form-urlencoded"
+		# }
 		params = {
 			"userId":_user,
 			"userPassword":_pwd
