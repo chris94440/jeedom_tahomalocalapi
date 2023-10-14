@@ -113,7 +113,7 @@ def loginTahoma():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def tahoma_token():
-	logging.debug(" * tahoma_token")
+	logging.debug(' * tahoma_token | ' + _pincode + '|' + _jsessionid)
 	try:
 
 		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens/generate'
@@ -131,7 +131,7 @@ def tahoma_token():
 		logging.debug("Response header[Set-Cookie] : %s", response.headers['Set-Cookie'])
 		# logging.debug("Cookie JSESSIONID : %s", response.cookies.get("JSESSIONID"))
 		# _jsessionid=response.cookies.get("JSESSIONID")
-		
+
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 # ----------------------------------------------------------------------------
@@ -197,6 +197,7 @@ logging.info('Apikey: %s', _apikey)
 logging.info('Device: %s', _device)
 logging.info('User: %s', _user)
 logging.info('Pwd: %s', _pwd)
+logging.info('Pin ocde: %s', _pincode)
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
