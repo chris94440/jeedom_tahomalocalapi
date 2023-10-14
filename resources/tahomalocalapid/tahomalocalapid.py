@@ -98,7 +98,7 @@ def loginTahoma():
 			"userPassword":_pwd
 		}
 
-		r = request.post(url, headers=h, params=params)
+		r = requests.post(url, headers=h, params=params)
 		r.raise_for_status()
 		logging.debug("Http code : %s", r.status_code)
 		logging.debug("Response : %s", r.json())
