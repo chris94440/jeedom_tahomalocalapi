@@ -109,7 +109,7 @@ def loginTahoma():
 		# #     gzip and deflate transfer-encodings automatically decoded 
 		# r.json()    # return python object from json! this is what you probably want!
 
-	except as err:
+	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 # ----------------------------------------------------------------------------
 
