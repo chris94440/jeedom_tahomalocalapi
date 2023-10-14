@@ -99,8 +99,9 @@ def loginTahoma():
 		}
 
 		r = request.post(url, headers=h, params=params)
-		print(r.status_code)
-		print(r.json())
+		r.raise_for_status()
+		logging.debug("Http code : %s", r.status_code)
+		logging.debug("Response : %s", r.json())
 
 		# r = requests.post(url, data = {'key':'value'}, auth=('user', 'passwd'))
 		# r.text      # response as a string
@@ -108,8 +109,8 @@ def loginTahoma():
 		# #     gzip and deflate transfer-encodings automatically decoded 
 		# r.json()    # return python object from json! this is what you probably want!
 
-	except:
-		logging.debug("Error when connection to tahoma")
+	except as err:
+		logging.debug("Error when connection to tahoma -> %s",err)
 # ----------------------------------------------------------------------------
 
 _log_level = "error"
