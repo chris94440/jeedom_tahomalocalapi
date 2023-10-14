@@ -86,30 +86,13 @@ def loginTahoma():
 	logging.debug(" * logging tahoma")
 
 	try:
-		# url="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/login"
-
-		# # resp = requests.get(url)
-		# # print(resp.status_code)
-		# headers = {
-		# 'Content-Type': 'application/x-www-form-urlencoded'
-		# }
-		# # params = {
-		# # 	"userId":_user,
-		# # 	"userPassword":_pwd
-		# # }
-
-		# params = 'userId=cdemonge91800%40gmail.com&userPassword=Cd041080%24'
-
-		# r = requests.post(url, headers=headers, params=params)
-		# # r = requests.post(url, params=params)
-		# r.raise_for_status()
 		url = "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/login"
 
-		# payload = 'userId=cdemonge91800%40gmail.com&userPassword=Cd041080%24'
 		payload ={
 			'userId' : _user,
 			'userPassword' : _pwd
 		}
+
 		headers = {
 			'Content-Type': 'application/x-www-form-urlencoded',
 			'Cookie': 'JSESSIONID=E3~1BD465E1E82DDBA6EBB62CD29B096EFD'
@@ -117,9 +100,9 @@ def loginTahoma():
 
 		response = requests.request("POST", url, headers=headers, data=payload)
 
-		print(response.text)
-		# logging.debug("Http code : %s", r.status_code)
-		# logging.debug("Response : %s", r.json())
+		logging.debug("Http code : %s", response.status_code)
+		logging.debug("Response : %s", response.json())
+		logging.debug("Response header : %s", response.headers)
 
 		# r = requests.post(url, data = {'key':'value'}, auth=('user', 'passwd'))
 		# r.text      # response as a string
