@@ -129,9 +129,7 @@ def tahoma_token(jsessionid):
 		logging.debug("Http code : %s", response.status_code)
 		logging.debug("Response : %s", response.json())
 		logging.debug("Response header : %s", response.headers)
-		logging.debug("Response header[Set-Cookie] : %s", response.headers['Set-Cookie'])
-		# logging.debug("Cookie JSESSIONID : %s", response.cookies.get("JSESSIONID"))
-		# _jsessionid=response.cookies.get("JSESSIONID")
+		logging.debug("Tahoma token : %s", response.json().get('token'))
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
