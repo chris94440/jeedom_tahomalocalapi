@@ -134,7 +134,6 @@ parser.add_argument("--pid", help="Pid file", type=str)
 parser.add_argument("--socketport", help="Daemon port", type=str)
 parser.add_argument("--user", help="User for local api Tahoma", type=str)
 parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
-parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 args = parser.parse_args()
 
 if args.device:
