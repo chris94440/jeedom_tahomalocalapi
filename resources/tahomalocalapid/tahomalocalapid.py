@@ -49,6 +49,7 @@ def read_socket():
 
 def listen():
 	jeedom_socket.open()
+	loginTahoma()
 	try:
 		while 1:
 			time.sleep(0.5)
