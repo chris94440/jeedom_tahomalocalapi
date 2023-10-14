@@ -121,7 +121,7 @@ def tahoma_token(jsessionid):
 
 		headers = {
 			'Content-Type' : 'application/json',
-			'Cookie: JSESSIONID=' : jsessionid
+			'Cookie' 'JSESSIONID=' + jsessionid
 		}
 
 		response = requests.request("GET", url, headers=headers)
