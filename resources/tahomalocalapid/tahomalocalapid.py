@@ -94,8 +94,7 @@ def loginTahoma():
 		}
 
 		headers = {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'Cookie': 'JSESSIONID=E3~1BD465E1E82DDBA6EBB62CD29B096EFD'
+			'Content-Type': 'application/x-www-form-urlencoded'
 		}
 
 		response = requests.request("POST", url, headers=headers, data=payload)
@@ -105,15 +104,34 @@ def loginTahoma():
 		logging.debug("Response header : %s", response.headers)
 		logging.debug("Response header[Set-Cookie] : %s", response.headers['Set-Cookie'])
 		logging.debug("Cookie JSESSIONID : %s", response.cookies.get("JSESSIONID"))
-		
-		
 
-		# r = requests.post(url, data = {'key':'value'}, auth=('user', 'passwd'))
-		# r.text      # response as a string
-		# r.content   # response as a byte string
-		# #     gzip and deflate transfer-encodings automatically decoded 
-		# r.json()    # return python object from json! this is what you probably want!
+		if response.cookies.get("JSESSIONID"):
+			_jsessionid=response.cookies.get("JSESSIONID")
+			tahoma_token()
+			
+	except requests.exceptions.HTTPError as err:
+		logging.debug("Error when connection to tahoma -> %s",err)
 
+def tahoma_token():
+	logging.debug(" * tahoma_token")
+	try:
+
+		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens/generate'
+
+		headers = {
+			'Content-Type': 'application/json',
+			'Cookie: JSESSIONID=': _jsessionid
+		}
+
+		response = requests.request("GET", url, headers=headers)
+
+		logging.debug("Http code : %s", response.status_code)
+		logging.debug("Response : %s", response.json())
+		logging.debug("Response header : %s", response.headers)
+		logging.debug("Response header[Set-Cookie] : %s", response.headers['Set-Cookie'])
+		# logging.debug("Cookie JSESSIONID : %s", response.cookies.get("JSESSIONID"))
+		# _jsessionid=response.cookies.get("JSESSIONID")
+		
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 # ----------------------------------------------------------------------------
@@ -128,6 +146,8 @@ _callback = ''
 _cycle = 0.3
 _user = ''
 _pwd = ''
+_jsessionid=''
+_pincode=''
 
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
@@ -140,6 +160,7 @@ parser.add_argument("--pid", help="Pid file", type=str)
 parser.add_argument("--socketport", help="Daemon port", type=str)
 parser.add_argument("--user", help="User for local api Tahoma", type=str)
 parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
+parser.add_argument("--pincode", help="Tahoma pin code", type=str)
 args = parser.parse_args()
 
 if args.device:
@@ -160,6 +181,8 @@ if args.user:
 	_user = args.user
 if args.pswd:
 	_pwd=args.pswd
+if args.pincode:
+	_pincode=args.pincode
 
 _socket_port = int(_socket_port)
 

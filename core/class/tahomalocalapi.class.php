@@ -67,6 +67,7 @@ public static function deamon_start() {
   $cmd .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password
   $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
   $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
+  $cmd .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // et password
   log::add(__CLASS__, 'info', 'Lancement démon');
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); // 'template_daemon' est le nom du log pour votre démon, vous devez nommer votre log en commençant par le pluginid pour que le fichier apparaisse dans la page de config
   $i = 0;

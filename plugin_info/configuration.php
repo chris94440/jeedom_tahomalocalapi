@@ -41,6 +41,14 @@ if (!isConnect()) {
       </div>
     </div>
     <div class="form-group">
+      <label class="col-md-4 control-label">{{Code pin installation}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{ }}"></i></sup>
+      </label>
+      <div class="col-md-4">
+        <input class="configKey form-control" data-l1key="pincode"/>
+      </div>
+    </div>
+    <div class="form-group">
       <label class="col-md-4 control-label">{{Port du daemon}}
         <sup><i class="fas fa-question-circle tooltips" title="{{Port du daemon}}"></i></sup>
       </label>
