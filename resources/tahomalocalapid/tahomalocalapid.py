@@ -107,6 +107,7 @@ def loginTahoma():
 
 		if response.cookies.get("JSESSIONID"):
 			_jsessionid=response.cookies.get("JSESSIONID")
+			logging.debug("set _jsessionid before calling tahomatoken-> %s",_jsessionid)
 			tahoma_token()
 			
 	except requests.exceptions.HTTPError as err:
@@ -119,8 +120,8 @@ def tahoma_token():
 		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens/generate'
 
 		headers = {
-			'Content-Type': 'application/json',
-			'Cookie: JSESSIONID=': _jsessionid
+			'Content-Type' : 'application/json',
+			'Cookie: JSESSIONID=' : _jsessionid
 		}
 
 		response = requests.request("GET", url, headers=headers)
