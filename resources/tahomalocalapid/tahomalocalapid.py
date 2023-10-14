@@ -108,7 +108,7 @@ def loginTahoma():
 		if response.cookies.get("JSESSIONID"):
 			_jsessionid=response.cookies.get("JSESSIONID")
 			logging.debug("set _jsessionid before calling tahomatoken-> %s",_jsessionid)
-			tahoma_token()
+			tahoma_token(_jsessionid)
 			
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
