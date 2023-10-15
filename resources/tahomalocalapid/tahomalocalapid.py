@@ -51,17 +51,17 @@ def listen():
 	jeedom_socket.open()
 
 	logging.debug(' * socket tahoma | ' + _jsessionid + '|' + _tokenTahoma)
-	#if not _jsessionid and not _tokenTahoma:
-	jsessionid = loginTahoma()
+	if not _jsessionid and not _tokenTahoma:
+		loginTahoma()
 
-	tokenTahoma = tahoma_token(jsessionid)
+	if _jsessionid:
+		tahoma_token(jsessionid)
 
-	logging.debug(' * after | ' + jsessionid + '|' + tokenTahoma)
-	if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
-		downloadTahomaCertificate()
+		if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
+			downloadTahomaCertificate()
 
-	validateToken(jsessionid,tokenTahoma)
-	getDevicesList(jsessionid,tokenTahoma)
+		validateToken(jsessionid,tokenTahoma)
+		getDevicesList(jsessionid,tokenTahoma)
 	
 
 	try:
@@ -121,21 +121,20 @@ def loginTahoma():
 
 		if response.cookies.get("JSESSIONID"):
 			global _jsessionid
-			_jsessionid =  response.cookies.get("JSESSIONID")
-			return response.cookies.get("JSESSIONID")			
+			_jsessionid =  response.cookies.get("JSESSIONID")			
 			
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
-def tahoma_token(jsessionid):
-	logging.debug(' * tahoma_token | ' + _pincode + '|' + jsessionid + '|' + _jsessionid)
+def tahoma_token():
+	logging.debug(' * tahoma_token | ' + _pincode +  '|' + _jsessionid)
 	try:
 
 		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens/generate'
 
 		headers = {
 			'Content-Type' : 'application/json',
-			'Cookie' : 'JSESSIONID=' + jsessionid
+			'Cookie' : 'JSESSIONID=' + _jsessionid
 		}
 
 		response = requests.request("GET", url, headers=headers)
@@ -148,20 +147,19 @@ def tahoma_token(jsessionid):
 		if response.json().get('token'):
 			global _tokenTahoma
 			_tokenTahoma = response.json().get('token')
-			return response.json().get('token')		
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
-def getDevicesList(jsessionid,tokenTahoma):	
-	logging.debug(' * Tahoma device list | ' + jsessionid + '|' + tokenTahoma + '|' + _jsessionid + '|' + _tokenTahoma)
+def getDevicesList():	
+	logging.debug(' * Tahoma device list | '  _jsessionid + '|' + _tokenTahoma)
 	try:
 
 		url = 'https://192.168.1.28:8443/enduser-mobile-web/1/enduserAPI/setup/devices'
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + tokenTahoma
+			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 
 
@@ -175,20 +173,20 @@ def getDevicesList(jsessionid,tokenTahoma):
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
-def validateToken(jsessionid,tokenTahoma):
-	logging.debug(' * validate tahoma_token ? ' + _pincode + '|' + jsessionid + '|' + tokenTahoma + '|' + _jsessionid + '|' + _tokenTahoma)
+def validateToken():
+	logging.debug(' * validate tahoma_token ? ' + _pincode + '|' + _jsessionid + '|' + _tokenTahoma)
 	try:
 	
 		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens'
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Cookie' : 'JSESSIONID=' + jsessionid
+			'Cookie' : 'JSESSIONID=' + _jsessionid
 		}
 
 		payload=json.dumps({
 				"label": "JeedomTahomaLocalApi_token",				
-				"token": tokenTahoma ,
+				"token": _tokenTahoma ,
 				"scope": "devmode"
 		})		
 
@@ -232,9 +230,9 @@ _callback = ''
 _cycle = 0.3
 _user = ''
 _pwd = ''
-_jsessionid='E3~ECD09379FB0FF47CC16CEFD0FB0B73CF'
+_jsessionid=''
 _pincode=''
-_tokenTahoma='652b78810f4c7b1e8f65'
+_tokenTahoma=''
 
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
