@@ -180,7 +180,7 @@ def validateToken():
 
 		payload={
 				'label': 'JeedomTahomaLocalApi_token',
-				'token': ,_tokenTahoma,
+				'token': _tokenTahoma ,
 				'scope': 'devmode'
 		}
 
