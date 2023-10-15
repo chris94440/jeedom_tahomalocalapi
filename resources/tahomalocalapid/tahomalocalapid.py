@@ -220,7 +220,7 @@ def downloadTahomaCertificate():
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when downloading tahoma certificate -> %s",err)
 
-def registerListener()
+def registerListener():
 	logging.debug(' * Tahoma registerListener | '  + _jsessionid + '|' + _tokenTahoma)
 	try:
 
@@ -243,7 +243,7 @@ def registerListener()
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
-def fetchListener(listenerId)
+def fetchListener(listenerId):
 	logging.debug(' * Tahoma fetchListener | '  + listenerId)
 	try:
 
