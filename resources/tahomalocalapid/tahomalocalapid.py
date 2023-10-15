@@ -295,7 +295,7 @@ def getDeviceStates(deviceUrl):
 	logging.debug(' * getDeviceStates | '  + deviceUrl)
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ deviceUrl +'/statesevents/'
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ deviceUrl +'/states/'
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -304,7 +304,7 @@ def getDeviceStates(deviceUrl):
 		
 		response = requests.request("POST", url, verify=False, headers=headers)
 
-		#logging.debug("Http code : %s", response.status_code)
+		logging.debug("Http code : %s", response.status_code)
 
 		if response.status_code and (response.status_code == 200):
 			if response.json():
