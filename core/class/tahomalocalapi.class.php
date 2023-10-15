@@ -115,6 +115,48 @@ public static function sendToDaemon($params) {
 
   /*     * *************************Attributs****************************** */
 
+  public static function create_or_update_devices($devices) {
+    log::add(__CLASS__, 'debug', 'create_or_update_devices');
+    $aDevices=json_decode($devices,true);
+    foreach ($aDevices as $device) {
+      log::add(__CLASS__, 'debug', '  * device : ' . json_encode(device));
+        /*
+        $eqLogic = self::byLogicalId($device['uuid'], __CLASS__);
+        if (!is_object($eqLogic)) {
+            $eqLogic = new self();
+            $eqLogic->setEqType_name(__CLASS__);
+            $eqLogic->setLogicalId($device['uuid']);
+            $eqLogic->setName($device['name']);
+            $eqLogic->setConfiguration('serial_number', $device['serial_number']);
+            $eqLogic->setConfiguration('purchased_at', $device['purchased_at']);
+            $eqLogic->setConfiguration('warranty_expires_at', $device['warranty']['expires_at']);
+            $eqLogic->setConfiguration('registered_at', $device['registered_at']);
+            $eqLogic->setConfiguration('mac_address', implode(":", str_split($device['mac_address'], 2)));
+  
+            event::add('jeedom::alert', array(
+                'level' => 'success',
+                'page' => 'worxLandroidS',
+                'message' => __('Nouvelle tondeuse ajoutée:', __FILE__) . $eqLogic->getName(),
+            ));
+        }
+        $eqLogic->setConfiguration('firmware_version', $device['firmware']['version']);
+        $eqLogic->setConfiguration('product_code', $device['product']['code']);
+        $eqLogic->setConfiguration('product_description', $device['product']['description']);
+        $eqLogic->setConfiguration('product_year', $device['product']['year']);
+        $eqLogic->setConfiguration('product_cutting_width', $device['product']['cutting_width'] . ' mm');
+        $eqLogic->setConfiguration('lawn_perimeter', $device['lawn']['perimeter'] . ' m');
+        $eqLogic->setConfiguration('lawn_size', $device['lawn']['size'] . ' m²');
+        $eqLogic->setConfiguration('accessories', $device['accessories']);
+        $eqLogic->save();
+        $eqLogic->on_message($device);
+        */
+    }
+  }
+
+  public static function updateItems($item){
+    log::add(__CLASS__, 'debug', 'updateItems -> '. $item);
+  }
+
   /*
   * Permet de définir les possibilités de personnalisation du widget (en cas d'utilisation de la fonction 'toHtml' par exemple)
   * Tableau multidimensionnel - exemple: array('custom' => true, 'custom::layout' => false)
