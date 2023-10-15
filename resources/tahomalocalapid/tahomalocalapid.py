@@ -51,9 +51,12 @@ def listen():
 	jeedom_socket.open()
 
 	logging.debug(' * socket tahoma | ' + _jsessionid + '|' + _tokenTahoma)
-	if not _jsessionid and not _tokenTahoma:
-		loginTahoma()
+	#if not _jsessionid and not _tokenTahoma:
+	_jsessionid = loginTahoma()
 
+	_tokenTahoma = tahoma_token(_jsessionid)
+
+	logging.debug(' * after | ' + _jsessionid + '|' + _tokenTahoma)
 	if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
 		downloadTahomaCertificate()
 
@@ -117,9 +120,7 @@ def loginTahoma():
 		logging.debug("Cookie JSESSIONID : %s", response.cookies.get("JSESSIONID"))
 
 		if response.cookies.get("JSESSIONID"):
-			_jsessionid=response.cookies.get("JSESSIONID")
-			logging.debug("set _jsessionid before calling tahomatoken-> %s",_jsessionid)
-			tahoma_token(_jsessionid)
+			return response.cookies.get("JSESSIONID")			
 			
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
@@ -141,6 +142,8 @@ def tahoma_token(jsessionid):
 		logging.debug("Response : %s", response.json())
 		logging.debug("Response header : %s", response.headers)
 		logging.debug("Tahoma token : %s", response.json().get('token'))
+
+		return response.json().get('token')
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
