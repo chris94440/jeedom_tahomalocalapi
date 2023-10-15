@@ -100,7 +100,7 @@ def loginTahoma():
 	logging.debug(" * logging tahoma")
 
 	try:
-		url = "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/login"
+		url = _overkizUrl +'/login"
 
 		payload ={
 			'userId' : _user,
@@ -130,7 +130,7 @@ def tahoma_token():
 	logging.debug(' * tahoma_token | ' + _pincode +  '|' + _jsessionid)
 	try:
 
-		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens/generate'
+		url = _overkizUrl +'/config/' + _pincode + '/local/tokens/generate'
 
 		headers = {
 			'Content-Type' : 'application/json',
@@ -155,7 +155,8 @@ def getDevicesList():
 	logging.debug(' * Tahoma device list | '  + _jsessionid + '|' + _tokenTahoma)
 	try:
 
-		url = 'https://192.168.1.28:8443/enduser-mobile-web/1/enduserAPI/setup/devices'
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices'
+		
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -177,7 +178,7 @@ def validateToken():
 	logging.debug(' * validate tahoma_token ? ' + _pincode + '|' + _jsessionid + '|' + _tokenTahoma)
 	try:
 	
-		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens'
+		url = _overkizUrl + '/config/' + _pincode + '/local/tokens'
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -233,6 +234,8 @@ _pwd = ''
 _jsessionid=''
 _pincode=''
 _tokenTahoma=''
+_ipBox='https://192.168.1.28:8443'
+_overkizUrl='https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI'
 
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
