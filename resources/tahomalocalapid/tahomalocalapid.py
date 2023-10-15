@@ -52,7 +52,7 @@ def listen():
 
 	logging.debug(' * socket tahoma | ' + _jsessionid + '|' + _tokenTahoma)
 	httpLog()
-	
+
 	if not _jsessionid and not _tokenTahoma:
 		loginTahoma()
 
@@ -76,7 +76,7 @@ def listen():
 	except KeyboardInterrupt:
 		shutdown()
 
-def httpLog:
+def httpLog():
 	logging.getLogger("requests").setLevel(logging.Error)
 	logging.getLogger("urllib3").setLevel(logging.Error)
 
