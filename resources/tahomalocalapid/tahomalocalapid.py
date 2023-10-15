@@ -178,11 +178,11 @@ def validateToken():
 			'Cookie' : 'JSESSIONID=' + _jsessionid
 		}
 
-		payload={
-				'label': 'JeedomTahomaLocalApi_token',
-				'token': _tokenTahoma ,
-				'scope': 'devmode'
-		}		
+		payload=json.dumps({
+				"label": "JeedomTahomaLocalApi_token",				
+				"token": _tokenTahoma ,
+				"scope": "devmode"
+		})		
 
 		response = requests.request("POST", url, headers=headers, data=payload)
 
