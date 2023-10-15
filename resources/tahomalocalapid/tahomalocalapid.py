@@ -77,9 +77,9 @@ def listen():
 		shutdown()
 
 def httpLog():
-	#logging.getLogger("requests").setLevel(logging.CRITICAL)
-	#logging.getLogger("urllib3").setLevel(logging.CRITICAL)
-	logger.setLevel(logging.DEBUG)
+	logging.getLogger("requests").setLevel(logging.DEBUG)
+	logging.getLogger("urllib3").setLevel(logging.DEBUG)
+	
 
 # ----------------------------------------------------------------------------
 
