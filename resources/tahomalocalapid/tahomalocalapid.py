@@ -69,6 +69,8 @@ def listen():
 		while 1:
 			time.sleep(0.5)
 			read_socket()
+			fetchListener(listenerId)
+			
 	except KeyboardInterrupt:
 		shutdown()
 
