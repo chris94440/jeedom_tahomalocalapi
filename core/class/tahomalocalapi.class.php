@@ -119,6 +119,14 @@ public static function sendToDaemon($params) {
     log::add(__CLASS__, 'debug', 'create_or_update_devices');    
     foreach ($devices as $device) {
       log::add(__CLASS__, 'debug', '  * device : ' . json_encode($device));
+      log::add(__CLASS__, 'debug', '  * ' . $device['deviceURL'] .', available : ' . $device['available'] . ', synced : '.$device['synced'] . ', type : '. $device['type'].')');
+      foreach($device['states'] as $state) {
+        log::add(__CLASS__, 'debug', '    -  ' . $state['name'] . ' -> ' . $state['value'] . '(type : '.$state['type'].')');
+      }
+
+      foreach($device['commands'] as $command) {
+        log::add(__CLASS__, 'debug', '    -  ' . $command['commandName'] . ' -> ' . $command['nparams'] );
+      }
         /*
         $eqLogic = self::byLogicalId($device['uuid'], __CLASS__);
         if (!is_object($eqLogic)) {
