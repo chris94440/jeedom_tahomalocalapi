@@ -49,7 +49,11 @@ def read_socket():
 
 def listen():
 	jeedom_socket.open()
-	loginTahoma()
+	if not _jsessionid and not _tokenTahoma:
+		loginTahoma()
+
+	getDevicesList()
+
 	try:
 		while 1:
 			time.sleep(0.5)
@@ -133,6 +137,27 @@ def tahoma_token(jsessionid):
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
+
+def getDevicesList():
+	logging.debug(' * Tahoma device list')
+	try:
+
+		url = 'https://192.168.1.28:8443/enduser-mobile-web/1/enduserAPI/setup/devices'
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization: Bearer ' : _tokenTahoma
+		}
+
+		response = requests.request("GET", url, headers=headers)
+
+		logging.debug("Http code : %s", response.status_code)
+		logging.debug("Response : %s", response.json())
+		logging.debug("Response header : %s", response.headers)
+		logging.debug("Tahoma token : %s", response.json().get('token'))
+
+	except requests.exceptions.HTTPError as err:
+		logging.debug("Error when connection to tahoma -> %s",err)
 # ----------------------------------------------------------------------------
 
 _log_level = "error"
@@ -145,8 +170,9 @@ _callback = ''
 _cycle = 0.3
 _user = ''
 _pwd = ''
-_jsessionid=''
+_jsessionid='E3~ECD09379FB0FF47CC16CEFD0FB0B73CF'
 _pincode=''
+_tokenTahoma='652b78810f4c7b1e8f65'
 
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
@@ -197,6 +223,8 @@ logging.info('Device: %s', _device)
 logging.info('User: %s', _user)
 logging.info('Pwd: %s', _pwd)
 logging.info('Pin ocde: %s', _pincode)
+logging.info('jsessionid: %s', _jsessionid)
+logging.info('tokenTahoma: %s', _tokenTahoma)
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
