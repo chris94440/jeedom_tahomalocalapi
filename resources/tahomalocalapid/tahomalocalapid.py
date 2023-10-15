@@ -163,7 +163,7 @@ def getDevicesList():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def downloadTahomaCertificate():
-	logging.debug(' * Download Tahoma certificate ?')
+	logging.debug(' * Download Tahoma certificate | ' + os.getcwd())
 	try:
 
 		url = 'https://ca.overkiz.com/overkiz-root-ca-2048.crt'
@@ -175,7 +175,7 @@ def downloadTahomaCertificate():
 		#logging.debug("Response header : %s", response.headers)
 		#logging.debug("Tahoma token : %s", response.json().get('token'))
 
-		open("\tmp\overkiz-root-ca-2048.crt", "wb").write(response.content)
+		open(os.getcwd()+"\overkiz-root-ca-2048.crt", "wb").write(response.content)
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when downloading tahoma certificate -> %s",err)
