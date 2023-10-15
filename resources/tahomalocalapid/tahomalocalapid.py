@@ -281,7 +281,7 @@ def fetchListener():
 				json_object = json.load(response.text())
 				for key in json_object:
 					value = jsonObject[key]
-					print("The key and value are ({}) = ({})".format(key, value))
+					print("The key and value aree ({}) = ({})".format(key, value))
 
 		#logging.debug("Response header : %s", response.headers)		
 		#return response.json().get('id')
