@@ -152,7 +152,7 @@ def tahoma_token():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def getDevicesList():	
-	logging.debug(' * Tahoma device list | '  _jsessionid + '|' + _tokenTahoma)
+	logging.debug(' * Tahoma device list | '  + _jsessionid + '|' + _tokenTahoma)
 	try:
 
 		url = 'https://192.168.1.28:8443/enduser-mobile-web/1/enduserAPI/setup/devices'
