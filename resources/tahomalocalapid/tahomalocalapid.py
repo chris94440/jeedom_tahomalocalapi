@@ -210,9 +210,10 @@ def validateToken():
 
 		response = requests.request("POST", url, headers=headers, data=payload)
 
-		logging.debug("Http code : %s", response.status_code)
-		logging.debug("Response : %s", response.json())
-		logging.debug("Response header : %s", response.headers)
+		if not response.status_code and not (response.status_code == 200):
+			logging.debug("Http code : %s", response.status_code)
+			logging.debug("Response : %s", response.json())
+			logging.debug("Response header : %s", response.headers)
 		
 
 	except requests.exceptions.HTTPError as err:
