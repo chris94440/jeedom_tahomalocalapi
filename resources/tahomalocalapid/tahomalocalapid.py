@@ -258,7 +258,7 @@ def fetchListener(listenerId):
 		
 		response = requests.request("POST", url, verify=False, headers=headers)
 
-		logging.debug("Http code : %s", response.status_code)
+		#logging.debug("Http code : %s", response.status_code)
 
 		if response.status_code and (response.status_code == 200):
 			if response.json():
