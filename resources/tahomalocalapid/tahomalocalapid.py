@@ -278,10 +278,11 @@ def fetchListener():
 		if response.status_code and (response.status_code == 200):
 			if response.json():
 				logging.debug("Response : %s", response.json())
-				json_object = json.load(response.text())
-				for key in json_object:
-					value = jsonObject[key]
-					print("The key and value aree ({}) = ({})".format(key, value))
+				#json_object = json.load(response.text())
+				json_data = response.json()
+				for item in json_data:
+					logging.debug('ChD : ' + item)
+				
 
 		#logging.debug("Response header : %s", response.headers)		
 		#return response.json().get('id')
