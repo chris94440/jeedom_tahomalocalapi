@@ -295,7 +295,7 @@ def getDeviceStates(deviceUrl):
 	logging.debug(' * getDeviceStates | '  + deviceUrl)
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ deviceUrl +'/states/'
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ deviceUrl +'/states'
 		
 		headers = {
 			'Content-Type' : 'application/json',
