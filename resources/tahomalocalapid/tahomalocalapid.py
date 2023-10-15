@@ -182,9 +182,7 @@ def validateToken():
 				'label': 'JeedomTahomaLocalApi_token',
 				'token': _tokenTahoma ,
 				'scope': 'devmode'
-		}
-
-		logging.debug(' * validate tahoma_token, payload ? ' + payload)
+		}		
 
 		response = requests.request("POST", url, headers=headers, data=payload)
 
