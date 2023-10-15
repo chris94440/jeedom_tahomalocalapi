@@ -171,9 +171,9 @@ def downloadTahomaCertificate():
 		response = requests.request("GET", url)
 
 		logging.debug("Http code : %s", response.status_code)
-		logging.debug("Response : %s", response.json())
-		logging.debug("Response header : %s", response.headers)
-		logging.debug("Tahoma token : %s", response.json().get('token'))
+		#logging.debug("Response : %s", response.json())
+		#logging.debug("Response header : %s", response.headers)
+		#logging.debug("Tahoma token : %s", response.json().get('token'))
 
 		open("\tmp\overkiz-root-ca-2048.crt", "wb").write(response.content)
 
