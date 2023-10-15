@@ -168,7 +168,7 @@ def getDevicesList():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def validateToken():
-	logging.debug(' * validate tahoma_token | ' + _pincode + '|' + _jsessionid)
+	logging.debug(' * validate tahoma_token | ' + _pincode + '|' + _jsessionid + '|' + _tokenTahoma)
 	try:
 
 		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens'
@@ -178,7 +178,13 @@ def validateToken():
 			'Cookie' : 'JSESSIONID=' + _jsessionid
 		}
 
-		response = requests.request("POST", url, headers=headers)
+		payload={
+				'label': 'JeedomTahomaLocalApi_token',
+				'token': ,_tokenTahoma
+				'scope': 'devmode'
+		}
+
+		response = requests.request("POST", url, headers=headers, data=payload)
 
 		logging.debug("Http code : %s", response.status_code)
 		
