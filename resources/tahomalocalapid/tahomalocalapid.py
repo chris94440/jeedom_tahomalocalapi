@@ -184,6 +184,7 @@ def validateToken():
 				"scope": "devmode"
 		})		
 
+		logging.debug('payload ?' + payload)
 		response = requests.request("POST", url, headers=headers, data=payload)
 
 		logging.debug("Http code : %s", response.status_code)
