@@ -280,9 +280,9 @@ def fetchListener():
 				logging.debug("Response : %s", response.json())
 				#json_object = json.load(response.text())
 				json_data = response.json()
-				for item in json_data:
-					logging.debug('ChD : ' + item.json() + ' -> ' + item.json().get('deviceURL'))
-				
+				dataResponse = json.load(json_data)
+				for item in dataResponse:
+					logging.debug('ChD : ' + item['deviceURL'])		
 
 		#logging.debug("Response header : %s", response.headers)		
 		#return response.json().get('id')
