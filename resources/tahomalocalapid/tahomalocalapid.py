@@ -159,14 +159,13 @@ def getDevicesList(jsessionid,tokenTahoma):
 			'Authorization' : 'Bearer ' + tokenTahoma
 		}
 
-		
+
 		#response = requests.request("GET", url, verify='/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt', headers=headers)
 		response = requests.request("GET", url, verify=False, headers=headers)
 
 		logging.debug("Http code : %s", response.status_code)
 		logging.debug("Response : %s", response.json())
-		logging.debug("Response header : %s", response.headers)
-		logging.debug("Tahoma token : %s", response.json().get('token'))
+		logging.debug("Response header : %s", response.headers)		
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
