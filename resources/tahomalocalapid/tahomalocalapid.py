@@ -184,8 +184,8 @@ def validateToken():
 				'scope': 'devmode'
 		}
 
-		ogging.debug(' * validate tahoma_token, payload ? ' + payload)
-		
+		logging.debug(' * validate tahoma_token, payload ? ' + payload)
+
 		response = requests.request("POST", url, headers=headers, data=payload)
 
 		logging.debug("Http code : %s", response.status_code)
