@@ -101,7 +101,7 @@ def loginTahoma():
 	logging.debug(" * logging tahoma -> "+ _overkizUrl)
 
 	try:
-		url = _overkizUrl +'/login"
+		url = _overkizUrl +'/login'
 
 		payload ={
 			'userId' : _user,
