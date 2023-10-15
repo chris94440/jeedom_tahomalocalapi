@@ -51,6 +51,8 @@ def listen():
 	jeedom_socket.open()
 
 	logging.debug(' * socket tahoma | ' + _jsessionid + '|' + _tokenTahoma)
+	httpLog()
+	
 	if not _jsessionid and not _tokenTahoma:
 		loginTahoma()
 
@@ -74,6 +76,10 @@ def listen():
 	except KeyboardInterrupt:
 		shutdown()
 
+def httpLog:
+	logging.getLogger("requests").setLevel(logging.Error)
+	logging.getLogger("urllib3").setLevel(logging.Error)
+
 # ----------------------------------------------------------------------------
 
 def handler(signum=None, frame=None):
@@ -83,6 +89,11 @@ def handler(signum=None, frame=None):
 def shutdown():
 	logging.debug("Shutdown")
 	logging.debug("Removing PID file %s", _pidfile)
+	try:
+		if _listenerId:
+			unregisterListener()
+	except:
+		pass
 	try:
 		os.remove(_pidfile)
 	except:
@@ -240,16 +251,19 @@ def registerListener():
 		logging.debug("Http code : %s", response.status_code)
 		logging.debug("Response : %s", response.json())
 		logging.debug("Response header : %s", response.headers)		
-		return response.json().get('id')
+
+		if response.json().get('id'):
+			global _listenerId
+			_listenerId = response.json().get('id')		
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
-def fetchListener(listenerId):
+def fetchListener():
 	#logging.debug(' * Tahoma fetchListener | '  + listenerId)
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + listenerId + '/fetch'		
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/fetch'		
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -262,11 +276,30 @@ def fetchListener(listenerId):
 
 		if response.status_code and (response.status_code == 200):
 			if response.json():
-				logging.debug("Response : %s", response.json())	
+				logging.debug("Response : %s", response.json())
+				json_object = json.load(response.json())
+				for key in json_object:
+					value = jsonObject[key]
+					print("The key and value are ({}) = ({})".format(key, value))
 
 		#logging.debug("Response header : %s", response.headers)		
 		#return response.json().get('id')
 
+	except requests.exceptions.HTTPError as err:
+		logging.debug("Error when connection to tahoma -> %s",err)
+
+def unregisterListener():
+	#logging.debug(' * Tahoma fetchListener | '  + listenerId)
+	try:
+
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/unregister'	
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+		
+		response = requests.request("POST", url, verify=False, headers=headers)		
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
@@ -287,6 +320,7 @@ _pincode=''
 _tokenTahoma=''
 _ipBox='https://192.168.1.28:8443'
 _overkizUrl='https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI'
+_listenerId=''
 
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
