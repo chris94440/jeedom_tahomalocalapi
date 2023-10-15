@@ -57,6 +57,7 @@ def listen():
 	if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
 		downloadTahomaCertificate()
 
+	validateToken()
 	getDevicesList()
 	
 
@@ -162,6 +163,25 @@ def getDevicesList():
 		logging.debug("Response : %s", response.json())
 		logging.debug("Response header : %s", response.headers)
 		logging.debug("Tahoma token : %s", response.json().get('token'))
+
+	except requests.exceptions.HTTPError as err:
+		logging.debug("Error when connection to tahoma -> %s",err)
+
+def validateToken():
+	logging.debug(' * validate tahoma_token | ' + _pincode + '|' + jsessionid)
+	try:
+
+		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens'
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Cookie' : 'JSESSIONID=' + jsessionid
+		}
+
+		response = requests.request("POST", url, headers=headers)
+
+		logging.debug("Http code : %s", response.status_code)
+		
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
