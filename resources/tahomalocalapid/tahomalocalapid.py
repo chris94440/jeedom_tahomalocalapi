@@ -49,6 +49,8 @@ def read_socket():
 
 def listen():
 	jeedom_socket.open()
+
+	logging.debug(' * socket tahoma | ' + _jsessionid + '|' + _tokenTahoma)
 	if not _jsessionid and not _tokenTahoma:
 		loginTahoma()
 
@@ -138,8 +140,8 @@ def tahoma_token(jsessionid):
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
-def getDevicesList():
-	logging.debug(' * Tahoma device list')
+def getDevicesList():	
+	logging.debug(' * Tahoma device list | ' + _jsessionid + '|' + _tokenTahoma)
 	try:
 
 		url = 'https://192.168.1.28:8443/enduser-mobile-web/1/enduserAPI/setup/devices'
