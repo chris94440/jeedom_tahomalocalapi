@@ -156,9 +156,10 @@ def getDevicesList(jsessionid,tokenTahoma):
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + tokenTahoma
 		}
 
+		
 		#response = requests.request("GET", url, verify='/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt', headers=headers)
 		response = requests.request("GET", url, verify=False, headers=headers)
 
