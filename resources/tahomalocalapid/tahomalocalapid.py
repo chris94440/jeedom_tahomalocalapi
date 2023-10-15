@@ -114,7 +114,7 @@ def shutdown():
 	os._exit(0)
 
 def loginTahoma():
-	logging.debug(" * logging tahoma')
+	logging.debug(' * logging tahoma')
 
 	try:
 		url = _overkizUrl +'/login'
