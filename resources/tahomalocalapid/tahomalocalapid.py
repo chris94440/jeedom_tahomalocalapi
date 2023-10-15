@@ -171,7 +171,7 @@ def validateToken():
 	logging.debug(' * validate tahoma_token ? ' + _pincode + '|' + _jsessionid + '|' + _tokenTahoma)
 	try:
 	
-		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens/devmode'
+		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens'
 		
 		headers = {
 			'Content-Type' : 'application/json',
