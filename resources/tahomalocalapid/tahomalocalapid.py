@@ -281,7 +281,35 @@ def fetchListener():
 				#json_object = json.load(response.text())
 				json_data = response.json()
 				for item in json_data:
-					logging.debug('ChD : ' + item['deviceURL'])		
+					logging.debug(item['name'] + ' -> ' item['deviceURL'])
+					getDeviceStates(item['deviceURL'])	
+
+		#logging.debug("Response header : %s", response.headers)		
+		#return response.json().get('id')
+
+	except requests.exceptions.HTTPError as err:
+		logging.debug("Error when connection to tahoma -> %s",err)
+
+def getDeviceStates(deviceUrl):
+	
+	logging.debug(' * getDeviceStates | '  + deviceUrl)
+	try:
+
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ deviceUrl +'/statesevents/'
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+		
+		response = requests.request("POST", url, verify=False, headers=headers)
+
+		#logging.debug("Http code : %s", response.status_code)
+
+		if response.status_code and (response.status_code == 200):
+			if response.json():
+				logging.debug("Response : %s", response.json())
+				
 
 		#logging.debug("Response header : %s", response.headers)		
 		#return response.json().get('id')
