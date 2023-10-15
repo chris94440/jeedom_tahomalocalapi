@@ -27,6 +27,7 @@ from os.path import join
 import json
 import argparse
 import requests
+from urllib.parse import quote
 
 try:
 	from jeedom.jeedom import *
@@ -77,8 +78,8 @@ def listen():
 		shutdown()
 
 def httpLog():
-	logging.getLogger("requests").setLevel(logging.ERROR)
-	logging.getLogger("urllib3").setLevel(logging.ERROR)
+	#logging.getLogger("requests").setLevel(logging.ERROR)
+	#logging.getLogger("urllib3").setLevel(logging.ERROR)
 	
 
 # ----------------------------------------------------------------------------
@@ -296,13 +297,15 @@ def getDeviceStates(deviceUrl):
 	try:
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ deviceUrl +'/states'
+		encoded_url = quote(url)
+		logging.debug(' 	* url :  '  + encoded_url)
 		
 		headers = {
 			'Content-Type' : 'application/json',
 			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 		
-		response = requests.request("POST", url, verify=False, headers=headers)
+		response = requests.request("POST", encoded_url, verify=False, headers=headers)
 
 		logging.debug("Http code : %s", response.status_code)
 
