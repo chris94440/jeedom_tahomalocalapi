@@ -98,7 +98,7 @@ def shutdown():
 	os._exit(0)
 
 def loginTahoma():
-	logging.debug(" * logging tahoma")
+	logging.debug(" * logging tahoma -> "+ _overkizUrl)
 
 	try:
 		url = _overkizUrl +'/login"
@@ -260,7 +260,7 @@ def fetchListener(listenerId)
 
 		if response.json():
 			logging.debug("Response : %s", response.json())
-			
+
 		#logging.debug("Response header : %s", response.headers)		
 		#return response.json().get('id')
 
