@@ -118,7 +118,7 @@ public static function sendToDaemon($params) {
   public static function create_or_update_devices($devices) {
     log::add(__CLASS__, 'debug', 'create_or_update_devices');
     $aDevices=json_decode($devices,true);
-    foreach ($aDevices as $device) {
+    foreach ($devices as $device) {
       log::add(__CLASS__, 'debug', '  * device : ' . json_encode(device));
         /*
         $eqLogic = self::byLogicalId($device['uuid'], __CLASS__);
