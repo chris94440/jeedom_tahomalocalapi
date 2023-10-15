@@ -145,7 +145,7 @@ def tahoma_token(jsessionid):
 		logging.debug("Response header : %s", response.headers)
 		logging.debug("Tahoma token : %s", response.json().get('token'))
 
-		if response.json().get('token')
+		if response.json().get('token'):
 			global _tokenTahoma
 			_tokenTahoma = response.json().get('token')
 			return response.json().get('token')		
