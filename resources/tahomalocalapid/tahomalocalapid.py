@@ -55,13 +55,13 @@ def listen():
 		loginTahoma()
 
 	if _jsessionid:
-		tahoma_token(jsessionid)
+		tahoma_token()
 
 		if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
 			downloadTahomaCertificate()
 
-		validateToken(jsessionid,tokenTahoma)
-		getDevicesList(jsessionid,tokenTahoma)
+		validateToken()
+		getDevicesList()
 	
 
 	try:
