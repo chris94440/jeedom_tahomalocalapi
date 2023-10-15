@@ -54,8 +54,11 @@ def listen():
 	if not _jsessionid and not _tokenTahoma:
 		loginTahoma()
 
-	#getDevicesList()
-	downloadTahomaCertificate()
+	if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
+		downloadTahomaCertificate()
+
+	getDevicesList()
+	
 
 	try:
 		while 1:
@@ -152,7 +155,7 @@ def getDevicesList():
 			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 
-		response = requests.request("GET", url, headers=headers)
+		response = requests.request("GET", url, verify='/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt', headers=headers)
 
 		logging.debug("Http code : %s", response.status_code)
 		logging.debug("Response : %s", response.json())
