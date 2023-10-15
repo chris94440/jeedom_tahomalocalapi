@@ -246,7 +246,7 @@ def registerListener():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def fetchListener(listenerId):
-	logging.debug(' * Tahoma fetchListener | '  + listenerId)
+	#logging.debug(' * Tahoma fetchListener | '  + listenerId)
 	try:
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + listenerId + '/fetch'		
@@ -260,8 +260,9 @@ def fetchListener(listenerId):
 
 		logging.debug("Http code : %s", response.status_code)
 
-		if response.json():
-			logging.debug("Response : %s", response.json())
+		if response.status_code and (response.status_code == 200):
+			if response.json():
+				logging.debug("Response : %s", response.json())	
 
 		#logging.debug("Response header : %s", response.headers)		
 		#return response.json().get('id')
