@@ -163,7 +163,7 @@ def getDevicesList():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def downloadTahomaCertificate():
-	logging.debug(' * Download Tahoma certificate')
+	logging.debug(' * Download Tahoma certificate ?')
 	try:
 
 		url = 'https://ca.overkiz.com/overkiz-root-ca-2048.crt'
