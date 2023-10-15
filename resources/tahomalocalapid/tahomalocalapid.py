@@ -168,14 +168,14 @@ def getDevicesList():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def validateToken():
-	logging.debug(' * validate tahoma_token | ' + _pincode + '|' + jsessionid)
+	logging.debug(' * validate tahoma_token | ' + _pincode + '|' + _jsessionid)
 	try:
 
 		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens'
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Cookie' : 'JSESSIONID=' + jsessionid
+			'Cookie' : 'JSESSIONID=' + _jsessionid
 		}
 
 		response = requests.request("POST", url, headers=headers)
