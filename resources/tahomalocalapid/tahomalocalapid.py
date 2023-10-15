@@ -296,16 +296,15 @@ def getDeviceStates(deviceUrl):
 	logging.debug(' * getDeviceStates | '  + deviceUrl)
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ deviceUrl +'/states'
-		encoded_url = quote(url)
-		logging.debug(' 	* url :  '  + encoded_url)
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ quote(deviceUrl) +'/states'
+		logging.debug(' 	* url :  '  + url)
 		
 		headers = {
 			'Content-Type' : 'application/json',
 			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 		
-		response = requests.request("POST", encoded_url, verify=False, headers=headers)
+		response = requests.request("POST", url, verify=False, headers=headers)
 
 		logging.debug("Http code : %s", response.status_code)
 
