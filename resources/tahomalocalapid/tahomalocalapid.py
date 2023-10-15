@@ -54,7 +54,8 @@ def listen():
 	if not _jsessionid and not _tokenTahoma:
 		loginTahoma()
 
-	getDevicesList()
+	#getDevicesList()
+	downloadTahomaCertificate()
 
 	try:
 		while 1:
@@ -160,6 +161,25 @@ def getDevicesList():
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
+
+def downloadTahomaCertificate():
+	logging.debug(' * Download Tahoma certificate')
+	try:
+
+		url = 'https://ca.overkiz.com/overkiz-root-ca-2048.crt'
+		
+		response = requests.request("GET", url)
+
+		logging.debug("Http code : %s", response.status_code)
+		logging.debug("Response : %s", response.json())
+		logging.debug("Response header : %s", response.headers)
+		logging.debug("Tahoma token : %s", response.json().get('token'))
+
+		open("\tmp\overkiz-root-ca-2048.crt", "wb").write(response.content)
+
+	except requests.exceptions.HTTPError as err:
+		logging.debug("Error when downloading tahoma certificate -> %s",err)
+
 # ----------------------------------------------------------------------------
 
 _log_level = "error"
