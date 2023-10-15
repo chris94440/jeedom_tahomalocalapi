@@ -80,7 +80,7 @@ def listen():
 def httpLog():
 	logging.getLogger("requests").setLevel(logging.ERROR)
 	logging.getLogger("urllib3").setLevel(logging.ERROR)
-	urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+	requests.packages.urllib3.disable_warnings()
 	
 
 # ----------------------------------------------------------------------------
