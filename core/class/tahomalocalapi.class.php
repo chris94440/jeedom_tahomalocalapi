@@ -116,10 +116,9 @@ public static function sendToDaemon($params) {
   /*     * *************************Attributs****************************** */
 
   public static function create_or_update_devices($devices) {
-    log::add(__CLASS__, 'debug', 'create_or_update_devices');
-    $aDevices=json_decode($devices,true);
+    log::add(__CLASS__, 'debug', 'create_or_update_devices');    
     foreach ($devices as $device) {
-      log::add(__CLASS__, 'debug', '  * device : ' . json_encode(device));
+      log::add(__CLASS__, 'debug', '  * device : ' . json_encode($device));
         /*
         $eqLogic = self::byLogicalId($device['uuid'], __CLASS__);
         if (!is_object($eqLogic)) {
@@ -154,7 +153,7 @@ public static function sendToDaemon($params) {
   }
 
   public static function updateItems($item){
-    log::add(__CLASS__, 'debug', 'updateItems -> '. $item);
+    log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
   }
 
   /*
