@@ -64,14 +64,14 @@ def listen():
 
 		validateToken()
 		getDevicesList()
-		listenerId=registerListener()
+		registerListener()
 	
 
 	try:
 		while 1:
 			time.sleep(0.5)
 			read_socket()
-			fetchListener(listenerId)
+			fetchListener()
 
 	except KeyboardInterrupt:
 		shutdown()
