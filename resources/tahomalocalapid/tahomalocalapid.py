@@ -61,7 +61,7 @@ def listen():
 		downloadTahomaCertificate()
 
 	validateToken(jsessionid,tokenTahoma)
-	#getDevicesList()
+	getDevicesList(jsessionid,tokenTahoma)
 	
 
 	try:
@@ -148,8 +148,8 @@ def tahoma_token(jsessionid):
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
-def getDevicesList():	
-	logging.debug(' * Tahoma device list | ' + _jsessionid + '|' + _tokenTahoma)
+def getDevicesList(jsessionid,tokenTahoma):	
+	logging.debug(' * Tahoma device list | ' + jsessionid + '|' + tokenTahoma)
 	try:
 
 		url = 'https://192.168.1.28:8443/enduser-mobile-web/1/enduserAPI/setup/devices'
@@ -187,10 +187,11 @@ def validateToken(jsessionid,tokenTahoma):
 				"scope": "devmode"
 		})		
 
-		logging.debug('payload ?' + payload)
 		response = requests.request("POST", url, headers=headers, data=payload)
 
 		logging.debug("Http code : %s", response.status_code)
+		logging.debug("Response : %s", response.json())
+		logging.debug("Response header : %s", response.headers)
 		
 
 	except requests.exceptions.HTTPError as err:
