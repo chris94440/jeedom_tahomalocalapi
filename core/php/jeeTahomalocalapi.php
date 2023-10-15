@@ -18,7 +18,9 @@ try {
 
     if (isset($result['eventItem'])) {
         log::add('tahomalocalapi', 'debug', 'Message receive for evenItem -> ' . json_encode($result['eventItem']));
-    } else {
+    } elseif (isset($result['devicesList'])) {
+        log::add('tahomalocalapi', 'debug', 'Message receive for devicesList -> ' . json_encode($result['devicesList']));
+    }else {
         log::add('tahomalocalapi', 'error', 'unknown message received from daemon'); //remplacez template par l'id de votre plugin
     }
 } catch (Exception $e) {

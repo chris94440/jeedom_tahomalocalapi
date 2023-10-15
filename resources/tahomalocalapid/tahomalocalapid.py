@@ -130,15 +130,14 @@ def loginTahoma():
 
 		response = requests.request("POST", url, headers=headers, data=payload)
 
-		logging.debug("Http code : %s", response.status_code)
-		logging.debug("Response : %s", response.json())
-		logging.debug("Response header : %s", response.headers)
-		logging.debug("Response header[Set-Cookie] : %s", response.headers['Set-Cookie'])
-		logging.debug("Cookie JSESSIONID : %s", response.cookies.get("JSESSIONID"))
-
-		if response.cookies.get("JSESSIONID"):
-			global _jsessionid
-			_jsessionid =  response.cookies.get("JSESSIONID")			
+		if response.status_code and (response.status_code == 200):
+			if response.cookies.get("JSESSIONID"):
+				global _jsessionid
+				_jsessionid =  response.cookies.get("JSESSIONID")			
+		else:
+			logging.debug("Http code : %s", response.status_code)
+			logging.debug("Response : %s", response.json())
+			logging.debug("Response header : %s", response.headers)
 			
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
@@ -156,15 +155,14 @@ def tahoma_token():
 
 		response = requests.request("GET", url, headers=headers)
 
-		logging.debug("Http code : %s", response.status_code)
-		logging.debug("Response : %s", response.json())
-		logging.debug("Response header : %s", response.headers)
-		logging.debug("Tahoma token : %s", response.json().get('token'))
-
-		if response.json().get('token'):
-			global _tokenTahoma
-			_tokenTahoma = response.json().get('token')
-
+		if response.status_code and (response.status_code == 200):
+			if response.json().get('token'):
+				global _tokenTahoma
+				_tokenTahoma = response.json().get('token')
+		else:
+			logging.debug("Http code : %s", response.status_code)
+			logging.debug("Response : %s", response.json())
+			logging.debug("Response header : %s", response.headers)
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
@@ -180,13 +178,15 @@ def getDevicesList():
 			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 
-
-		#response = requests.request("GET", url, verify='/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt', headers=headers)
 		response = requests.request("GET", url, verify=False, headers=headers)
 
-		logging.debug("Http code : %s", response.status_code)
-		logging.debug("Response : %s", response.json())
-		logging.debug("Response header : %s", response.headers)		
+		if response.status_code and (response.status_code == 200):
+			jeedom_com.send_change_immediate({'devicesList' : response.json()})
+		else:
+			logging.debug("Http code : %s", response.status_code)
+			logging.debug("Response : %s", response.json())
+			logging.debug("Response header : %s", response.headers)		
+
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
@@ -227,9 +227,6 @@ def downloadTahomaCertificate():
 		response = requests.request("GET", url)
 
 		logging.debug("Http code : %s", response.status_code)
-		#logging.debug("Response : %s", response.json())
-		#logging.debug("Response header : %s", response.headers)
-		#logging.debug("Tahoma token : %s", response.json().get('token'))
 
 		open('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt', "wb").write(response.content)
 
@@ -251,19 +248,21 @@ def registerListener():
 		
 		response = requests.request("POST", url, verify=False, headers=headers)
 
-		logging.debug("Http code : %s", response.status_code)
-		logging.debug("Response : %s", response.json())
-		logging.debug("Response header : %s", response.headers)		
 
-		if response.json().get('id'):
-			global _listenerId
-			_listenerId = response.json().get('id')		
+
+		if response.status_code and (response.status_code == 200):
+			if response.json().get('id'):
+				global _listenerId
+				_listenerId = response.json().get('id')
+		else:
+			logging.debug("Http code : %s", response.status_code)
+			logging.debug("Response : %s", response.json())
+			logging.debug("Response header : %s", response.headers)		
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def fetchListener():
-	#logging.debug(' * Tahoma fetchListener | '  + listenerId)
 	try:
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/fetch'		
@@ -275,20 +274,18 @@ def fetchListener():
 		
 		response = requests.request("POST", url, verify=False, headers=headers)		
 
-		#logging.debug("Http code : %s", response.status_code)
-
 		if response.status_code and (response.status_code == 200):
 			if response.json():
 				logging.debug("Response : %s", response.json())
-				#json_object = json.load(response.text())
 				json_data = response.json()
 				for item in json_data:
 					logging.debug(item['name'] + ' -> ' + item['deviceURL'])
 					jeedom_com.send_change_immediate({'eventItem' : item})
 					#getDeviceStates(item['deviceURL'])	
+		else:
+			ogging.debug("Http code : %s", response.status_code)
+			logging.debug("Response header : %s", response.headers)		
 
-		#logging.debug("Response header : %s", response.headers)		
-		#return response.json().get('id')
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
