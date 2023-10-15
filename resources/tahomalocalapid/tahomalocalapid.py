@@ -175,7 +175,7 @@ def downloadTahomaCertificate():
 		#logging.debug("Response header : %s", response.headers)
 		#logging.debug("Tahoma token : %s", response.json().get('token'))
 
-		open('\var\www\html\plugins\tahomalocalapi\resources\tahomalocalapid\overkiz-root-ca-2048.crt', "wb").write(response.content)
+		open('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt', "wb").write(response.content)
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when downloading tahoma certificate -> %s",err)
