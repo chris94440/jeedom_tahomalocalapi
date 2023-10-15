@@ -284,7 +284,8 @@ def fetchListener():
 				json_data = response.json()
 				for item in json_data:
 					logging.debug(item['name'] + ' -> ' + item['deviceURL'])
-					getDeviceStates(item['deviceURL'])	
+					jeedom_com.send_change_immediate({'eventItem' : item})
+					#getDeviceStates(item['deviceURL'])	
 
 		#logging.debug("Response header : %s", response.headers)		
 		#return response.json().get('id')

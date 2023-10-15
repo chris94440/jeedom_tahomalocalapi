@@ -16,13 +16,11 @@ try {
         die();
     }
 
-    if (isset($result['key1'])) {
-        // do something
-    } elseif (isset($result['key2'])) {
-        // do something else
+    if (isset($result['eventItem'])) {
+        log::add('tahomalocalapi', 'deuug', 'Message receive for evenItem -> ' . json_encode($result['eventItem']));
     } else {
-        log::add('template', 'error', 'unknown message received from daemon'); //remplacez template par l'id de votre plugin
+        log::add('tahomalocalapi', 'error', 'unknown message received from daemon'); //remplacez template par l'id de votre plugin
     }
 } catch (Exception $e) {
-    log::add('template', 'error', displayException($e)); //remplacez template par l'id de votre plugin
+    log::add('tahomalocalapi', 'error', displayException($e)); //remplacez template par l'id de votre plugin
 }
