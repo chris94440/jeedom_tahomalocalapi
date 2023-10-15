@@ -114,7 +114,7 @@ def shutdown():
 	os._exit(0)
 
 def loginTahoma():
-	logging.debug(" * logging tahoma -> "+ _overkizUrl)
+	logging.debug(" * logging tahoma')
 
 	try:
 		url = _overkizUrl +'/login'
@@ -143,7 +143,7 @@ def loginTahoma():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def tahoma_token():
-	logging.debug(' * tahoma_token | ' + _pincode +  '|' + _jsessionid)
+	logging.debug(' * retrieve tahoma_token')
 	try:
 
 		url = _overkizUrl +'/config/' + _pincode + '/local/tokens/generate'
@@ -167,7 +167,7 @@ def tahoma_token():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def getDevicesList():	
-	logging.debug(' * Tahoma device list | '  + _jsessionid + '|' + _tokenTahoma)
+	logging.debug(' * Retrieve devices list')
 	try:
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices'
@@ -192,7 +192,7 @@ def getDevicesList():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def validateToken():
-	logging.debug(' * validate tahoma_token ? ' + _pincode + '|' + _jsessionid + '|' + _tokenTahoma)
+	logging.debug(' * validate tahoma token')
 	try:
 	
 		url = _overkizUrl + '/config/' + _pincode + '/local/tokens'
@@ -219,7 +219,7 @@ def validateToken():
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def downloadTahomaCertificate():
-	logging.debug(' * Download Tahoma certificate | ' + os.getcwd())
+	logging.debug(' * Download Tahoma certificate')
 	try:
 
 		url = 'https://ca.overkiz.com/overkiz-root-ca-2048.crt'
@@ -234,7 +234,7 @@ def downloadTahomaCertificate():
 		logging.debug("Error when downloading tahoma certificate -> %s",err)
 
 def registerListener():
-	logging.debug(' * Tahoma registerListener | '  + _jsessionid + '|' + _tokenTahoma)
+	logging.debug(' * Register listener')
 	try:
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/events/register'
