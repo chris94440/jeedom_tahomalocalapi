@@ -62,6 +62,7 @@ def listen():
 
 		validateToken()
 		getDevicesList()
+		idListener=registerListener()
 	
 
 	try:
@@ -218,6 +219,29 @@ def downloadTahomaCertificate():
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when downloading tahoma certificate -> %s",err)
+
+def registerListener()
+	logging.debug(' * Tahoma registerListener | '  + _jsessionid + '|' + _tokenTahoma)
+	try:
+
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/event/register'
+		
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+
+		
+		response = requests.request("POST", url, verify=False, headers=headers)
+
+		logging.debug("Http code : %s", response.status_code)
+		logging.debug("Response : %s", response.json())
+		logging.debug("Response header : %s", response.headers)		
+		return response.json().get('id')
+
+	except requests.exceptions.HTTPError as err:
+		logging.debug("Error when connection to tahoma -> %s",err)
 
 # ----------------------------------------------------------------------------
 
