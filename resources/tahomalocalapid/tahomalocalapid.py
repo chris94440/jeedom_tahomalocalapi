@@ -120,13 +120,15 @@ def loginTahoma():
 		logging.debug("Cookie JSESSIONID : %s", response.cookies.get("JSESSIONID"))
 
 		if response.cookies.get("JSESSIONID"):
+			global _jsessionid
+			_jsessionid =  response.cookies.get("JSESSIONID")
 			return response.cookies.get("JSESSIONID")			
 			
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def tahoma_token(jsessionid):
-	logging.debug(' * tahoma_token | ' + _pincode + '|' + jsessionid)
+	logging.debug(' * tahoma_token | ' + _pincode + '|' + jsessionid + '|' + _jsessionid)
 	try:
 
 		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens/generate'
@@ -143,13 +145,16 @@ def tahoma_token(jsessionid):
 		logging.debug("Response header : %s", response.headers)
 		logging.debug("Tahoma token : %s", response.json().get('token'))
 
-		return response.json().get('token')
+		if response.json().get('token')
+			global _tokenTahoma
+			_tokenTahoma = response.json().get('token')
+			return response.json().get('token')		
 
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def getDevicesList(jsessionid,tokenTahoma):	
-	logging.debug(' * Tahoma device list | ' + jsessionid + '|' + tokenTahoma)
+	logging.debug(' * Tahoma device list | ' + jsessionid + '|' + tokenTahoma + '|' + _jsessionid + '|' + _tokenTahoma)
 	try:
 
 		url = 'https://192.168.1.28:8443/enduser-mobile-web/1/enduserAPI/setup/devices'
@@ -171,7 +176,7 @@ def getDevicesList(jsessionid,tokenTahoma):
 		logging.debug("Error when connection to tahoma -> %s",err)
 
 def validateToken(jsessionid,tokenTahoma):
-	logging.debug(' * validate tahoma_token ? ' + _pincode + '|' + jsessionid + '|' + tokenTahoma)
+	logging.debug(' * validate tahoma_token ? ' + _pincode + '|' + jsessionid + '|' + tokenTahoma + '|' + _jsessionid + '|' + _tokenTahoma)
 	try:
 	
 		url = 'https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/config/' + _pincode + '/local/tokens'
