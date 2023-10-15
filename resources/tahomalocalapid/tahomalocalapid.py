@@ -148,7 +148,7 @@ def getDevicesList():
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization: Bearer ' : _tokenTahoma
+			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 
 		response = requests.request("GET", url, headers=headers)
