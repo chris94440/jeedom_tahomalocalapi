@@ -278,7 +278,7 @@ def fetchListener():
 		if response.status_code and (response.status_code == 200):
 			if response.json():
 				logging.debug("Response : %s", response.json())
-				json_object = json.load(response.json())
+				json_object = json.load(response.text())
 				for key in json_object:
 					value = jsonObject[key]
 					print("The key and value are ({}) = ({})".format(key, value))
