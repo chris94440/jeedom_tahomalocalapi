@@ -609,6 +609,9 @@ public static function sendToDaemon($params) {
         if (!$found) {
             log::add(__CLASS__, 'error', ' - évènement sur équipement :' .$item['deviceURL'].' non géré par le plugin ... relancer le daemon pour forcer sa création');
         } else {
+            if (array_key_exists('execId', $item)) { 
+                log::add(__CLASS__, 'debug','   - execId  ' . $item['execId']);
+            }
             foreach ($item['deviceStates'] as $state) {
                 log::add(__CLASS__, 'debug','   - maj equipement ' . $item['deviceURL'] . ' | commande : ' . $state['name'] . '| valeur : '.$state['value']);
                 $cmd=$eqLogic_found->getCmd('info',$state['name'],true, false);
