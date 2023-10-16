@@ -121,11 +121,12 @@ public static function sendToDaemon($params) {
     log::add(__CLASS__, 'debug', 'create_or_update_devices');
 
     foreach ($devices as $device) {
-
+        log::add(__CLASS__, 'debug', '  - device : ' . $device['deviceURL']);
          $found = false;
 
          foreach ($eqLogics as $eqLogic) {
              if ($device['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+                log::add(__CLASS__, 'debug', '      -> device already exist');
                  $eqLogic_found = $eqLogic;
                  $found = true;
                  break;
@@ -133,6 +134,7 @@ public static function sendToDaemon($params) {
          }
 
          if (!$found) {
+            log::add(__CLASS__, 'debug', '      -> device not exist -> auto create it');
              $eqLogic = new eqLogic();
              $eqLogic->setEqType_name(__CLASS__);
              $eqLogic->setIsEnable(1);
@@ -580,6 +582,35 @@ public static function sendToDaemon($params) {
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
+    $found = false;
+
+    foreach ($eqLogics as $eqLogic) {
+        if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+            $eqLogic_found = $eqLogic;
+            $found = true;
+            break;
+        }
+    }
+
+    if (!$found) {
+        log::add(__CLASS__, 'error', ' - évènement sur équipement non géré par le plugin ... relancer le daemon pour forcer sa création');
+    } else {
+        foreach ($item['deviceState'] as $state) {
+            $cmd=eqLogic_found->getCmd('info',$state['name']);
+            if (is_object($cmd){
+                if ($state['name'] == $command->getConfiguration('type')) {
+                    $command->setCollectDate('');
+
+                    $value = $state['value'];
+                    if ($state['name'] == "core:ClosureState") {
+                        $value = 100 - $value;
+                    }
+
+                    $command->event($value);
+                }
+            })
+        }    
+    }
   }
 
   /*
