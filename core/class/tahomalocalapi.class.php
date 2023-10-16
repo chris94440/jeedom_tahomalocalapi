@@ -586,6 +586,7 @@ public static function sendToDaemon($params) {
 
 	$found = false;
     $eqLogic_found;
+    $eqLogics=eqLogic::byType(__CLASS__);
     
     foreach ($eqLogics as $eqLogic) {
         if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
