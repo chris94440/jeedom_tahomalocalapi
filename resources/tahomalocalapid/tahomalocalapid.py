@@ -45,8 +45,7 @@ def read_socket():
 			return
 		try:
 			logging.info('action ? ' + message['action'])
-			if message['action'] == 'execCmd':
-				logging.info('action execCmd -> self.close()')
+			if message['action'] == 'execCmd':				
 				execCmd(message)
 			elif message['action'] == 'synchronize':
 				logging.info('action synchronize -> self.close() et await self.')
@@ -357,6 +356,9 @@ def execCmd(params):
 	logging.debug(' * Execute command')
 	try:
 
+		if params['execId']:
+			deleteExecution(params['execId'])
+
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
 		payload=json.dumps({
@@ -395,6 +397,31 @@ def execCmd(params):
 			shutdown()
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when executing cmd to tahoma -> %s",err)
+		shutdown()
+
+def deleteExecution(executionId):
+		logging.debug(' * Delete execution : ' + executionId)
+	try:
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current/setup/' + executionId	
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+
+		logging.debug("	- payload :  %s", payload)
+		response = requests.request("POST", url, verify=False, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("ExecCmd http : %s", response.status_code)
+			if response.json().get('execId'):
+				logging.debug("Execution id : %s", response.json().get('execId'))
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			shutdown()
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when deleting execution cmd to tahoma -> %s",err)
 		shutdown()
 # ----------------------------------------------------------------------------
 
