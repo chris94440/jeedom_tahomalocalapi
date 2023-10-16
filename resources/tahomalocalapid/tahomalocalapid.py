@@ -417,7 +417,7 @@ def deleteExecution(executionId):
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
-			shutdown()
+			#shutdown()
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when deleting execution cmd to tahoma -> %s",err)
 		shutdown()
