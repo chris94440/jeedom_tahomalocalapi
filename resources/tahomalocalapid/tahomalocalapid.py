@@ -414,7 +414,7 @@ def deleteExecutionForADevice(deviceUrl):
 
 		if response.status_code and (response.status_code == 200):
 			logging.debug("http : %s", response.status_code)
-			logging.debug("Response : %s", response.json())
+			logging.debug("Response zzz : %s", response.json())
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
