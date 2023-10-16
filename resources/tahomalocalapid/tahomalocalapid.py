@@ -289,7 +289,7 @@ def fetchListener():
 				logging.debug("Response : %s", response.json())
 				json_data = response.json()
 				for item in json_data:
-					logging.debug(item['name'] + ' -> ' + item['deviceURL'])
+					#logging.debug(item['name'] + ' -> ' + item['deviceURL'])
 					jeedom_com.send_change_immediate({'eventItem' : item})
 					#getDeviceStates(item['deviceURL'])	
 		else:
@@ -353,15 +353,15 @@ def execCmd(params):
 				"label": params['commandName'],								
 				"actions": [
 				{
-					"commands": [
-						{
-						"name": params['name'],
-						"parameters": [
-							params['parameters']
-						]
-						}
-					],
-					"deviceURL": params['deviceUrl']
+				"commands": [
+					{
+					"name": params['name'],
+					"parameters": [
+						params['parameters']
+					]
+					}
+				],
+				"deviceURL": params['deviceUrl']
 				}
 			]
 		})
@@ -374,8 +374,9 @@ def execCmd(params):
 		response = requests.request("POST", url, verify=False, headers=headers, data=payload)
 
 		if response.status_code and (response.status_code == 200):
+			logging.debug("ExecCmd http : %s", response.status_code)
 			if response.json().get('execId'):
-				logging.debug("Execution id : %s", esponse.json().get('execId'))
+				logging.debug("Execution id : %s", response.json().get('execId'))
 		else:
 			logging.debug("Http code : %s", response.status_code)
 			logging.debug("Response : %s", response.json())
