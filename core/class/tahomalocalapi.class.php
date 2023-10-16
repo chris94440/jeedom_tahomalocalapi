@@ -587,7 +587,7 @@ public static function sendToDaemon($params) {
 	$found = false;
     $eqLogic_found;
     $eqLogics=eqLogic::byType(__CLASS__);
-    
+
     foreach ($eqLogics as $eqLogic) {
         if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
             $eqLogic_found = $eqLogic;
@@ -597,7 +597,7 @@ public static function sendToDaemon($params) {
     }
     
     if (!$found) {
-        log::add(__CLASS__, 'error', ' - évènement sur équipement non géré par le plugin ... relancer le daemon pour forcer sa création');
+        log::add(__CLASS__, 'error', ' - évènement sur équipement :' .$item['deviceURL'].' non géré par le plugin ... relancer le daemon pour forcer sa création');
     } else {
         foreach ($item['deviceStates'] as $state) {
             $cmd=$eqLogic_found->getCmd('info',$state['name'],true, false);
