@@ -405,13 +405,13 @@ def deleteExecution(executionId):
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current/setup/' + executionId
 		
 		logging.error("Delete execution url : %s", url)	
-		
+
 		headers = {
 			'Content-Type' : 'application/json',
 			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 
-		response = requests.request("POST", url, verify=False, headers=headers)
+		response = requests.request("DELETE", url, verify=False, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
 			if response.json().get('execId'):
