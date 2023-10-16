@@ -594,6 +594,7 @@ public static function sendToDaemon($params) {
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
     if (array_key_exists('deviceURL', $item)) {        
+        log::add(__CLASS__, 'debug', 'updateItems -> ici');
         $found = false;
         $eqLogic_found;
         $eqLogics=eqLogic::byType(__CLASS__);
@@ -609,6 +610,7 @@ public static function sendToDaemon($params) {
         if (!$found) {
             log::add(__CLASS__, 'error', ' - évènement sur équipement :' .$item['deviceURL'].' non géré par le plugin ... relancer le daemon pour forcer sa création');
         } else {
+            log::add(__CLASS__, 'debug', 'updateItems -> la');
             if (array_key_exists('execId', $item)) { 
                 log::add(__CLASS__, 'debug','   - execId  ' . $item['execId']);
             }
