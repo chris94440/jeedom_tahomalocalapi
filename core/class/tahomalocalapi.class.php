@@ -594,7 +594,6 @@ public static function sendToDaemon($params) {
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
     if (array_key_exists('deviceURL', $item)) {        
-        log::add(__CLASS__, 'debug', 'updateItems -> ici');
         $found = false;
         $eqLogic_found;
         $eqLogics=eqLogic::byType(__CLASS__);
@@ -610,10 +609,6 @@ public static function sendToDaemon($params) {
         if (!$found) {
             log::add(__CLASS__, 'error', ' - évènement sur équipement :' .$item['deviceURL'].' non géré par le plugin ... relancer le daemon pour forcer sa création');
         } else {
-            log::add(__CLASS__, 'debug', 'updateItems -> la');
-            if (array_key_exists('execId', $item)) { 
-                log::add(__CLASS__, 'debug','   - execId  ' . $item['execId']);
-            }
             foreach ($item['deviceStates'] as $state) {
                 log::add(__CLASS__, 'debug','   - maj equipement ' . $item['deviceURL'] . ' | commande : ' . $state['name'] . '| valeur : '.$state['value']);
                 $cmd=$eqLogic_found->getCmd('info',$state['name'],true, false);
@@ -633,7 +628,7 @@ public static function sendToDaemon($params) {
             }    
         }
     } elseif (array_key_exists('execId', $item)) { 
-        log::add(__CLASS__, 'debug','   - execId  ' . $item['execId']);
+        log::add(__CLASS__, 'debug','   - execId  ' . $item['execId'] . ' -> '. json_encode($item['actions']));
         foreach($item['actions'] as $action) {
             if (array_key_exists($actions['deviceURL'])) {                
                 foreach ($eqLogics as $eqLogic) {
