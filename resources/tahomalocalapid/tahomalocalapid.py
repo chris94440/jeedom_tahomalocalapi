@@ -414,8 +414,7 @@ def deleteExecution(executionId):
 		response = requests.request("DELETE", url, verify=False, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
-			if response.json().get('execId'):
-				logging.debug("Delete id : %s", response.json().get('execId'))
+			logging.debug('Delete execution ok')
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
