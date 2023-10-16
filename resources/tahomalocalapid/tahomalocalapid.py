@@ -408,18 +408,16 @@ def deleteExecution(executionId):
 			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 
-		logging.debug("	- payload :  %s", payload)
 		response = requests.request("POST", url, verify=False, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
-			logging.debug("deleteExecution http : %s", response.status_code)
 			if response.json().get('execId'):
-				logging.debug("Execution id : %s", response.json().get('execId'))
+				logging.debug("Delete id : %s", response.json().get('execId'))
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
-			shutdown()
+			#shutdown()
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when deleting execution cmd to tahoma -> %s",err)
 		shutdown()
