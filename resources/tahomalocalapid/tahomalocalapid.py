@@ -358,7 +358,7 @@ def execCmd(params):
 
 		if params['execId']:
 			#deleteExecution(params['execId'])
-			deleteExecutionForADevice(params['deviceURL'])
+			deleteExecutionForADevice(params['deviceUrl'])
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
