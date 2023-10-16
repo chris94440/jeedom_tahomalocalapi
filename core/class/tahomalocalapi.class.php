@@ -101,6 +101,10 @@ public static function deamon_stop() {
   sleep(1);
 }
 
+public static function synchronize() {
+    self::sendToDaemon(['action' => 'synchronize']);
+}
+
 /* Send data to daemon */
 public static function sendToDaemon($params) {
   $deamon_info = self::deamon_info();
@@ -789,7 +793,7 @@ class tahomalocalapiCmd extends cmd {
                     case 'orientation':
                         if ($commandName == "setOrientation") {
                             $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(array('deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()));
+                            $eqlogic->sendToDaemon(['deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()]);
                               return;
                         }
                         break;
@@ -798,7 +802,7 @@ class tahomalocalapiCmd extends cmd {
                             $parameters = 100 - $parameters;
 
                             $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(array('deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()));
+                            $eqlogic->sendToDaemon(['deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()]);
 
                             return;
                         }
@@ -811,7 +815,7 @@ class tahomalocalapiCmd extends cmd {
                 break;
           	case 'other':
             	//$parameters = array_map('intval', explode(",", $parameters));
-            	$eqlogic->sendToDaemon(array('deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()));
+            	$eqlogic->sendToDaemon(['deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()]);
             	return;
            
         }
