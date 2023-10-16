@@ -25,7 +25,7 @@ if (!isConnect()) {
 <form class="form-horizontal">
   <fieldset>
     <div class="form-group">
-      <label class="col-md-4 control-label">{{Nom utilisateur Tahoma}}
+      <label class="col-md-4 control-label">{{Nom utilisateur compte Somfy}}
         <sup><i class="fas fa-question-circle tooltips" title="{{Nom utilisateur Tahoma}}"></i></sup>
       </label>
       <div class="col-md-4">
@@ -41,7 +41,7 @@ if (!isConnect()) {
       </div>
     </div>
     <div class="form-group">
-      <label class="col-md-4 control-label">{{Code pin installation}}
+      <label class="col-md-4 control-label">{{Code pin box Somfy}}
         <sup><i class="fas fa-question-circle tooltips" title="{{ }}"></i></sup>
       </label>
       <div class="col-md-4">
