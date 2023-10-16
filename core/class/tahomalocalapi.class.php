@@ -593,10 +593,10 @@ public static function sendToDaemon($params) {
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
+    $eqLogics=eqLogic::byType(__CLASS__);
     if (array_key_exists('deviceURL', $item)) {        
         $found = false;
-        $eqLogic_found;
-        $eqLogics=eqLogic::byType(__CLASS__);
+        $eqLogic_found;        
 
         foreach ($eqLogics as $eqLogic) {
             if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
@@ -627,6 +627,19 @@ public static function sendToDaemon($params) {
                 }
             }    
         }
+    } elseif (array_key_exists('execId', $item)) { 
+        foreach($item['actions'] as $action) {
+          if (array_key_exists('deviceURL',$action)) {               
+              foreach ($eqLogics as $eqLogic) {   
+                  if ($action['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+                      //log::add(__CLASS__, 'debug','   - store execution id  ' . $action['execId'] . ' for device ' . $action['deviceURL']);
+                      $eqLogic->setConfiguration('execId',$action['execId']);
+                      $eqLogic->save();
+                      break;
+                  }
+              }
+          }
+      }
     }
   }
   /*
@@ -779,12 +792,15 @@ class tahomalocalapiCmd extends cmd {
   public function execute($_options = array()) {
     $eqlogic = $this->getEqLogic();
     $logicalId=$this->getLogicalId();
+
     $deviceUrl=$this->getConfiguration('deviceURL');
     $commandName=$this->getConfiguration('commandName');
     $parameters=$this->getConfiguration('parameters');
+    $execId=$eqlogic->getConfiguration('execId');
+
     $type=$this->type;
     $subType=$this->subType;
-    log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType);
+    log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType . '| exec id : ' . $execId);
 
     if ($this->type == 'action') {
         switch ($this->subType) {
@@ -798,7 +814,7 @@ class tahomalocalapiCmd extends cmd {
                     case 'orientation':
                         if ($commandName == "setOrientation") {
                             $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()]);
+                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
                               return;
                         }
                         break;
@@ -807,7 +823,7 @@ class tahomalocalapiCmd extends cmd {
                             $parameters = 100 - $parameters;
 
                             $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()]);
+                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
 
                             return;
                         }
@@ -820,7 +836,7 @@ class tahomalocalapiCmd extends cmd {
                 break;
           	case 'other':
             	//$parameters = array_map('intval', explode(",", $parameters));
-            	$eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()]);
+            	$eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
             	return;
            
         }
