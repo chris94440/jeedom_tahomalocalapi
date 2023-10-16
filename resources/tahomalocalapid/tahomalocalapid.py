@@ -400,7 +400,7 @@ def execCmd(params):
 		shutdown()
 
 def deleteExecution(executionId):
-		logging.debug(' * Delete execution : ' + executionId)
+	logging.debug(' * Delete execution : ' + executionId)
 	try:
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current/setup/' + executionId	
 		headers = {
