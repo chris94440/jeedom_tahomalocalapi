@@ -105,17 +105,22 @@ public static function synchronize() {
     self::sendToDaemon(['action' => 'synchronize']);
 }
 
+protected static function getSocketPort() {
+    return config::byKey('socketport', __CLASS__, 55009);
+}
+
 /* Send data to daemon */
 public static function sendToDaemon($params) {
   $deamon_info = self::deamon_info();
   if ($deamon_info['state'] != 'ok') {
       throw new Exception("Le démon n'est pas démarré");
   }
+  $port = self::getSocketPort();
   $params['apikey'] = jeedom::getApiKey(__CLASS__);  
   $payLoad = json_encode($params);
   log::add(__CLASS__, 'debug', 'sendToDaemon -> ' . $payLoad);
-  $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-  socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55009')); 
+  $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+  socket_connect($socket, '127.0.0.1', $port);
   socket_write($socket, $payLoad, strlen($payLoad));
   socket_close($socket);
 }
