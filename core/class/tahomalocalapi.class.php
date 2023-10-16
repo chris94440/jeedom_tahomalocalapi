@@ -796,7 +796,8 @@ class tahomalocalapiCmd extends cmd {
     $deviceUrl=$this->getConfiguration('deviceURL');
     $commandName=$this->getConfiguration('commandName');
     $parameters=$this->getConfiguration('parameters');
-    $execId=$this->getConfiguration('execId');
+    $execId=$eqlogic->getConfiguration('execId');
+
     $type=$this->type;
     $subType=$this->subType;
     log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType . '| exec id : ' . $execId);
