@@ -39,12 +39,23 @@ def read_socket():
 	global JEEDOM_SOCKET_MESSAGE
 	if not JEEDOM_SOCKET_MESSAGE.empty():
 		logging.debug("Message received in socket JEEDOM_SOCKET_MESSAGE")
-		message = json.loads(jeedom_utils.stripped(JEEDOM_SOCKET_MESSAGE.get()))
+		message = json.loads(JEEDOM_SOCKET_MESSAGE.get().decode('utf-8'))
 		if message['apikey'] != _apikey:
 			logging.error("Invalid apikey from socket: %s", message)
 			return
 		try:
-			print ('read')
+			if message['action'] == 'stop':
+                    #self.close()
+			elif message['action'] == 'synchronize':
+				#self._cloud.fetch()
+				#await self._send_devices()
+			elif message['action'] == 'get_activity_logs':
+				#device = self._cloud.get_device_by_serial_number(message['serial_number'])
+
+				#logs = self._cloud.get_activity_logs(device)				
+			else:
+				#await self._executeAction(message)
+
 		except Exception as e:
 			logging.error('Send command to demon error: %s' ,e)
 
