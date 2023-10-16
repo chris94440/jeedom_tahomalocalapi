@@ -72,10 +72,10 @@ def listen():
 		if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
 			downloadTahomaCertificate()
 
-		validateToken()
-		getDevicesList()
-		registerListener()
-	
+		if _tokenTahoma:
+			validateToken()
+			getDevicesList()
+			registerListener()	
 
 	try:
 		while 1:
@@ -144,12 +144,13 @@ def loginTahoma():
 				global _jsessionid
 				_jsessionid =  response.cookies.get("JSESSIONID")			
 		else:
-			logging.debug("Http code : %s", response.status_code)
-			logging.debug("Response : %s", response.json())
-			logging.debug("Response header : %s", response.headers)
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			shutdown()
 			
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when connection to tahoma -> %s",err)
+		logging.error("Error when logging to tahoma -> %s",err)
 
 def tahoma_token():
 	logging.debug(' * retrieve tahoma_token')
@@ -169,11 +170,13 @@ def tahoma_token():
 				global _tokenTahoma
 				_tokenTahoma = response.json().get('token')
 		else:
-			logging.debug("Http code : %s", response.status_code)
-			logging.debug("Response : %s", response.json())
-			logging.debug("Response header : %s", response.headers)
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			shutdown()
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when connection to tahoma -> %s",err)
+		logging.error("Error when retrieving tahoma token -> %s",err)
+		shutdown()
 
 def getDevicesList():	
 	logging.debug(' * Retrieve devices list')
@@ -192,13 +195,14 @@ def getDevicesList():
 		if response.status_code and (response.status_code == 200):
 			jeedom_com.send_change_immediate({'devicesList' : response.json()})
 		else:
-			logging.debug("Http code : %s", response.status_code)
-			logging.debug("Response : %s", response.json())
-			logging.debug("Response header : %s", response.headers)		
-
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)	
+			shutdown()	
 
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when connection to tahoma -> %s",err)
+		logging.error("rror when retrieving tahoma devices list -> %s",err)
+		shutdown()
 
 def validateToken():
 	logging.debug(' * validate tahoma token')
@@ -220,13 +224,15 @@ def validateToken():
 		response = requests.request("POST", url, headers=headers, data=payload)
 
 		if not response.status_code and not (response.status_code == 200):
-			logging.debug("Http code : %s", response.status_code)
-			logging.debug("Response : %s", response.json())
-			logging.debug("Response header : %s", response.headers)
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			shutdown()
 		
 
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when connection to tahoma -> %s",err)
+		logging.error("Error when validate tahoma token -> %s",err)
+		shutdown()
 
 def downloadTahomaCertificate():
 	logging.debug(' * Download Tahoma certificate')
@@ -241,7 +247,7 @@ def downloadTahomaCertificate():
 		open('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt', "wb").write(response.content)
 
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when downloading tahoma certificate -> %s",err)
+		logging.error("Error when downloading tahoma certificate -> %s",err)
 
 def registerListener():
 	logging.debug(' * Register listener')
@@ -265,12 +271,14 @@ def registerListener():
 				global _listenerId
 				_listenerId = response.json().get('id')
 		else:
-			logging.debug("Http code : %s", response.status_code)
-			logging.debug("Response : %s", response.json())
-			logging.debug("Response header : %s", response.headers)		
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)	
+			shutdown()	
 
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when connection to tahoma -> %s",err)
+		logging.error("Error when register listener tahoma -> %s",err)
+		shutdown()
 
 def fetchListener():
 	try:
@@ -293,12 +301,13 @@ def fetchListener():
 					jeedom_com.send_change_immediate({'eventItem' : item})
 					#getDeviceStates(item['deviceURL'])	
 		else:
-			logging.debug("Http code : %s", response.status_code)
-			logging.debug("Response header : %s", response.headers)		
-
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response header : %s", response.headers)		
+			shutdown()
 
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when connection to tahoma -> %s",err)
+		logging.error("Error when fetch listener tahoma -> %s",err)
+		shutdown()
 
 def getDeviceStates(deviceUrl):
 	
@@ -326,7 +335,8 @@ def getDeviceStates(deviceUrl):
 		#return response.json().get('id')
 
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when connection to tahoma -> %s",err)
+		logging.error("Error when retrieving tahoma device states -> %s",err)
+		shutdown()
 
 def unregisterListener():
 	#logging.debug(' * Tahoma fetchListener | '  + listenerId)
@@ -341,7 +351,7 @@ def unregisterListener():
 		
 		response = requests.request("POST", url, verify=False, headers=headers)		
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when connection to tahoma -> %s",err)
+		logging.error("Error when unregister listener to tahoma -> %s",err)
 
 def execCmd(params):	
 	logging.debug(' * Execute command')
@@ -379,12 +389,13 @@ def execCmd(params):
 			if response.json().get('execId'):
 				logging.debug("Execution id : %s", response.json().get('execId'))
 		else:
-			logging.debug("Http code : %s", response.status_code)
-			logging.debug("Response : %s", response.json())
-			logging.debug("Response header : %s", response.headers)		
-
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			shutdown()
 	except requests.exceptions.HTTPError as err:
-		logging.debug("Error when connection to tahoma -> %s",err)
+		logging.error("Error when executing cmd to tahoma -> %s",err)
+		shutdown()
 # ----------------------------------------------------------------------------
 
 _log_level = "error"
