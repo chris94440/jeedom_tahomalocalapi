@@ -593,10 +593,10 @@ public static function sendToDaemon($params) {
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
+    $eqLogics=eqLogic::byType(__CLASS__);
     if (array_key_exists('deviceURL', $item)) {        
         $found = false;
-        $eqLogic_found;
-        $eqLogics=eqLogic::byType(__CLASS__);
+        $eqLogic_found;        
 
         foreach ($eqLogics as $eqLogic) {
             if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
