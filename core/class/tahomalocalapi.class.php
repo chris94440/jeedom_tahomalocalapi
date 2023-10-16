@@ -772,7 +772,7 @@ class tahomalocalapiCmd extends cmd {
     $parameters=$this->getConfiguration('parameters');
     $type=$this->type;
     $subType=$this->subType;
-    log::add(__CLASS__, 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType);
+    log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType);
   }
 
   /*     * **********************Getteur Setteur*************************** */
