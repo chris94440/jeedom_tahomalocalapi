@@ -628,8 +628,8 @@ public static function sendToDaemon($params) {
             }    
         }
     } elseif (array_key_exists('execId', $item)) { 
-        log::add(__CLASS__, 'debug','   - execId  ' . $item['execId'] . ' -> '. json_encode($item['actions']));
-        foreach($item['actions'] as $action) {
+        //log::add(__CLASS__, 'debug','   - execId  ' . $item['execId'] . ' -> '. json_encode($item['actions']));
+        foreach($item['actions'] as $actions) {
             if (array_key_exists($actions['deviceURL'])) {                
                 foreach ($eqLogics as $eqLogic) {
                     if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
