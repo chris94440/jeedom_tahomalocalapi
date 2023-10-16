@@ -792,10 +792,11 @@ class tahomalocalapiCmd extends cmd {
   public function execute($_options = array()) {
     $eqlogic = $this->getEqLogic();
     $logicalId=$this->getLogicalId();
+
     $deviceUrl=$this->getConfiguration('deviceURL');
     $commandName=$this->getConfiguration('commandName');
     $parameters=$this->getConfiguration('parameters');
-    $execId=$eqLogic->getConfiguration('execId');
+    $execId=$this->getConfiguration('execId');
     $type=$this->type;
     $subType=$this->subType;
     log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType . '| exec id : ' . $execId);
