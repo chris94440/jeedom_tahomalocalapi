@@ -14,9 +14,9 @@
 		"fr_FR": "Acces aux APIs local Somfy"
 	},
 	"licence" : "AGPL",
-	"author" : "Jeedom SAS",
+	"author" : "chris94440",
 	"require" : "4.2.0",
-	"category" : "programming",
+	"category" : "automation protocol",
 	"hasDependency" : false,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 0,
