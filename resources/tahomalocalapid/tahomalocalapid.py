@@ -412,7 +412,7 @@ def deleteExecution(executionId):
 		response = requests.request("POST", url, verify=False, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
-			logging.debug("ExecCmd http : %s", response.status_code)
+			logging.debug("deleteExecution http : %s", response.status_code)
 			if response.json().get('execId'):
 				logging.debug("Execution id : %s", response.json().get('execId'))
 		else:
