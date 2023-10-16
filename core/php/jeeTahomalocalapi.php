@@ -17,8 +17,7 @@ try {
     }
 
     log::add('tahomalocalapi', 'debug', '*-----------------------------------------------------------------------------*');
-    if (isset($result['eventItem'])) {
-        log::add('tahomalocalapi', 'debug', '*-----------------------------------------------------------------------------*');
+    if (isset($result['eventItem'])) {        
         log::add('tahomalocalapi', 'debug', 'Message receive for evenItem -> ' . json_encode($result['eventItem']));
         tahomalocalapi::updateItems($result['eventItem']);
     } elseif (isset($result['devicesList'])) {
