@@ -293,7 +293,7 @@ def fetchListener():
 					jeedom_com.send_change_immediate({'eventItem' : item})
 					#getDeviceStates(item['deviceURL'])	
 		else:
-			ogging.debug("Http code : %s", response.status_code)
+			logging.debug("Http code : %s", response.status_code)
 			logging.debug("Response header : %s", response.headers)		
 
 
