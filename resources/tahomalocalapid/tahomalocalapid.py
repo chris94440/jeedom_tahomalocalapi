@@ -351,7 +351,6 @@ def execCmd(params):
 
 		payload=json.dumps({
 				"label": params['commandName'],								
-				"actions": "devmode"
 				"actions": [
 				{
 				"commands": [
