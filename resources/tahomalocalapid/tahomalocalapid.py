@@ -365,22 +365,17 @@ def execCmd(params):
 				}
 			]
 		})
-
 		
 		headers = {
 			'Content-Type' : 'application/json',
 			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
-
 		
 		response = requests.request("POST", url, verify=False, headers=headers, data=payload)
 
-
-
 		if response.status_code and (response.status_code == 200):
-			if response.json().get('id'):
-				global _listenerId
-				_listenerId = response.json().get('id')
+			if response.json().get('execId'):
+				logging.debug("Execution id : %s", esponse.json().get('execId'))
 		else:
 			logging.debug("Http code : %s", response.status_code)
 			logging.debug("Response : %s", response.json())
