@@ -628,18 +628,30 @@ public static function sendToDaemon($params) {
             }    
         }
     } elseif (array_key_exists('execId', $item)) { 
-        foreach($item['actions'] as $action) {
-          if (array_key_exists('deviceURL',$action)) {               
-              foreach ($eqLogics as $eqLogic) {   
-                  if ($action['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
-                      //log::add(__CLASS__, 'debug','   - store execution id  ' . $action['execId'] . ' for device ' . $action['deviceURL']);
-                      $eqLogic->setConfiguration('execId',$action['execId']);
-                      $eqLogic->save();
-                      break;
-                  }
-              }
-          }
-      }
+        if (array_key_exists('actions',$item)) {
+            foreach($item['actions'] as $action) {
+                if (array_key_exists('deviceURL',$action)) {               
+                    foreach ($eqLogics as $eqLogic) {   
+                        if ($action['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+                            //log::add(__CLASS__, 'debug','   - store execution id  ' . $action['execId'] . ' for device ' . $action['deviceURL']);
+                            $eqLogic->setConfiguration('execId',$action['execId']);
+                            $eqLogic->save();
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            if (array_key_exists('newState',$item) && $item['newState'] == 'COMPLETED') {
+                foreach ($eqLogics as $eqLogic) {   
+                    if ($item['execId'] == $eqLogic->getConfiguration('execId')) {
+                        $eqLogic->setConfiguration('execId','');
+                        $eqLogic->save();
+                        break;
+                    }
+                }
+            }
+        }
     }
   }
   /*

@@ -356,8 +356,8 @@ def execCmd(params):
 	logging.debug(' * Execute command')
 	try:
 
-		if params['execId']:
-			deleteExecution(params['execId'])
+		if params['commandName'] == "stop":
+			deleteExecutionForADevice(params['deviceUrl'])
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
@@ -397,6 +397,33 @@ def execCmd(params):
 			shutdown()
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when executing cmd to tahoma -> %s",err)
+		shutdown()
+
+def deleteExecutionForADevice(deviceUrl):
+	logging.debug(' * Delete execution for a device: ' + deviceUrl)
+	try:
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current'
+
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+
+		response = requests.request("GET", url, verify=False, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			json_data = response.json()
+			for item in json_data:
+				for act in item['actionGroup']['actions']:
+					if (deviceUrl == act['deviceURL']):
+						deleteExecution(item['id'])
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			#shutdown()
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when deleting execution for a deviceto tahoma -> %s",err)
 		shutdown()
 
 def deleteExecution(executionId):
