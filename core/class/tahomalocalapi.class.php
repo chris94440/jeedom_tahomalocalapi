@@ -600,18 +600,19 @@ public static function sendToDaemon($params) {
         log::add(__CLASS__, 'error', ' - évènement sur équipement :' .$item['deviceURL'].' non géré par le plugin ... relancer le daemon pour forcer sa création');
     } else {
         foreach ($item['deviceStates'] as $state) {
+            log::add(__CLASS__, 'debug','   - maj equipement ' . $item['deviceURL'] . ' | commande : ' . $state['name'] . '| valeur : '.$state['value']);
             $cmd=$eqLogic_found->getCmd('info',$state['name'],true, false);
           
-            if (is_object($cmd)){
-                if ($state['name'] == $command->getConfiguration('type')) {
-                    $command->setCollectDate('');
+            if (is_object($cmd)){            
+                if ($state['name'] == $cmd->getConfiguration('type')) {
+                    $cmd->setCollectDate('');
 
                     $value = $state['value'];
                     if ($state['name'] == "core:ClosureState") {
                         $value = 100 - $value;
                     }
-
-                    $command->event($value);
+                    log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
+                    $cmd->event($value);
                 }
             }
         }    
