@@ -107,8 +107,9 @@ public static function sendToDaemon($params) {
   if ($deamon_info['state'] != 'ok') {
       throw new Exception("Le démon n'est pas démarré");
   }
-  $params['apikey'] = jeedom::getApiKey(__CLASS__);
+  $params['apikey'] = jeedom::getApiKey(__CLASS__);  
   $payLoad = json_encode($params);
+  log::add(__CLASS__, 'debug', 'sendToDaemon -> ' . $payLoad);
   $socket = socket_create(AF_INET, SOCK_STREAM, 0);
   socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55009')); 
   socket_write($socket, $payLoad, strlen($payLoad));
@@ -808,6 +809,11 @@ class tahomalocalapiCmd extends cmd {
                     $parameters = str_replace('#select#', $_options['select'], $parameters);
                 }
                 break;
+          	case 'other':
+            	//$parameters = array_map('intval', explode(",", $parameters));
+            	$eqlogic->sendToDaemon(array('deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()));
+            	return;
+           
         }
 
         if ($this->getConfiguration('nparams') == 0) {
