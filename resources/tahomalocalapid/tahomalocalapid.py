@@ -402,7 +402,10 @@ def execCmd(params):
 def deleteExecution(executionId):
 	logging.debug(' * Delete execution : ' + executionId)
 	try:
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current/setup/' + executionId	
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current/setup/' + executionId
+		
+		logging.error("Delete execution url : %s", url)	
+		
 		headers = {
 			'Content-Type' : 'application/json',
 			'Authorization' : 'Bearer ' + _tokenTahoma
