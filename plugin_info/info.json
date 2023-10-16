@@ -11,7 +11,7 @@
 		}
 	},
 	"description" : {
-		"fr_FR": "Template servant de base à la création de plugins pour Jeedom"
+		"fr_FR": "Acces aux APIs local Somfy"
 	},
 	"licence" : "AGPL",
 	"author" : "Jeedom SAS",
