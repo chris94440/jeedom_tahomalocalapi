@@ -628,19 +628,19 @@ public static function sendToDaemon($params) {
             }    
         }
     } elseif (array_key_exists('execId', $item)) { 
-        //log::add(__CLASS__, 'debug','   - execId  ' . $item['execId'] . ' -> '. json_encode($item['actions']));
         foreach($item['actions'] as $actions) {
-            log::add(__CLASS__, 'debug','   - execId  ' . $item['execId'] . ' -> '. json_encode($actions) . ' | device url -> '.$actions['deviceURL']);
-            if (array_key_exists($actions['deviceURL'])) {                
-                foreach ($eqLogics as $eqLogic) {
-                    if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
-                        log::add(__CLASS__, 'debug','   - store execution id  ' . $actions['execId'] . ' for device ' . $actions['deviceURL']);
-                        $eqLogic->setConfiguration('execId',$actions['execId']);
-                        break;
-                    }
-                }
-            }
-        }
+            log::add(__CLASS__, 'debug','   - execId / deviceUrl : ' . $actions['deviceURL']);
+          if (array_key_exists('deviceURL',$actions)) {               
+                log::add(__CLASS__, 'debug','   - device url exists');
+              foreach ($eqLogics as $eqLogic) {    
+                  if ($actions['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+                      log::add(__CLASS__, 'debug','   - store execution id  ' . $actions['execId'] . ' for device ' . $actions['deviceURL']);
+                      $eqLogic->setConfiguration('execId',$actions['execId']);
+                      break;
+                  }
+              }
+          }
+      }
     }
   }
   /*
