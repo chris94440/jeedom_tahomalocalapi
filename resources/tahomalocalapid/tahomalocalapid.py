@@ -356,8 +356,7 @@ def execCmd(params):
 	logging.debug(' * Execute command')
 	try:
 
-		if params['execId']:
-			#deleteExecution(params['execId'])
+		if params['commandName'] == "stop":
 			deleteExecutionForADevice(params['deviceUrl'])
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
@@ -413,8 +412,6 @@ def deleteExecutionForADevice(deviceUrl):
 		response = requests.request("GET", url, verify=False, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
-			logging.debug("http : %s", response.status_code)
-			logging.debug("Response zzz : %s", response.json())
 			json_data = response.json()
 			for item in json_data:
 				for act in item['actionGroup']['actions']:
