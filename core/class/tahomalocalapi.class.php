@@ -593,42 +593,42 @@ public static function sendToDaemon($params) {
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
+    if (array_key_exists('deviceURL', $item)) {        
+        $found = false;
+        $eqLogic_found;
+        $eqLogics=eqLogic::byType(__CLASS__);
 
-	$found = false;
-    $eqLogic_found;
-    $eqLogics=eqLogic::byType(__CLASS__);
+        foreach ($eqLogics as $eqLogic) {
+            if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+                $eqLogic_found = $eqLogic;
+                $found = true;
+                break;
+            }
+        }
+    
+        if (!$found) {
+            log::add(__CLASS__, 'error', ' - évènement sur équipement :' .$item['deviceURL'].' non géré par le plugin ... relancer le daemon pour forcer sa création');
+        } else {
+            foreach ($item['deviceStates'] as $state) {
+                log::add(__CLASS__, 'debug','   - maj equipement ' . $item['deviceURL'] . ' | commande : ' . $state['name'] . '| valeur : '.$state['value']);
+                $cmd=$eqLogic_found->getCmd('info',$state['name'],true, false);
+            
+                if (is_object($cmd)){            
+                    if ($state['name'] == $cmd->getConfiguration('type')) {
+                        $cmd->setCollectDate('');
 
-    foreach ($eqLogics as $eqLogic) {
-        if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
-            $eqLogic_found = $eqLogic;
-            $found = true;
-            break;
+                        $value = $state['value'];
+                        if ($state['name'] == "core:ClosureState") {
+                            $value = 100 - $value;
+                        }
+                        log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
+                        $cmd->event($value);
+                    }
+                }
+            }    
         }
     }
-    
-    if (!$found) {
-        log::add(__CLASS__, 'error', ' - évènement sur équipement :' .$item['deviceURL'].' non géré par le plugin ... relancer le daemon pour forcer sa création');
-    } else {
-        foreach ($item['deviceStates'] as $state) {
-            log::add(__CLASS__, 'debug','   - maj equipement ' . $item['deviceURL'] . ' | commande : ' . $state['name'] . '| valeur : '.$state['value']);
-            $cmd=$eqLogic_found->getCmd('info',$state['name'],true, false);
-          
-            if (is_object($cmd)){            
-                if ($state['name'] == $cmd->getConfiguration('type')) {
-                    $cmd->setCollectDate('');
-
-                    $value = $state['value'];
-                    if ($state['name'] == "core:ClosureState") {
-                        $value = 100 - $value;
-                    }
-                    log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
-                    $cmd->event($value);
-                }
-            }
-        }    
-    }
   }
-
   /*
   * Permet de définir les possibilités de personnalisation du widget (en cas d'utilisation de la fonction 'toHtml' par exemple)
   * Tableau multidimensionnel - exemple: array('custom' => true, 'custom::layout' => false)
