@@ -52,7 +52,6 @@ def read_socket():
 				logging.info('action get_activity_logs')
 			else:
 				logging.info('action other')
-
 		except Exception as e:
 			logging.error('Send command to demon error: %s' ,e)
 
