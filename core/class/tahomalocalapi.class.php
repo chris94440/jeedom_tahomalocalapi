@@ -110,7 +110,7 @@ public static function sendToDaemon($params) {
   $params['apikey'] = jeedom::getApiKey(__CLASS__);
   $payLoad = json_encode($params);
   $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-  socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55009')); //port par défaut de votre plugin à modifier
+  socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55009')); 
   socket_write($socket, $payLoad, strlen($payLoad));
   socket_close($socket);
 }
@@ -767,12 +767,70 @@ class tahomalocalapiCmd extends cmd {
 
   // Exécution d'une commande
   public function execute($_options = array()) {
+    $eqlogic = $this->getEqLogic();
+    $logicalId=$this->getLogicalId();
     $deviceUrl=$this->getConfiguration('deviceURL');
     $commandName=$this->getConfiguration('commandName');
     $parameters=$this->getConfiguration('parameters');
     $type=$this->type;
     $subType=$this->subType;
     log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType);
+
+    if ($this->type == 'action') {
+        switch ($this->subType) {
+            case 'slider':
+                $type = $this->getConfiguration('request');
+                $parameters = str_replace('#slider#', $_options['slider'], $parameters);
+
+                $newEventValue = $parameters;
+
+                switch ($type) {
+                    case 'orientation':
+                        if ($commandName == "setOrientation") {
+                            $parameters = array_map('intval', explode(",", $parameters));
+                            $eqlogic->sendToDaemon(array('deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName())
+                              return;
+                        }
+                        break;
+                    case 'closure':
+                        if ($commandName == "setClosure") {
+                            $parameters = 100 - $parameters;
+
+                            $parameters = array_map('intval', explode(",", $parameters));
+                            $eqlogic->sendToDaemon(array('deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName())
+
+                            return;
+                        }
+                        break;
+                }
+            case 'select':
+                if ($commandName == 'setLockedUnlocked') {
+                    $parameters = str_replace('#select#', $_options['select'], $parameters);
+                }
+                break;
+        }
+
+        if ($this->getConfiguration('nparams') == 0) {
+            $parameters = "";
+        } else if ($commandName == "setClosure") {
+            $parameters = array_map('intval', explode(",", $parameters));
+        } else {
+            $parameters = explode(",", $parameters);
+        }
+
+        if ($commandName == "cancelExecutions") {
+            $execId = $parameters[0];
+
+            log::add('tahomalocalapi', 'debug', "will cancelExecutions: (" . $execId . ")");
+            
+        }
+        return;
+    }
+
+    if ($this->type == 'info') {
+        return;
+    }
+
   }
 
   /*     * **********************Getteur Setteur*************************** */
