@@ -637,6 +637,7 @@ public static function sendToDaemon($params) {
                   if ($action['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
                       log::add(__CLASS__, 'debug','   - store execution id  ' . $action['execId'] . ' for device ' . $action['deviceURL']);
                       $eqLogic->setConfiguration('execId',$action['execId']);
+                      $eqLogic->save();
                       break;
                   }
               }
