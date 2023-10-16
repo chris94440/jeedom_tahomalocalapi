@@ -39,12 +39,21 @@ def read_socket():
 	global JEEDOM_SOCKET_MESSAGE
 	if not JEEDOM_SOCKET_MESSAGE.empty():
 		logging.debug("Message received in socket JEEDOM_SOCKET_MESSAGE")
-		message = json.loads(jeedom_utils.stripped(JEEDOM_SOCKET_MESSAGE.get()))
+		message = json.loads(JEEDOM_SOCKET_MESSAGE.get().decode('utf-8'))
 		if message['apikey'] != _apikey:
 			logging.error("Invalid apikey from socket: %s", message)
 			return
 		try:
-			print ('read')
+			logging.info('action ? ' + message['action'])
+			if message['action'] == 'execCmd':
+				logging.info('action execCmd -> self.close()')
+				execCmd(message)
+			elif message['action'] == 'synchronize':
+				logging.info('action synchronize -> self.close() et await self.')
+			elif message['action'] == 'get_activity_logs':
+				logging.info('action get_activity_logs')
+			else:
+				logging.info('action other')
 		except Exception as e:
 			logging.error('Send command to demon error: %s' ,e)
 
@@ -280,7 +289,7 @@ def fetchListener():
 				logging.debug("Response : %s", response.json())
 				json_data = response.json()
 				for item in json_data:
-					logging.debug(item['name'] + ' -> ' + item['deviceURL'])
+					#logging.debug(item['name'] + ' -> ' + item['deviceURL'])
 					jeedom_com.send_change_immediate({'eventItem' : item})
 					#getDeviceStates(item['deviceURL'])	
 		else:
@@ -334,6 +343,47 @@ def unregisterListener():
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
+def execCmd(params):	
+	logging.debug(' * Execute command')
+	try:
+
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+
+		payload=json.dumps({
+				"label": params['commandName'],								
+				"actions": [
+				{
+				"commands": [
+					{
+					"name": params['name'],
+					"parameters": [
+						params['parameters']
+					]
+					}
+				],
+				"deviceURL": params['deviceUrl']
+				}
+			]
+		})
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+		
+		response = requests.request("POST", url, verify=False, headers=headers, data=payload)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("ExecCmd http : %s", response.status_code)
+			if response.json().get('execId'):
+				logging.debug("Execution id : %s", response.json().get('execId'))
+		else:
+			logging.debug("Http code : %s", response.status_code)
+			logging.debug("Response : %s", response.json())
+			logging.debug("Response header : %s", response.headers)		
+
+	except requests.exceptions.HTTPError as err:
+		logging.debug("Error when connection to tahoma -> %s",err)
 # ----------------------------------------------------------------------------
 
 _log_level = "error"

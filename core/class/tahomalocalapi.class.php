@@ -101,16 +101,26 @@ public static function deamon_stop() {
   sleep(1);
 }
 
+public static function synchronize() {
+    self::sendToDaemon(['action' => 'synchronize']);
+}
+
+protected static function getSocketPort() {
+    return config::byKey('socketport', __CLASS__, 55009);
+}
+
 /* Send data to daemon */
 public static function sendToDaemon($params) {
   $deamon_info = self::deamon_info();
   if ($deamon_info['state'] != 'ok') {
       throw new Exception("Le démon n'est pas démarré");
   }
-  $params['apikey'] = jeedom::getApiKey(__CLASS__);
+  $port = self::getSocketPort();
+  $params['apikey'] = jeedom::getApiKey(__CLASS__);  
   $payLoad = json_encode($params);
-  $socket = socket_create(AF_INET, SOCK_STREAM, 0);
-  socket_connect($socket, '127.0.0.1', config::byKey('socketport', __CLASS__, '55009')); //port par défaut de votre plugin à modifier
+  log::add(__CLASS__, 'debug', 'sendToDaemon -> ' . $payLoad);
+  $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+  socket_connect($socket, '127.0.0.1', $port);
   socket_write($socket, $payLoad, strlen($payLoad));
   socket_close($socket);
 }
@@ -583,42 +593,42 @@ public static function sendToDaemon($params) {
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
+    if (array_key_exists('deviceURL', $item)) {        
+        $found = false;
+        $eqLogic_found;
+        $eqLogics=eqLogic::byType(__CLASS__);
 
-	$found = false;
-    $eqLogic_found;
-    $eqLogics=eqLogic::byType(__CLASS__);
+        foreach ($eqLogics as $eqLogic) {
+            if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+                $eqLogic_found = $eqLogic;
+                $found = true;
+                break;
+            }
+        }
+    
+        if (!$found) {
+            log::add(__CLASS__, 'error', ' - évènement sur équipement :' .$item['deviceURL'].' non géré par le plugin ... relancer le daemon pour forcer sa création');
+        } else {
+            foreach ($item['deviceStates'] as $state) {
+                log::add(__CLASS__, 'debug','   - maj equipement ' . $item['deviceURL'] . ' | commande : ' . $state['name'] . '| valeur : '.$state['value']);
+                $cmd=$eqLogic_found->getCmd('info',$state['name'],true, false);
+            
+                if (is_object($cmd)){            
+                    if ($state['name'] == $cmd->getConfiguration('type')) {
+                        $cmd->setCollectDate('');
 
-    foreach ($eqLogics as $eqLogic) {
-        if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
-            $eqLogic_found = $eqLogic;
-            $found = true;
-            break;
+                        $value = $state['value'];
+                        if ($state['name'] == "core:ClosureState") {
+                            $value = 100 - $value;
+                        }
+                        log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
+                        $cmd->event($value);
+                    }
+                }
+            }    
         }
     }
-    
-    if (!$found) {
-        log::add(__CLASS__, 'error', ' - évènement sur équipement :' .$item['deviceURL'].' non géré par le plugin ... relancer le daemon pour forcer sa création');
-    } else {
-        foreach ($item['deviceStates'] as $state) {
-            log::add(__CLASS__, 'debug','   - maj equipement ' . $item['deviceURL'] . ' | commande : ' . $state['name'] . '| valeur : '.$state['value']);
-            $cmd=$eqLogic_found->getCmd('info',$state['name'],true, false);
-          
-            if (is_object($cmd)){            
-                if ($state['name'] == $cmd->getConfiguration('type')) {
-                    $cmd->setCollectDate('');
-
-                    $value = $state['value'];
-                    if ($state['name'] == "core:ClosureState") {
-                        $value = 100 - $value;
-                    }
-                    log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
-                    $cmd->event($value);
-                }
-            }
-        }    
-    }
   }
-
   /*
   * Permet de définir les possibilités de personnalisation du widget (en cas d'utilisation de la fonction 'toHtml' par exemple)
   * Tableau multidimensionnel - exemple: array('custom' => true, 'custom::layout' => false)
@@ -767,12 +777,75 @@ class tahomalocalapiCmd extends cmd {
 
   // Exécution d'une commande
   public function execute($_options = array()) {
+    $eqlogic = $this->getEqLogic();
+    $logicalId=$this->getLogicalId();
     $deviceUrl=$this->getConfiguration('deviceURL');
     $commandName=$this->getConfiguration('commandName');
     $parameters=$this->getConfiguration('parameters');
     $type=$this->type;
     $subType=$this->subType;
     log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType);
+
+    if ($this->type == 'action') {
+        switch ($this->subType) {
+            case 'slider':
+                $type = $this->getConfiguration('request');
+                $parameters = str_replace('#slider#', $_options['slider'], $parameters);
+
+                $newEventValue = $parameters;
+
+                switch ($type) {
+                    case 'orientation':
+                        if ($commandName == "setOrientation") {
+                            $parameters = array_map('intval', explode(",", $parameters));
+                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()]);
+                              return;
+                        }
+                        break;
+                    case 'closure':
+                        if ($commandName == "setClosure") {
+                            $parameters = 100 - $parameters;
+
+                            $parameters = array_map('intval', explode(",", $parameters));
+                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()]);
+
+                            return;
+                        }
+                        break;
+                }
+            case 'select':
+                if ($commandName == 'setLockedUnlocked') {
+                    $parameters = str_replace('#select#', $_options['select'], $parameters);
+                }
+                break;
+          	case 'other':
+            	//$parameters = array_map('intval', explode(",", $parameters));
+            	$eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName()]);
+            	return;
+           
+        }
+
+        if ($this->getConfiguration('nparams') == 0) {
+            $parameters = "";
+        } else if ($commandName == "setClosure") {
+            $parameters = array_map('intval', explode(",", $parameters));
+        } else {
+            $parameters = explode(",", $parameters);
+        }
+
+        if ($commandName == "cancelExecutions") {
+            $execId = $parameters[0];
+
+            log::add('tahomalocalapi', 'debug', "will cancelExecutions: (" . $execId . ")");
+            
+        }
+        return;
+    }
+
+    if ($this->type == 'info') {
+        return;
+    }
+
   }
 
   /*     * **********************Getteur Setteur*************************** */
