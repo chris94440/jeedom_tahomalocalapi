@@ -33,11 +33,11 @@ if (!isConnect()) {
       </div>
     </div>
     <div class="form-group">
-      <label class="col-md-4 control-label">{{Mot de passe}}
+      <label class="col-md-4 control-label">{{Mot de passe compte Somfy}}
         <sup><i class="fas fa-question-circle tooltips" title="{{ }}"></i></sup>
       </label>
       <div class="col-md-4">
-        <input class="configKey form-control" data-l1key="password"/>
+        <input type="password" class="configKey form-control" data-l1key="password"/>
       </div>
     </div>
     <div class="form-group">
@@ -49,12 +49,21 @@ if (!isConnect()) {
       </div>
     </div>
     <div class="form-group">
+      <label class="col-md-4 control-label">{{Adresse IP local de la box Somfy}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{ }}"></i></sup>
+      </label>
+      <div class="col-md-4">
+        <input class="configKey form-control" data-l1key="boxLocalIp"/>
+      </div>
+    </div>    
+    <div class="form-group">
       <label class="col-md-4 control-label">{{Port du daemon}}
         <sup><i class="fas fa-question-circle tooltips" title="{{Port du daemon}}"></i></sup>
       </label>
       <div class="col-md-4">
         <input class="configKey form-control" data-l1key="socketport"/>
       </div>
+    </div>
       <!-- <div class="col-md-4">
         <select class="configKey form-control" data-l1key="daemonPort">
           <option value=""></option>

@@ -365,6 +365,7 @@ parser.add_argument("--socketport", help="Daemon port", type=str)
 parser.add_argument("--user", help="User for local api Tahoma", type=str)
 parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 parser.add_argument("--pincode", help="Tahoma pin code", type=str)
+parser.add_argument("--boxLocalIp", help="Tahoma IP", type=str)
 args = parser.parse_args()
 
 if args.device:
@@ -380,13 +381,15 @@ if args.pid:
 if args.cycle:
     _cycle = float(args.cycle)
 if args.socketport:
-	_socketport = args.socketport
+	_socket_port = args.socketport
 if args.user:
 	_user = args.user
 if args.pswd:
 	_pwd=args.pswd
 if args.pincode:
 	_pincode=args.pincode
+if args.boxLocalIp:
+	_ipBox='https://' + args.boxLocalIp + ':8443'
 
 _socket_port = int(_socket_port)
 
@@ -402,8 +405,7 @@ logging.info('Device: %s', _device)
 logging.info('User: %s', _user)
 logging.info('Pwd: %s', _pwd)
 logging.info('Pin ocde: %s', _pincode)
-logging.info('jsessionid: %s', _jsessionid)
-logging.info('tokenTahoma: %s', _tokenTahoma)
+logging.info('Box IP: %s', _ipBox)
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
