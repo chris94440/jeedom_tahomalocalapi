@@ -403,7 +403,7 @@ def execCmd(params):
 def deleteExecutionForADevice(deviceUrl):
 	logging.debug(' * Delete execution for a device: ' + deviceUrl)
 	try:
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current'
 
 		headers = {
 			'Content-Type' : 'application/json',
