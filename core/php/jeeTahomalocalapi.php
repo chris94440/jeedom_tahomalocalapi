@@ -16,7 +16,9 @@ try {
         die();
     }
 
+    log::add('tahomalocalapi', 'debug', '*-----------------------------------------------------------------------------*');
     if (isset($result['eventItem'])) {
+        log::add('tahomalocalapi', 'debug', '*-----------------------------------------------------------------------------*');
         log::add('tahomalocalapi', 'debug', 'Message receive for evenItem -> ' . json_encode($result['eventItem']));
         tahomalocalapi::updateItems($result['eventItem']);
     } elseif (isset($result['devicesList'])) {
@@ -25,6 +27,7 @@ try {
     }else {
         log::add('tahomalocalapi', 'error', 'unknown message received from daemon'); //remplacez template par l'id de votre plugin
     }
+    log::add('tahomalocalapi', 'debug', '*-----------------------------------------------------------------------------*');
 } catch (Exception $e) {
     log::add('tahomalocalapi', 'error', displayException($e)); //remplacez template par l'id de votre plugin
 }
