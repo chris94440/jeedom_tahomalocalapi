@@ -628,14 +628,14 @@ public static function sendToDaemon($params) {
             }    
         }
     } elseif (array_key_exists('execId', $item)) { 
-        foreach($item['actions'] as $actions) {
-            log::add(__CLASS__, 'debug','   - execId / deviceUrl : ' . $actions['deviceURL']);
-          if (array_key_exists('deviceURL',$actions)) {               
+        foreach($item['actions'] as $action) {
+            log::add(__CLASS__, 'debug','   - execId / deviceUrl : ' . $action['deviceURL']);
+          if (array_key_exists('deviceURL',$action)) {               
                 log::add(__CLASS__, 'debug','   - device url exists');
               foreach ($eqLogics as $eqLogic) {    
-                  if ($actions['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
-                      log::add(__CLASS__, 'debug','   - store execution id  ' . $actions['execId'] . ' for device ' . $actions['deviceURL']);
-                      $eqLogic->setConfiguration('execId',$actions['execId']);
+                  if ($action['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+                      log::add(__CLASS__, 'debug','   - store execution id  ' . $action['execId'] . ' for device ' . $action['deviceURL']);
+                      $eqLogic->setConfiguration('execId',$action['execId']);
                       break;
                   }
               }
