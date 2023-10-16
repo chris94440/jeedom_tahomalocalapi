@@ -116,47 +116,518 @@ public static function sendToDaemon($params) {
   /*     * *************************Attributs****************************** */
 
   public static function create_or_update_devices($devices) {
-    log::add(__CLASS__, 'debug', 'create_or_update_devices');    
-    foreach ($devices as $device) {
-      log::add(__CLASS__, 'debug', '  * device : ' . json_encode($device));
-      log::add(__CLASS__, 'debug', '  * ' . $device['deviceURL'] .', available : ' . $device['available'] . ', synced : '.$device['synced'] . ', type : '. $device['type'].')');
-      foreach($device['states'] as $state) {
-        log::add(__CLASS__, 'debug', '    -  ' . $state['name'] . ' -> ' . $state['value'] . '(type : '.$state['type'].')');
-      }
+    log::add(__CLASS__, 'debug', 'create_or_update_devices');
 
-      foreach($device['commands'] as $command) {
-        log::add(__CLASS__, 'debug', '    -  ' . $command['commandName'] . ' -> ' . $command['nparams'] );
-      }
-        /*
-        $eqLogic = self::byLogicalId($device['uuid'], __CLASS__);
-        if (!is_object($eqLogic)) {
-            $eqLogic = new self();
-            $eqLogic->setEqType_name(__CLASS__);
-            $eqLogic->setLogicalId($device['uuid']);
-            $eqLogic->setName($device['name']);
-            $eqLogic->setConfiguration('serial_number', $device['serial_number']);
-            $eqLogic->setConfiguration('purchased_at', $device['purchased_at']);
-            $eqLogic->setConfiguration('warranty_expires_at', $device['warranty']['expires_at']);
-            $eqLogic->setConfiguration('registered_at', $device['registered_at']);
-            $eqLogic->setConfiguration('mac_address', implode(":", str_split($device['mac_address'], 2)));
-  
-            event::add('jeedom::alert', array(
-                'level' => 'success',
-                'page' => 'worxLandroidS',
-                'message' => __('Nouvelle tondeuse ajoutée:', __FILE__) . $eqLogic->getName(),
-            ));
-        }
-        $eqLogic->setConfiguration('firmware_version', $device['firmware']['version']);
-        $eqLogic->setConfiguration('product_code', $device['product']['code']);
-        $eqLogic->setConfiguration('product_description', $device['product']['description']);
-        $eqLogic->setConfiguration('product_year', $device['product']['year']);
-        $eqLogic->setConfiguration('product_cutting_width', $device['product']['cutting_width'] . ' mm');
-        $eqLogic->setConfiguration('lawn_perimeter', $device['lawn']['perimeter'] . ' m');
-        $eqLogic->setConfiguration('lawn_size', $device['lawn']['size'] . ' m²');
-        $eqLogic->setConfiguration('accessories', $device['accessories']);
-        $eqLogic->save();
-        $eqLogic->on_message($device);
-        */
+    foreach ($devices as $device) {
+
+         $found = false;
+
+         foreach ($eqLogics as $eqLogic) {
+             if ($device->deviceURL == $eqLogic->getConfiguration('deviceURL')) {
+                 $eqLogic_found = $eqLogic;
+                 $found = true;
+                 break;
+             }
+         }
+
+         if (!$found) {
+             $eqLogic = new eqLogic();
+             $eqLogic->setEqType_name(__CLASS__);
+             $eqLogic->setIsEnable(1);
+             $eqLogic->setIsVisible(1);
+             $eqLogic->setName($device->label);
+             $eqLogic->setConfiguration('type', $device->controllableName);
+             $eqLogic->setConfiguration('deviceURL', $device->deviceURL);
+             $eqLogic->save();
+
+             $eqLogic = self::byId($eqLogic->getId());
+
+             /***********************************/
+             //Actions
+             
+             if ($device->uiClass == "HitachiHeatingSystem") {
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('other');
+                 $tahomaLocalPiCmd->setName('Automatic');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setAutoManu');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', 'auto');
+                 $tahomaLocalPiCmd->save();
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('other');
+                 $tahomaLocalPiCmd->setName('Manuel');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setAutoManu');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', 'manu');
+                 $tahomaLocalPiCmd->save();
+
+             } else if ($device->uiClass == "HeatingSystem") {
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('other');
+                 $tahomaLocalPiCmd->setName('On');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setOnOff');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', 'on');
+                 $tahomaLocalPiCmd->save();
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('other');
+                 $tahomaLocalPiCmd->setName('Off');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', 'off');
+                 $tahomaLocalPiCmd->save();
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('other');
+                 $tahomaLocalPiCmd->setName('Auto');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setActiveMode');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', 'auto');
+                 $tahomaLocalPiCmd->save();
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('other');
+                 $tahomaLocalPiCmd->setName('Eco');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', 'eco');
+                 $tahomaLocalPiCmd->save();
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('other');
+                 $tahomaLocalPiCmd->setName('Confort');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', 'comfort');
+                 $tahomaLocalPiCmd->save();
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('other');
+                 $tahomaLocalPiCmd->setName('HG');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', 'frostprotection');
+                 $tahomaLocalPiCmd->save();
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('slider');
+                 $tahomaLocalPiCmd->setName('Confort temperature');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setComfortTemperature');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                 $tahomaLocalPiCmd->setConfiguration('minValue', '15');
+                 $tahomaLocalPiCmd->setConfiguration('maxValue', '30');
+                 $tahomaLocalPiCmd->save();
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('slider');
+                 $tahomaLocalPiCmd->setName('Eco temperature');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setEcoTemperature');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                 $tahomaLocalPiCmd->setConfiguration('minValue', '10');
+                 $tahomaLocalPiCmd->setConfiguration('maxValue', '25');
+                 $tahomaLocalPiCmd->save();
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                 $tahomaLocalPiCmd->setType('action');
+                 $tahomaLocalPiCmd->setSubType('slider');
+                 $tahomaLocalPiCmd->setName('HG temperature');
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setSecuredPositionTemperature');
+                 $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                 $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                 $tahomaLocalPiCmd->setConfiguration('minValue', '5');
+                 $tahomaLocalPiCmd->setConfiguration('maxValue', '10');
+                 $tahomaLocalPiCmd->save();
+
+             } else {
+                 foreach ($device->definition->commands as $command) {
+
+                     $tahomaLocalPiCmd = new tahomalocalapiCmd();
+
+                     if ($device->controllableName == "io:RollerShutterGenericIOComponent") {
+                         // Store
+                     }
+
+                     if ($device->controllableName == "rts:OnOffRTSComponent") {
+                         // Prise On-Off
+                     }
+
+                     if ($device->controllableName == "io:LightIOSystemSensor") {
+                         // Module de luminosité
+                     }
+
+                     if ($device->controllableName == "rts:LightRTSComponent") {
+                         // Lampe
+                     }
+
+                     if ($device->controllableName == "ovp:HLinkMainController") {
+                         // Hitachi Link
+                     }
+
+                     $useCmd = true;
+
+                     if ($command->commandName == "setClosure") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setIsVisible(0);
+                         $tahomaLocalPiCmd->setSubType('slider');
+                         $tahomaLocalPiCmd->setConfiguration('request', 'closure');
+                         $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                     } else if ($command->commandName == "setOrientation") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setIsVisible(0);
+                         $tahomaLocalPiCmd->setSubType('slider');
+                         $tahomaLocalPiCmd->setConfiguration('request', 'orientation');
+                         $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                     } else if ($command->commandName == "open") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-up"></i>');
+                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_UP');
+                     } else if ($command->commandName == "close") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-down"></i>');
+                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_DOWN');
+                     } else if ($command->commandName == "lock") {
+                         // serrure connectée : commande action ouvrir
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-lock"></i>');
+                         $tahomaLocalPiCmd->setDisplay('generic_type', 'LOCK_CLOSE');
+                     } else if ($command->commandName == "unlock") {
+                         // serrure connectée : commande action fermer
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-unlock"></i>');
+                         $tahomaLocalPiCmd->setDisplay('generic_type', 'LOCK_OPEN');
+                     } else if ($command->commandName == "setLockedUnlocked") {
+                         // serrure connectée : commande action ouvrir ou fermer
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('select');
+                         $tahomaLocalPiCmd->setIsVisible(0);
+                         $tahomaLocalPiCmd->setConfiguration('parameters', '#select#');
+                         $tahomaLocalPiCmd->setConfiguration('listValue', 'unlocked|Ouvrir;locked|Fermer');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-unlock-alt"></i>');
+                     } else if ($command->commandName == "my") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-star-o"></i>');
+                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STOP');
+                     } else if ($command->commandName == "stop") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-stop"></i>');
+                     } else if ($command->commandName == "on") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');
+                     } else if ($command->commandName == "alarmPartial1") {
+                         //zone alarme 1
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');
+                     } else if ($command->commandName == "alarmPartial2") {
+                         //zone alarme 2
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');
+                     } else if ($command->commandName == "off") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');
+                     } else if ($command->commandName == "down") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-down"></i>');
+                         $tahomaLocalPiCmd->setIsVisible(0);
+                     } else if ($command->commandName == "up") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-up"></i>');
+                         $tahomaLocalPiCmd->setIsVisible(0);
+                     } else if ($command->commandName == "rollOut") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-down"></i>');
+                         $tahomaLocalPiCmd->setIsVisible(0);
+                     } else if ($command->commandName == "rollUp") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-up"></i>');
+                         $tahomaLocalPiCmd->setIsVisible(0);
+                     } else if ($command->commandName == "test") {
+                         $tahomaLocalPiCmd->setType('action');
+                         $tahomaLocalPiCmd->setSubType('other');
+                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-exchange"></i>');
+                     } else {
+                         $useCmd = false;
+                     }
+
+                     if ($useCmd) {
+                         $tahomaLocalPiCmd->setName($command->commandName);
+                         //   $tahomaLocalPiCmd->setLogicalId('on');
+                         $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                         $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+                         $tahomaLocalPiCmd->setConfiguration('commandName', $command->commandName);
+                         $tahomaLocalPiCmd->setConfiguration('nparams', $command->nparams);
+
+                         $tahomaLocalPiCmd->save();
+                     }
+                 }
+             }
+             // Cancel operation
+             $tahomaLocalPiCmd = new tahomalocalapiCmd();
+             $tahomaLocalPiCmd->setType('action');
+             $tahomaLocalPiCmd->setSubType('other');
+             $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-ban"></i>');
+             $tahomaLocalPiCmd->setName("cancel");
+             $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+             $tahomaLocalPiCmd->setConfiguration('deviceURL', $device->deviceURL);
+             $tahomaLocalPiCmd->setConfiguration('commandName', "cancelExecutions");
+             $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+             $tahomaLocalPiCmd->save();			 
+             /***********************************/
+			 
+			 
+             //Infos
+             //foreach ($device->definition->states as $state) {
+             foreach ($device->states as $state) {
+
+                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
+
+                 $tahomaLocalPiCmd->setName($state->name);
+                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                 $tahomaLocalPiCmd->setLogicalId($state->name);
+                 $tahomaLocalPiCmd->setConfiguration('type', $state->name);
+                 $tahomaLocalPiCmd->setType('info');
+                 switch ($state->type) {
+                     case 1:
+                         $tahomaLocalPiCmd->setSubType('numeric');
+                         break;
+                     case 2:
+                         $tahomaLocalPiCmd->setSubType('numeric');
+                         break;
+                     case 3:
+                         $tahomaLocalPiCmd->setSubType('string');
+                         break;
+                     case 6:
+                         $tahomaLocalPiCmd->setSubType('binary');
+                         break;
+                     default:
+                         $tahomaLocalPiCmd->setSubType('string');
+                 }
+                 $tahomaLocalPiCmd->setIsVisible(0);
+
+                 foreach ($device->attributes as $attribute) {
+                     switch ($attribute->name) {
+                         case 'core:MeasuredValueType':
+                             switch ($attribute->value) {
+                                 case 'core:TemperatureInCelcius':
+                                     $tahomaLocalPiCmd->setUnite('°C');
+                                     break;
+                                 case 'core:VolumeInCubicMeter':
+                                     $tahomaLocalPiCmd->setUnite('m3');
+                                     break;
+                                 case 'core:ElectricalEnergyInWh':
+                                     $tahomaLocalPiCmd->setUnite('Wh');
+                                     break;
+                             }
+                             break;
+                         case 'core:MaxSensedValue':
+                             $tahomaLocalPiCmd->setConfiguration('maxValue', $attribute->value);
+                             break;
+                         case 'core:MinSensedValue':
+                             $tahomaLocalPiCmd->setConfiguration('minValue', $attribute->value);
+                             break;
+
+                     }
+                 }
+                 $tahomaLocalPiCmd->save();
+
+                 $linkedCmdName = '';
+                 switch ($state->name) {
+                     //if ($state->name == "core:ClosureState") {
+                     case 'core:ClosureState':
+                         $linkedCmdName = 'setClosure';
+                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STATE');
+                         $tahomaLocalPiCmd->save();
+                         break;
+                     case 'core:SlateOrientationState':
+                         $linkedCmdName = 'setOrientation';
+                         break;
+                     case 'core:ComfortRoomTemperatureState':
+                         $linkedCmdName = 'setComfortTemperature';
+                         break;
+                     case 'core:EcoRoomTemperatureState':
+                         $linkedCmdName = 'setEcoTemperature';
+                         break;
+                     case 'core:SecuredPositionTemperatureState':
+                         $linkedCmdName = 'setSecuredPositionTemperature';
+                         break;
+                     case 'core:LockedUnlockedState':
+                         // Serrure connectée état lié
+                         $linkedCmdName = 'setLockedUnlocked';
+                         $tahomaLocalPiCmd->setDisplay('generic_type', 'LOCK_STATE');
+                         $tahomaLocalPiCmd->save();
+                         break;
+                 }
+                 if ($linkedCmdName !== '') {
+                     foreach ($eqLogic->getCmd() as $action) {
+                         if ($action->getConfiguration('commandName') == $linkedCmdName) {
+                             $action->setValue($tahomaLocalPiCmd->getId());
+                             $action->save();
+                         }
+                     }
+                 }
+             }
+         } else {
+             $eqLogic = $eqLogic_found;
+
+// Update !
+
+         }
+
+         foreach ($eqLogic->getCmd() as $command) {
+
+             // Mise a jour des generic_type
+
+             if ($command->getType() == 'action') {
+                 if ($command->getName() == 'open') {
+                     $command->setDisplay('generic_type', 'FLAP_UP');
+                     $command->save();
+                 }
+                 if ($command->getName() == 'close') {
+                     $command->setDisplay('generic_type', 'FLAP_DOWN');
+                     $command->save();
+                 }
+                 if ($command->getName() == 'my') {
+                     $command->setDisplay('generic_type', 'FLAP_STOP');
+                     $command->save();
+                 }
+                 // Serrure connectée
+                 if ($command->getName() == 'lock') {
+                     $command->setDisplay('generic_type', 'LOCK_CLOSE');
+                     $command->save();
+                 }
+                 if ($command->getName() == 'unlock') {
+                     $command->setDisplay('generic_type', 'LOCK_OPEN');
+                     $command->save();
+                 }
+             }
+
+             //Recupération des valeur et mise a jour des commandes info par event
+
+             if ($command->getType() == 'info') {
+                 foreach ($device->states as $state) {
+                     if ($state->name == $command->getConfiguration('type')) {
+                         $command->setCollectDate('');
+
+                         $value = $state->value;
+                         if ($state->name == "core:ClosureState") {
+                             $value = 100 - $value;
+                         }
+
+                         $command->event($value);
+                     }
+                 }
+             }
+         }
+     }
+
+	// Creation des scenarios
+	/*
+     $found = false;
+
+     foreach ($eqLogics as $eqLogic) {
+         // Recherche le module 'ActionGroups'
+         log::add('tahoma', 'debug', "eqlabel: " . $eqLogic->getConfiguration('deviceURL'));
+
+         if ($eqLogic->getConfiguration('deviceURL') == "ActionGroups") {
+             $eqLogic_found = $eqLogic;
+             $found = true;
+             break;
+         }
+     }
+
+     if (!$found) {
+         $eqLogic = new eqLogic();
+         $eqLogic->setEqType_name('tahoma');
+         $eqLogic->setIsEnable(1);
+         $eqLogic->setIsVisible(1);
+         $eqLogic->setName("Scenarios");
+         $eqLogic->setConfiguration('deviceURL', "ActionGroups");
+         $eqLogic->save();
+
+         $eqLogic = self::byId($eqLogic->getId());
+     }
+
+     $scenarios = tahomaGetScenarios($userId, $userPassword);
+
+     foreach ($scenarios as $scenario) {
+         $found = false;
+
+         foreach ($eqLogic->getCmd() as $command) {
+             if ($command->getType() == 'action') {
+                 if ($command->getConfiguration('deviceURL') == $scenario->oid) {
+                     $found = true;
+                 }
+             }
+         }
+
+         if (!$found) {
+             $tahomaLocalPiCmd = new tahomalocalapiCmd();
+
+             $tahomaLocalPiCmd->setType('action');
+             $tahomaLocalPiCmd->setSubType('other');
+             $tahomaLocalPiCmd->setName($scenario->label);
+             $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+             $tahomaLocalPiCmd->setConfiguration('deviceURL', $scenario->oid);
+             $tahomaLocalPiCmd->setConfiguration('commandName', 'execAction');
+             $tahomaLocalPiCmd->save();
+         }
+     }
+*/
+    /*ChD*/
     }
   }
 
