@@ -418,7 +418,7 @@ def deleteExecutionForADevice(deviceUrl):
 			json_data = response.json()
 			for item in json_data:
 				logging.debug('a')
-				logging.debug(item['id'] + ' -> ' + item['actionGroup'])
+				#logging.debug(item['id'] + ' -> ' + item['actionGroup'])
 				logging.debug('b')
 				for act in item['actionGroup']['actions']:
 					logging.debug(act['deviceURL'])
