@@ -16,7 +16,7 @@
 	"licence" : "AGPL",
 	"author" : "Jeedom SAS",
 	"require" : "4.2.0",
-	"category" : "automation protocole",
+	"category" : "Protocole domotique",
 	"hasDependency" : false,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 0,
