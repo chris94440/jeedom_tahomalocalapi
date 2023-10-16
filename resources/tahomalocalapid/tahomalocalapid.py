@@ -44,6 +44,7 @@ def read_socket():
 			logging.error("Invalid apikey from socket: %s", message)
 			return
 		try:
+			logging.info('action ? ' + message['action'])
 			if message['action'] == 'stop':
 				logging.info('action stop -> self.close()')
 			elif message['action'] == 'synchronize':
