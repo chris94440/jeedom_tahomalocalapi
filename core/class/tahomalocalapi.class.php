@@ -574,61 +574,6 @@ public static function sendToDaemon($params) {
          }
      }
 
-	// Creation des scenarios
-	/*
-     $found = false;
-
-     foreach ($eqLogics as $eqLogic) {
-         // Recherche le module 'ActionGroups'
-         log::add('tahoma', 'debug', "eqlabel: " . $eqLogic->getConfiguration('deviceURL'));
-
-         if ($eqLogic->getConfiguration('deviceURL') == "ActionGroups") {
-             $eqLogic_found = $eqLogic;
-             $found = true;
-             break;
-         }
-     }
-
-     if (!$found) {
-         $eqLogic = new eqLogic();
-         $eqLogic->setEqType_name('tahoma');
-         $eqLogic->setIsEnable(1);
-         $eqLogic->setIsVisible(1);
-         $eqLogic->setName("Scenarios");
-         $eqLogic->setConfiguration('deviceURL', "ActionGroups");
-         $eqLogic->save();
-
-         $eqLogic = self::byId($eqLogic->getId());
-     }
-
-     $scenarios = tahomaGetScenarios($userId, $userPassword);
-
-     foreach ($scenarios as $scenario) {
-         $found = false;
-
-         foreach ($eqLogic->getCmd() as $command) {
-             if ($command->getType() == 'action') {
-                 if ($command->getConfiguration('deviceURL') == $scenario->oid) {
-                     $found = true;
-                 }
-             }
-         }
-
-         if (!$found) {
-             $tahomaLocalPiCmd = new tahomalocalapiCmd();
-
-             $tahomaLocalPiCmd->setType('action');
-             $tahomaLocalPiCmd->setSubType('other');
-             $tahomaLocalPiCmd->setName($scenario['label']);
-             $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-             $tahomaLocalPiCmd->setConfiguration('deviceURL', $scenario->oid);
-             $tahomaLocalPiCmd->setConfiguration('commandName', 'execAction');
-             $tahomaLocalPiCmd->save();
-         }
-     }
-*/
-    /*ChD*/
-    }
   }
 
   public static function updateItems($item){
