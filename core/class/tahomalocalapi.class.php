@@ -119,7 +119,8 @@ public static function sendToDaemon($params) {
 
   public static function create_or_update_devices($devices) {
     log::add(__CLASS__, 'debug', 'create_or_update_devices');
-
+    
+    $eqLogics=eqLogic::byType(__CLASS__);
     foreach ($devices as $device) {
         log::add(__CLASS__, 'debug', '  - device : ' . $device['deviceURL']);
          $found = false;
@@ -582,8 +583,10 @@ public static function sendToDaemon($params) {
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
-    $found = false;
 
+	$found = false;
+    $eqLogic_found;
+    
     foreach ($eqLogics as $eqLogic) {
         if ($item['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
             $eqLogic_found = $eqLogic;
@@ -591,12 +594,13 @@ public static function sendToDaemon($params) {
             break;
         }
     }
-
+    
     if (!$found) {
         log::add(__CLASS__, 'error', ' - évènement sur équipement non géré par le plugin ... relancer le daemon pour forcer sa création');
     } else {
-        foreach ($item['deviceState'] as $state) {
-            $cmd=eqLogic_found->getCmd('info',$state['name']);
+        foreach ($item['deviceStates'] as $state) {
+            $cmd=$eqLogic_found->getCmd('info',$state['name'],true, false);
+          
             if (is_object($cmd)){
                 if ($state['name'] == $command->getConfiguration('type')) {
                     $command->setCollectDate('');
