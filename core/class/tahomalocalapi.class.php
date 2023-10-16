@@ -597,7 +597,7 @@ public static function sendToDaemon($params) {
     } else {
         foreach ($item['deviceState'] as $state) {
             $cmd=eqLogic_found->getCmd('info',$state['name']);
-            if (is_object($cmd){
+            if (is_object($cmd)){
                 if ($state['name'] == $command->getConfiguration('type')) {
                     $command->setCollectDate('');
 
@@ -608,7 +608,7 @@ public static function sendToDaemon($params) {
 
                     $command->event($value);
                 }
-            })
+            }
         }    
     }
   }
