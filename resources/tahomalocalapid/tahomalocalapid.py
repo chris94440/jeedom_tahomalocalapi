@@ -45,16 +45,13 @@ def read_socket():
 			return
 		try:
 			if message['action'] == 'stop':
-                    #self.close()
+				logging.info('action stop -> self.close()')
 			elif message['action'] == 'synchronize':
-				#self._cloud.fetch()
-				#await self._send_devices()
+				logging.info('action synchronize -> self.close() et await self.')
 			elif message['action'] == 'get_activity_logs':
-				#device = self._cloud.get_device_by_serial_number(message['serial_number'])
-
-				#logs = self._cloud.get_activity_logs(device)				
+				logging.info('action get_activity_logs')
 			else:
-				#await self._executeAction(message)
+				logging.info('action other')
 
 		except Exception as e:
 			logging.error('Send command to demon error: %s' ,e)
