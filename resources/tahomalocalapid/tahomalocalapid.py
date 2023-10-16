@@ -45,8 +45,9 @@ def read_socket():
 			return
 		try:
 			logging.info('action ? ' + message['action'])
-			if message['action'] == 'stop':
-				logging.info('action stop -> self.close()')
+			if message['action'] == 'execCmd':
+				logging.info('action execCmd -> self.close()')
+				self.execCmd(message)
 			elif message['action'] == 'synchronize':
 				logging.info('action synchronize -> self.close() et await self.')
 			elif message['action'] == 'get_activity_logs':
@@ -342,6 +343,52 @@ def unregisterListener():
 	except requests.exceptions.HTTPError as err:
 		logging.debug("Error when connection to tahoma -> %s",err)
 
+def execCmd(params):	
+	logging.debug(' * Execute command')
+	try:
+
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+
+		payload=json.dumps({
+				"label": params['commandName'],								
+				"actions": "devmode"
+				"actions": [
+				{
+				"commands": [
+					{
+					"name": params['name'],
+					"parameters": [
+						params['parameters']
+					]
+					}
+				],
+				"deviceURL": params['deviceUrl']
+				}
+			]
+		})
+
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+
+		
+		response = requests.request("POST", url, verify=False, headers=headers, data=payload)
+
+
+
+		if response.status_code and (response.status_code == 200):
+			if response.json().get('id'):
+				global _listenerId
+				_listenerId = response.json().get('id')
+		else:
+			logging.debug("Http code : %s", response.status_code)
+			logging.debug("Response : %s", response.json())
+			logging.debug("Response header : %s", response.headers)		
+
+	except requests.exceptions.HTTPError as err:
+		logging.debug("Error when connection to tahoma -> %s",err)
 # ----------------------------------------------------------------------------
 
 _log_level = "error"
