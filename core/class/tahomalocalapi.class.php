@@ -767,6 +767,12 @@ class tahomalocalapiCmd extends cmd {
 
   // Exécution d'une commande
   public function execute($_options = array()) {
+    $deviceUrl=$this->getConfiguration('deviceURL');
+    $commandName=$this->getConfiguration('commandName');
+    $parameters=$this->getConfiguration('parameters');
+    $type=$this->type;
+    $subType=$this->subType;
+    log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType);
   }
 
   /*     * **********************Getteur Setteur*************************** */
