@@ -417,15 +417,8 @@ def deleteExecutionForADevice(deviceUrl):
 			logging.debug("Response zzz : %s", response.json())
 			json_data = response.json()
 			for item in json_data:
-				logging.debug('a')
-				#logging.debug(item['id'] + ' -> ' + item['actionGroup'])
-				logging.debug('b')
 				for act in item['actionGroup']['actions']:
-					logging.debug('C')
-					logging.debug(act['deviceURL'])
-					logging.debug('d')
 					if (deviceUrl == act['deviceURL']):
-						logging.debug('e')
 						deleteExecution(item['id'])
 		else:
 			logging.error("Http code : %s", response.status_code)
