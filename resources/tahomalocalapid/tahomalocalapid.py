@@ -47,7 +47,7 @@ def read_socket():
 			logging.info('action ? ' + message['action'])
 			if message['action'] == 'execCmd':
 				logging.info('action execCmd -> self.close()')
-				self.execCmd(message)
+				execCmd(message)
 			elif message['action'] == 'synchronize':
 				logging.info('action synchronize -> self.close() et await self.')
 			elif message['action'] == 'get_activity_logs':
@@ -353,15 +353,15 @@ def execCmd(params):
 				"label": params['commandName'],								
 				"actions": [
 				{
-				"commands": [
-					{
-					"name": params['name'],
-					"parameters": [
-						params['parameters']
-					]
-					}
-				],
-				"deviceURL": params['deviceUrl']
+					"commands": [
+						{
+						"name": params['name'],
+						"parameters": [
+							params['parameters']
+						]
+						}
+					],
+					"deviceURL": params['deviceUrl']
 				}
 			]
 		})
