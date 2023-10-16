@@ -605,15 +605,15 @@ public static function sendToDaemon($params) {
           
             if (is_object($cmd)){
                 log::add(__CLASS__, 'debug','       - commande trouvée : ' . $state['name'] . ', maj demandée :' . $state['value']);
-                if ($state['name'] == $command->getConfiguration('type')) {
-                    $command->setCollectDate('');
+                if ($state['name'] == $cmd->getConfiguration('type')) {
+                    $cmd->setCollectDate('');
 
                     $value = $state['value'];
                     if ($state['name'] == "core:ClosureState") {
                         $value = 100 - $value;
                     }
                     log::add(__CLASS__, 'debug','       - commande trouvée : ' . $state['name'] . ', maj effectuée :' . $value);
-                    $command->event($value);
+                    $cmd->event($value);
                 }
             }
         }    
