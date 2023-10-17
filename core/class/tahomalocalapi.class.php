@@ -126,7 +126,7 @@ public function getImage() {
           $path .= 'veluxRollerShutter.png';
             break;
     default:
-          $path .= 'io.png';
+          $path .= 'io_logo.png';
             break;
     }
     log::add(__CLASS__, 'debug', 'getImage '. $this->getConfiguration('type') . ' -> ' . $path);
