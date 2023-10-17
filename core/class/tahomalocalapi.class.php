@@ -120,7 +120,7 @@ public function getImage() {
           $path .= 'storeBanne.png';
             break;
     case 'io:WindowOpenerVeluxIOComponent':
-          $path .= 'veluxRollerShutter.png';
+          $path .= 'WindowOpenerVeluxIOComponent.png';
             break;
     case 'io:RollerShutterVeluxIOComponent':
           $path .= 'veluxRollerShutter.png';
