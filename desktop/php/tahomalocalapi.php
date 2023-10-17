@@ -25,7 +25,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				<div class="cursor eqLogicAction logoSecondary" data-action="syncDevices">
 				<i class="fas fa-sync"></i>
 				<br/>
-				<span>{{Synchroniser}}</span>
+				<span>{{Synchroniserr}}</span>
 			</div>
 			</div>
 			<?php
