@@ -48,7 +48,8 @@ def read_socket():
 			if message['action'] == 'execCmd':				
 				execCmd(message)
 			elif message['action'] == 'synchronize':
-				logging.info('action synchronize -> self.close() et await self.')
+				logging.info('action synchronize')
+				getDevicesList()
 			elif message['action'] == 'get_activity_logs':
 				logging.info('action get_activity_logs')
 			else:
