@@ -110,8 +110,14 @@ protected static function getSocketPort() {
 }
 
 public function getImage() {
-    log::add(__CLASS__, 'debug', 'getImage zz-> '. $this->getConfiguration('type'));
-    $path = 'plugins/tahomalocalapi/data/img/';
+    log::add(__CLASS__, 'debug', 'getImage -> '. $this->getConfiguration('type'));
+    $path = 'plugins/tahomalocalapi/data/img/' . str_replace(array('internal:','io:'),array(''),$this->getConfiguration('type')) . '.png';
+
+    if (!(file_exists($path))) {
+        log::add(__CLASS__, 'debug', '  -> icone non trouvée ... remplacée par une générique');
+        $path = 'plugins/tahomalocalapi/data/img/io_logo.png';
+    }
+    /*
   switch ( $this->getConfiguration('type')) {
     case 'internal:PodMiniComponent':
             $path .= 'somfyBox.png';
@@ -129,6 +135,7 @@ public function getImage() {
           $path .= 'io_logo.png';
             break;
     }
+    */
     log::add(__CLASS__, 'debug', 'getImage '. $this->getConfiguration('type') . ' -> ' . $path);
   return $path;
 }
