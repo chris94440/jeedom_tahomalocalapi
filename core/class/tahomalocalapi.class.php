@@ -109,6 +109,30 @@ protected static function getSocketPort() {
     return config::byKey('socketport', __CLASS__, 55009);
 }
 
+public function getImage() {
+    log::add(__CLASS__, 'debug', 'getImage zz-> '. $this->getConfiguration('type'));
+    $path = 'plugins/tahomalocalapi/data/img/';
+  switch ( $this->getConfiguration('type')) {
+    case 'internal:PodMiniComponent':
+            $path .= 'somfyBox.png';
+            break;
+    case 'io:HorizontalAwningIOComponent':
+          $path .= 'storeBanne.png';
+            break;
+    case 'io:WindowOpenerVeluxIOComponent':
+          $path .= 'veluxRollerShutter.png';
+            break;
+    case 'io:RollerShutterVeluxIOComponent':
+          $path .= 'veluxRollerShutter.png';
+            break;
+    default:
+          $path .= 'io.png';
+            break;
+    }
+    log::add(__CLASS__, 'debug', 'getImage '. $this->getConfiguration('type') . ' -> ' . $path);
+  return $path;
+}
+
 /* Send data to daemon */
 public static function sendToDaemon($params) {
   $deamon_info = self::deamon_info();
