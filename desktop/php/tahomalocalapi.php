@@ -167,26 +167,49 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			</div><!-- /.tabpanel #eqlogictab-->
 
 			<!-- Onglet des commandes de l'équipement -->
-			<div role="tabpanel" class="tab-pane" id="commandtab">
-				<a class="btn btn-default btn-sm pull-right cmdAction" data-action="add" style="margin-top:5px;"><i class="fas fa-plus-circle"></i> {{Ajouter une commande}}</a>
-				<br><br>
-				<div class="table-responsive">
-					<table id="table_cmd" class="table table-bordered table-condensed">
-						<thead>
-							<tr>
-								<th class="hidden-xs" style="min-width:50px;width:70px;">ID</th>
-								<th style="min-width:200px;width:350px;">{{Nom}}</th>
-								<th>{{Type}}</th>
-								<th style="min-width:260px;">{{Options}}</th>
-								<th>{{Etat}}</th>
-								<th style="min-width:80px;width:200px;">{{Actions}}</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-				</div>
-			</div><!-- /.tabpanel #commandtab-->
+<div role="tabpanel" class="tab-pane" id="commandtab">
+<legend>
+<center class="title_cmdtable">{{Tableau de commandes <?php echo ' - '.$plugName.': ';?>}}
+	<span class="eqName"></span>
+</center>
+</legend>
+
+<legend><i class="fas fa-info"></i>  {{Infos}}</legend>
+	
+	<table id="table_cmdi" class="table table-bordered table-condensed ">
+		<!--<table class="table  tablesorter tablesorter-bootstrap tablesorter hasResizable table-striped hasFilters" id="table_update" style="margin-top: 5px;" role="grid"><colgroup class="tablesorter-colgroup"></colgroup>
+		</table>-->
+		<thead>
+			<tr>
+				<th style="width: 80px;">Id</th>
+				<th style="width: 280px;">{{Nom}}</th>
+				<th style="width: 120px;">{{Type}}</th>
+                <th style="">{{Etat}}</th>
+				<th style="width: 280px;">{{Options}}</th>
+				<th style="width: 140px;">{{Action}}</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+
+	<!--<legend><i class="fas fa-list-alt"></i>  {{Actions}}</legend>-->
+	<legend><i class="fas fa-play"></i>  {{Actions}}</legend>
+	<table id="table_cmda" class="table table-bordered table-condensed">
+		
+		<thead>
+			<tr>
+				<th style="width: 80px;">Id</th>
+				<th style="width: 280px;">{{Nom}}</th>
+				<th style="width: 120px;">{{Type}}</th>
+                <th style="">{{Etat}}</th>
+				<th style="width: 280px;">{{Options}}</th>
+				<th style="width: 140px;">{{Action}}</th>
+			</tr>
+		</thead>
+		<tbody></tbody>
+	</table>
+
+</div><!-- /.tabpanel #commandtab-->
 
 		</div><!-- /.tab-content -->
 	</div><!-- /.eqLogic -->
