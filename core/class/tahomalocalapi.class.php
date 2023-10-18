@@ -103,6 +103,7 @@ public static function deamon_stop() {
 
 public static function synchronize() {
     self::sendToDaemon(['action' => 'synchronize']);
+    sleep(5);
 }
 
 protected static function getSocketPort() {
