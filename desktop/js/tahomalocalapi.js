@@ -96,7 +96,8 @@ function addCmdToTable(_cmd) {
 }
 
 $('.eqLogicAction[data-action=syncDevices]').on('click', function () {
-  syncSomfyDevices();
+	$('#div_alert').showAlert({message: '{{Synchronisation en cours}}', level: 'warning'});
+  	syncSomfyDevices();
 });
 
 
@@ -116,6 +117,7 @@ function syncSomfyDevices() {
           $('#div_alert').showAlert({message: data.result, level: 'danger'});
           return;
       }
+      $('#div_alert').showAlert({message: '{{Synchronisation terminée avec succès}}', level: 'success'});
       window.location.reload();
   }
 });
