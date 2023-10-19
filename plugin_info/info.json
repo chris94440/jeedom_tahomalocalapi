@@ -20,10 +20,10 @@
 	"hasDependency" : false,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
-	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
-	"changelog_beta" : "https://jeedom.github.io/plugin-template/#language#/beta/changelog",
-	"documentation_beta" : "https://jeedom.github.io/plugin-template/#language#/beta/",
+	"changelog" : "https://github.com/chris94440/jeedom_tahomalocalapi/blob/master/docs/fr_FR/changelog.md",
+	"documentation" : "https://github.com/chris94440/jeedom_tahomalocalapi/blob/master/docs/fr_FR/index.md",
+	"changelog_beta" : "https://github.com/chris94440/jeedom_tahomalocalapi/blob/beta/docs/fr_FR/changelog.md",
+	"documentation_beta" : "https://github.com/chris94440/jeedom_tahomalocalapi/blob/beta/docs/fr_FR/index.md",
 	"link" : {
 		"forum":"Lien vers le forum",
 		"video" : "Lien vers une video"
