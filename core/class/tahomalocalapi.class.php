@@ -112,12 +112,17 @@ protected static function getSocketPort() {
 
 public function getImage() {
     log::add(__CLASS__, 'debug', 'getImage -> '. $this->getConfiguration('type'));
-    $path = 'plugins/tahomalocalapi/data/img/' . str_replace(array('internal:','io:'),array(''),$this->getConfiguration('type')) . '.png';
+    $path='plugins/tahomalocalapi/data/img/custom/' . str_replace(array('internal:','io:'),array(''),$this->getConfiguration('type')) . '.png';
 
     if (!(file_exists($path))) {
-        log::add(__CLASS__, 'debug', '  -> icone non trouvée ... remplacée par une générique');
-        $path = 'plugins/tahomalocalapi/data/img/io_logo.png';
+        $path = 'plugins/tahomalocalapi/data/img/' . str_replace(array('internal:','io:'),array(''),$this->getConfiguration('type')) . '.png';
+        if (!(file_exists($path))) {
+            log::add(__CLASS__, 'debug', '  -> icone non trouvée ... remplacée par une générique');
+            $path = 'plugins/tahomalocalapi/data/img/io_logo.png';
+        }
     }
+
+    
     /*
   switch ( $this->getConfiguration('type')) {
     case 'internal:PodMiniComponent':
