@@ -44,23 +44,22 @@ def read_socket():
 			logging.error("Invalid apikey from socket: %s", message)
 			return
 		try:
-			logging.info('action ? ' + message['action'])
 			if message['action'] == 'execCmd':				
+				logging.info('== action execute command ==')
 				execCmd(message)
 			elif message['action'] == 'synchronize':
-				logging.info('action synchronize')
+				logging.info('== action synchronize ==')
 				getDevicesList()
-			elif message['action'] == 'get_activity_logs':
-				logging.info('action get_activity_logs')
 			else:
-				logging.info('action other')
+				logging.info('== other action not manage yes : ' + message['action']  + ' ==')
 		except Exception as e:
 			logging.error('Send command to demon error: %s' ,e)
 
 def listen():
+	logging.debug('Listen socket jeedom')
 	jeedom_socket.open()
 
-	logging.debug(' * socket tahoma | ' + _jsessionid + '|' + _tokenTahoma)
+	
 	httpLog()
 
 	if not _jsessionid and not _tokenTahoma:
@@ -510,7 +509,8 @@ _socket_port = int(_socket_port)
 
 jeedom_utils.set_log_level(_log_level)
 
-logging.info('Start demond ChD')
+logging.info('*-------------------------------------------------------------------------*')
+logging.info('Start demond')
 logging.info('Log level: %s', _log_level)
 logging.info('Socket port: %s', _socket_port)
 logging.info('Socket host: %s', _socket_host)
@@ -521,6 +521,7 @@ logging.info('User: %s', _user)
 logging.info('Pwd: %s', _pwd)
 logging.info('Pin ocde: %s', _pincode)
 logging.info('Box IP: %s', _ipBox)
+logging.info('*-------------------------------------------------------------------------*')
 
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
