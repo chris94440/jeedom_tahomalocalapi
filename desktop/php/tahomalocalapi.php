@@ -156,10 +156,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						<div class="col-lg-6">
 							<legend><i class="fas fa-info"></i> {{Informations}}</legend>
 							<div class="form-group">
-								<label class="col-sm-4 control-label">{{Description}}</label>
-								<div class="col-sm-6">
-									<textarea class="form-control eqLogicAttr autogrow" data-l1key="comment"></textarea>
-								</div>
+							<img src="<?php
+											$eqLogic = tahomalocalapi::byId(init("id"));
+											if (!is_object($eqLogic)) {
+												$eqLogic = false;
+											}
+											echo $eqLogic->getImage()
+										?>" 
+								style="height : 200px"/>						
 							</div>
 						</div>
 					</fieldset>
