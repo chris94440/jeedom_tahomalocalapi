@@ -1,0 +1,35 @@
+{
+	"id" : "tahomalocalapi",
+	"name" : "tahomalocalapi",
+	"description" : {
+		"fr_FR": "Acces aux APIs local Somfy"
+	},
+	"licence" : "AGPL",
+	"author" : "Jeedom SAS",
+	"require" : "4.2.0",
+	"category" : "automation protocol",
+	"hasDependency" : false,
+	"hasOwnDeamon" : true,
+	"maxDependancyInstallTime" : 0,
+	"changelog" : "https://github.com/chris94440/jeedom_tahomalocalapi/blob/master/docs/fr_FR/changelog.md",
+	"documentation" : "https://github.com/chris94440/jeedom_tahomalocalapi/blob/master/docs/fr_FR/index.md",
+	"changelog_beta" : "https://github.com/chris94440/jeedom_tahomalocalapi/blob/beta/docs/fr_FR/changelog.md",
+	"documentation_beta" : "https://github.com/chris94440/jeedom_tahomalocalapi/blob/beta/docs/fr_FR/index.md",
+	"link" : {
+		"forum":"Lien vers le forum",
+		"video" : "Lien vers une video"
+	},
+	"language": [
+		"fr_FR"
+	],
+	"compatibility": [
+		"miniplus",
+		"smart",
+		"rpi",
+		"docker",
+		"diy",
+		"mobile",
+		"v4",
+		"atlas"
+	]
+}
