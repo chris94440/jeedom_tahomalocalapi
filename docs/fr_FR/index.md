@@ -1,18 +1,52 @@
-# Plugin template
+# Plugin tahomalocalapi
 
-Ce "template de plugin" sert de base à la réalisation de plugins pour **Jeedom**.
+Ce plugin permet de communiquer en local avec les box Somfy compatible avec le mode développeur.
 
-La documentation générale relative à la conception de plugin est consultable [ici](https://doc.jeedom.com/fr_FR/dev/).
+Prérequis
+---
+Activer le mode développeur sur sa box Somfy, pour se faire rendez-vous sur le site Internet de Somfy (www.somfy.com) et connectez-vous à votre compte. 
+Toujours via le site, accédez à votre box et activez le mode développeur (https://developer.somfy.com/developer-mode).
 
-Dans le détail :   
-* [Utilisation du template de plugin](https://doc.jeedom.com/fr_FR/dev/plugin_template) : Le template de plugin est une base de plugin pour Jeedom qui doit être adaptée avec l'id de votre plugin et à laquelle il suffit d'ajouter vos propres fonctions.
+Paramétrage du plugin
+---
+Le plugin doit se connecter à votre box, il a donc besoin  
+* devos identifiants / mot de passe
+* d'infortmations liées à votre box
+** adresse ip locale
+** code pin 
 
-* [Fichier info.json](https://doc.jeedom.com/fr_FR/dev/structure_info_json) : Intégré depuis la version 3.0 de Jeedom, le fichier **info.json** est obligatoire pour le bon fonctionnement des plugins et leur bon déploiement sur le Market Jeedom.
+![alt text](../img/tahomalocalappi_configurationPlugin.JPG "Configuration du plugin")
 
-* [Icône du plugin](https://doc.jeedom.com/fr_FR/dev/Icone_de_plugin) : Afin de pouvoir être publié sur le Market Jeedom, tout plugin doit disposer d’une icône. Attention à ne pas utiliser le même code couleur que les icônes des plugins Jeedom officiels.
+![alt text](../img/tahomalocalappi_codePin.JPG "Code Pin box domotique")
 
-* [Widget du plugin](https://doc.jeedom.com/fr_FR/dev/widget_plugin) : Présentation des différentes manières d'inclure des widgets personnalisés au plugin.
 
-* [Documentation du plugin](https://doc.jeedom.com/fr_FR/dev/documentation_plugin) : Présentation de la mise en place d'une documentation car un bon plugin n'est rien sans documentation adéquate.
+Le plugin utilise également un daemon pour fonctionner, il faut donc définir un port  en vérifiant bien qu'il n'est pas utilisé au travers d'un autre plugin
 
-* [Publication du plugin](https://doc.jeedom.com/fr_FR/dev/publication_plugin) : Description des pré-requis indispensables à la publication du plugin.
+![alt text](../img/tahomalocalappi_configurationDaemon.JPG "Code Pin box domotique")
+
+Ne pas oublier de sauvegarder votre configuration sinon le daemon ne se lancera pas.
+
+Vous pouvez dès à présent lancer le daemon.
+Celui va se connecter, à l'aide de vos identifiants / mot de passe à une api pour générer un token.
+Ce token servira par la suite à interargir avec votre box en local.
+
+A chaque redémarrage du daemon l'intégralité des équipements sont scannés, récupérés et crées automatiquement.
+
+![alt text](../img/tahomalocalappi_vueEquipement.JPG "Vue page des équipements")
+
+Si jamais vous intégrez un nouvel équipement à votre box, pas besoin de relancer le daemon... lancez une synchronisation directement depuis cette meme page.
+
+![alt text](../img/tahomalocalappi_synchronisation.JPG "Vue page des équipements")
+
+
+Tips
+---
+Les images des équipements sont stockées sous /plugins/tahomalocalapi/data/img
+Mais si des images ne vous conviennent pas ou sont manquantes vous pouvez surcharger celle défini de base dans le plugin.
+Pour ce faire vous devez 
+* récupérer le type de l'équipement (configuration avancée / information / configutation -> type)
+
+![alt text](../img/tahomalocalappi_customImage.JPG "Vue page des équipements")
+
+* déposé l'image souhaitée sous /plugins/tahomalocalapi/data/img/custom avec pour nom le type d'équipement récupéré sans le "io:" et au format png
+
