@@ -64,7 +64,7 @@ if (!isConnect()) {
         <sup><i class="fas fa-question-circle tooltips" title="{{Port du daemon}}"></i></sup>
       </label>
       <div class="col-md-4">
-        <input class="configKey form-control" data-l1key="socketport"/>
+        <input class="configKey form-control" data-l1key="socketport" placeholder="55009 par défaut"/>
       </div>
     </div>
       <!-- <div class="col-md-4">
