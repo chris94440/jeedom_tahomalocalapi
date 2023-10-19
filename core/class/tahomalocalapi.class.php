@@ -111,39 +111,19 @@ protected static function getSocketPort() {
 }
 
 public function getImage() {
-    log::add(__CLASS__, 'debug', 'getImage -> '. $this->getConfiguration('type'));
-    $path='plugins/tahomalocalapi/data/img/custom/' . str_replace(array('internal:','io:'),array(''),$this->getConfiguration('type')) . '.png';
+    $typeMef=str_replace(array('internal:','io:'),array(''),$this->getConfiguration('type'));
+    $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';
 
     if (!(file_exists($path))) {
-        $path = 'plugins/tahomalocalapi/data/img/' . str_replace(array('internal:','io:'),array(''),$this->getConfiguration('type')) . '.png';
+        $path = '/var/www/html/plugins/tahomalocalapi/data/img/' . $typeMef . '.png';
         if (!(file_exists($path))) {
-            log::add(__CLASS__, 'debug', '  -> icone non trouvée ... remplacée par une générique');
             $path = 'plugins/tahomalocalapi/data/img/io_logo.png';
         }
     }
 
     
-    /*
-  switch ( $this->getConfiguration('type')) {
-    case 'internal:PodMiniComponent':
-            $path .= 'somfyBox.png';
-            break;
-    case 'io:HorizontalAwningIOComponent':
-          $path .= 'storeBanne.png';
-            break;
-    case 'io:WindowOpenerVeluxIOComponent':
-          $path .= 'WindowOpenerVeluxIOComponent.png';
-            break;
-    case 'io:RollerShutterVeluxIOComponent':
-          $path .= 'veluxRollerShutter.png';
-            break;
-    default:
-          $path .= 'io_logo.png';
-            break;
-    }
-    */
     log::add(__CLASS__, 'debug', 'getImage '. $this->getConfiguration('type') . ' -> ' . $path);
-  return $path;
+  	return str_replace(array('/var/www/html/'),array(''),$path);
 }
 
 /* Send data to daemon */
