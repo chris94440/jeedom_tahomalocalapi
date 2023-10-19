@@ -32,6 +32,9 @@ try {
     if (init('action') == 'syncSomfyDevices') {
       tahomalocalapi::synchronize();
       ajax::success();
+    } else if (init('action') == 'getEqlogicImage') {
+      $eqLogic = tahomalocalapi::byId(init('id'));
+      ajax::success($eqLogic->getImage());
     }
 
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));

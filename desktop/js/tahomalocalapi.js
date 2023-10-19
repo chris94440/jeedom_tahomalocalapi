@@ -93,12 +93,33 @@ function addCmdToTable(_cmd) {
         $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init(_cmd.type));
     }
     jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
+
+	getImage($('.eqLogicAttr[data-l1key=id]').value());
 }
 
 $('.eqLogicAction[data-action=syncDevices]').on('click', function () {
 	$('#div_alert').showAlert({message: '{{Synchronisation en cours}}', level: 'warning'});
   	syncSomfyDevices();
 });
+
+function getImage(eqId) {
+	$.ajax({// fonction permettant de faire de l'ajax
+		type: "POST", // méthode de transmission des données au fichier php
+		url: "plugins/tahomalocalapi/core/ajax/tahomalocalapi.ajax.php", // url du fichier php
+		data: {
+			action: "getEqlogicImage",
+			id : eqId
+		},
+		dataType: 'json',
+		error: function (request, status, error) {
+			handleAjaxError(request, status, error);
+		},
+		success: function (data) { // si l'appel a bien fonctionné
+		$('#img_eqTahomalocalapi').attr("src", data['result']);
+	}
+  });
+  }
+  
 
 
 function syncSomfyDevices() {
