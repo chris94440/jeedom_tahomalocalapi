@@ -28,7 +28,7 @@ Le plugin utilise également un daemon pour fonctionner, il faut donc définir u
 
 Ne pas oublier de sauvegarder votre configuration sinon le daemon n'aura pas les informations nécessaires pour démarrer correctement.
 
-<u>Vous pouvez dès à présent lancer le daemon</u>.
+**Vous pouvez dès à présent lancer le daemon.**
 
 Celui va se connecter, à l'aide de vos identifiants / mot de passe à une api pour générer un token.
 Ce token servira par la suite à interargir avec votre box en local.
