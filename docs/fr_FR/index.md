@@ -6,6 +6,7 @@ Prérequis
 ---
 Activer le mode développeur sur sa box Somfy, pour se faire rendez-vous sur le site Internet de Somfy (https://www.somfy.fr/se-connecter) et connectez-vous à votre compte. 
 Toujours via le site, accédez à votre box et activez le mode développeur.
+
 Si le mode développeur n'est pas disponible regardez si vous n'avez pas une MAJ de celle-ci en attente.
 
 Paramétrage du plugin
@@ -26,6 +27,7 @@ Le plugin utilise également un daemon pour fonctionner, il faut donc définir u
 ![alt text](../img/tahomalocalappi_configurationDaemon.JPG "Code Pin box domotique")
 
 Ne pas oublier de sauvegarder votre configuration sinon le daemon n'aura pas les informations nécessaires pour démarrer correctement.
+
 Il faut également penser à le lancer manuellemet.
 
 Vous pouvez dès à présent lancer le daemon.
