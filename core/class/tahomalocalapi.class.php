@@ -843,7 +843,7 @@ class tahomalocalapiCmd extends cmd {
                     case 'orientation':
                         if ($commandName == "setOrientation") {
                             $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
+                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
                               return;
                         }
                         break;
@@ -852,7 +852,7 @@ class tahomalocalapiCmd extends cmd {
                             $parameters = 100 - $parameters;
 
                             $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceURL, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
+                            $eqlogic->sendToDaemon(['action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
 
                             return;
                         }
@@ -860,7 +860,7 @@ class tahomalocalapiCmd extends cmd {
                 }
             case 'select':
                 if ($commandName == 'setLockedUnlocked') {
-                    $parameters = str_replace('#select#', $_options['select'], $parameters);
+                    $parameters = str_replace('#select#', $_options['select'], $parameters[0]);
                 }
                 break;
           	case 'other':

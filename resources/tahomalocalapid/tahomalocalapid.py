@@ -394,7 +394,6 @@ def execCmd(params):
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
-			shutdown()
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when executing cmd to tahoma -> %s",err)
 		shutdown()
