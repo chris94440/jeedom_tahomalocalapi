@@ -193,6 +193,7 @@ public static function sendToDaemon($params) {
 
         /***********************************/
         //create Actions commands
+        /*
         if (array_key_exists('uiClass',$device)) {
             if (!(self::createGenericActions($eqLogic, $device))) {
                 if (array_key_exists('definition',device) && array_key_exists('commands',$device['definition'])) {
@@ -207,10 +208,12 @@ public static function sendToDaemon($params) {
         }            
         
          self::updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device);
+         */
      }
 
   }
 
+  /*
 private static updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
     foreach ($eqLogic->getCmd() as $command) {
 
@@ -564,6 +567,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
         }
     }
 }
+
 private static function createCmdsAction($eqLogic, $device, $commands) {
     if (array_key_last('deviceURL',$device)) {
         $eq = $eqLogic->byLogicalId($device['deviceURL']);
@@ -716,6 +720,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
     }
     
   }
+  */
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
