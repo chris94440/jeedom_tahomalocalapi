@@ -213,7 +213,7 @@ public static function sendToDaemon($params) {
 
   }
 
-  /*
+
 private static updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
     foreach ($eqLogic->getCmd() as $command) {
 
@@ -286,7 +286,7 @@ private static updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
     }
 }
 
-  */
+
 private static function createGenericActions($eqLogic, $device) {
     $response = true;
     if ($device['uiClass'] == "HitachiHeatingSystem") {
