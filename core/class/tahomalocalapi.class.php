@@ -554,11 +554,9 @@ public static function sendToDaemon($params) {
              }
          } else {
              $eqLogic = $eqLogic_found;
-
-// Update !
-
          }
 
+         //$eqLogicFound
          foreach ($eqLogic->getCmd() as $command) {
 
              // Mise a jour des generic_type
@@ -568,10 +566,22 @@ public static function sendToDaemon($params) {
                      $command->setDisplay('generic_type', 'FLAP_UP');
                      $command->save();
                  }
+                 if ($command->getName() == 'up') {
+                    $command->setDisplay('generic_type', 'FLAP_UP');
+                    $command->save();
+                }                 
                  if ($command->getName() == 'close') {
                      $command->setDisplay('generic_type', 'FLAP_DOWN');
                      $command->save();
                  }
+                 if ($command->getName() == 'down') {
+                    $command->setDisplay('generic_type', 'FLAP_DOWN');
+                    $command->save();
+                }
+                if ($command->getName() == 'stop') {
+                    $command->setDisplay('generic_type', 'FLAP_STOP');
+                    $command->save();
+                }
                  if ($command->getName() == 'my') {
                      $command->setDisplay('generic_type', 'FLAP_STOP');
                      $command->save();
@@ -588,7 +598,6 @@ public static function sendToDaemon($params) {
              }
 
              //Recupération des valeur et mise a jour des commandes info par event
-
              if ($command->getType() == 'info') {
                  foreach ($device['states'] as $state) {
                      if ($state['name'] == $command->getConfiguration('type')) {
@@ -606,6 +615,10 @@ public static function sendToDaemon($params) {
          }
      }
 
+  }
+
+  private static function createCmd() {
+    
   }
 
   public static function updateItems($item){
