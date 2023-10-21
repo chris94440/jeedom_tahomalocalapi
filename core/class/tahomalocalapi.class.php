@@ -443,6 +443,7 @@ private static function createGenericActions($eqLogic, $device) {
     }
     return $response;
 }
+  */
 private static function createCmdsState($eqLogic, $device, $states) {
 
     if (array_key_exists('available',$device)) {
@@ -567,7 +568,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
         }
     }
 }
-  */
+
 private static function createCmdsAction($eqLogic, $device, $commands) {
     if (array_key_last('deviceURL',$device)) {
         $eq = $eqLogic->byLogicalId($device['deviceURL']);
