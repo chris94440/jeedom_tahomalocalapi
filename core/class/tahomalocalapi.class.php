@@ -604,7 +604,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                 $useCmd = true;
 
                 $tahomaLocalPiCmd = $eqLogic->getCmd(null, $command['commandName']);
-                if (!(is_object($tahomaLocalPiCmd))) {
+                if (!(is_object($tahomaLocalPiCmd)) && notExistsByName($eqLogic,$command['commandName'])) {
                   	log::add(__CLASS__, 'debug', __FUNCTION__ . ' ' . $command['commandName'] . ' cmd not exits for  '  .$eqLogic->getName());
                     $tahomaLocalPiCmd = new tahomalocalapiCmd();
 
@@ -717,7 +717,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
                         $tahomaLocalPiCmd->setConfiguration('commandName', $command['commandName']);
                         $tahomaLocalPiCmd->setConfiguration('nparams', $command['nparams']);
-				log::add(__CLASS__, 'debug', __FUNCTION__ . ' before save . ' . $command['commandName'] . ' cmd not exits for  '  .$eqLogic->getName());
+				        log::add(__CLASS__, 'debug', __FUNCTION__ . ' before save . ' . $command['commandName'] . ' cmd not exits for  '  .$eqLogic->getName());
                         $tahomaLocalPiCmd->save();
                     }
                 }
@@ -727,6 +727,17 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
     
   }
 
+private static function notExistsByName($eqLogic,$commandName) {
+    $response=true;
+    foreach ($eqLogic->getCmd() as $command) {
+            if($command->getname() == $commandName) {
+                $command->setEqLogic($commandName);
+                $command->save();
+                $response=false;
+            }
+    }
+    return $response;
+}
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
