@@ -567,7 +567,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
         }
     }
 }
-
+  */
 private static function createCmdsAction($eqLogic, $device, $commands) {
     if (array_key_last('deviceURL',$device)) {
         $eq = $eqLogic->byLogicalId($device['deviceURL']);
@@ -720,7 +720,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
     }
     
   }
-  */
+
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
