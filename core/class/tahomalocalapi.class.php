@@ -206,12 +206,12 @@ public static function sendToDaemon($params) {
             self::createCmdsState($eqLogic, $device, $device['definition']['commands']);
         }            
         
-         self::updateAllCmdsGenericTypeAndSaveValue($eqLogic);
+         self::updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device);
      }
 
   }
 
-private static updateAllCmdsGenericTypeAndSaveValue($eqLogic) {
+private static updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
     foreach ($eqLogic->getCmd() as $command) {
 
         // Mise a jour des generic_type
@@ -265,6 +265,20 @@ private static updateAllCmdsGenericTypeAndSaveValue($eqLogic) {
                     $command->event($value);
                 }
             }
+        }
+    }
+
+    if (array_key_exists('available',$device)) {
+        $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'available');
+        if (!(is_object($tahomaLocalPiCmd))) {
+            $tahomaLocalPiCmd->event($device['available']);
+        }
+    }
+
+    if (array_key_exists('synced',$device)) {
+        $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'synced');
+        if (!(is_object($tahomaLocalPiCmd))) {
+            $tahomaLocalPiCmd->event($device['synced']);
         }
     }
 }
@@ -427,9 +441,38 @@ private static function createGenericActions($eqLogic, $device) {
     return $response;
 }
 private static function createCmdsState($eqLogic, $device, $states) {
+
+    if (array_key_exists('available',$device)) {
+        $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'available');
+        if (!(is_object($tahomaLocalPiCmd))) {
+            $tahomaLocalPiCmd->setName('available');
+            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+            $tahomaLocalPiCmd->setLogicalId('available');
+            $tahomaLocalPiCmd->setConfiguration('type', 'available');
+            $tahomaLocalPiCmd->setType('info');
+            $tahomaLocalPiCmd->setSubType('binary');
+            $tahomaLocalPiCmd->setIsVisible(0);            
+        }
+        $tahomaLocalPiCmd->save();
+    }
+
+    if (array_key_exists('synced',$device)) {
+        $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'synced');
+        if (!(is_object($tahomaLocalPiCmd))) {
+            $tahomaLocalPiCmd->setName('synced');
+            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+            $tahomaLocalPiCmd->setLogicalId($state['name']);
+            $tahomaLocalPiCmd->setConfiguration('type', 'synced');
+            $tahomaLocalPiCmd->setType('info');
+            $tahomaLocalPiCmd->setSubType('binary');
+            $tahomaLocalPiCmd->setIsVisible(0);            
+        }
+        $tahomaLocalPiCmd->save();
+    }
+
     foreach ($states as $state) {
 
-        $tahomaLocalPiCmd = $this->getCmd(null, $state['name']);
+        $tahomaLocalPiCmd = $eqLogic->getCmd(null, $state['name']);
 
         if (!(is_object($tahomaLocalPiCmd))) {
             $tahomaLocalPiCmd = new tahomalocalapiCmd();
