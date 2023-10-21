@@ -285,6 +285,8 @@ private static updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
         }
     }
 }
+
+  */
 private static function createGenericActions($eqLogic, $device) {
     $response = true;
     if ($device['uiClass'] == "HitachiHeatingSystem") {
@@ -443,7 +445,7 @@ private static function createGenericActions($eqLogic, $device) {
     }
     return $response;
 }
-  */
+
 private static function createCmdsState($eqLogic, $device, $states) {
 
     if (array_key_exists('available',$device)) {
