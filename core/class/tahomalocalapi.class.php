@@ -122,7 +122,7 @@ public function getImage() {
     }
 
     
-    log::add(__CLASS__, 'debug', 'getImage '. $this->getConfiguration('type') . ' -> ' . $path);
+    //log::add(__CLASS__, 'debug', 'getImage '. $this->getConfiguration('type') . ' -> ' . $path);
   	return str_replace(array('/var/www/html/'),array(''),$path);
 }
 
@@ -170,6 +170,7 @@ public static function sendToDaemon($params) {
              $eqLogic->setName($device['label']);
              $eqLogic->setConfiguration('type', $device['controllableName']);
              $eqLogic->setConfiguration('deviceURL', $device['deviceURL']);
+           	 $eqLogic->setLogicalId( $device['deviceURL']);
              $eqLogic->save();
 
              $eqLogic = self::byId($eqLogic->getId());
@@ -189,13 +190,16 @@ public static function sendToDaemon($params) {
              }
          } else {
              $eqLogic = $eqLogic_found;
+           	 $eqLogic->setLogicalId( $device['deviceURL']);
+           	 $eqLogic->save();
          }
+      	
 
         /***********************************/
         //create Actions commands
-        if (array_key_exists('uiClass',$device)) {
+        if (array_key_exists('definition',$device) && array_key_exists('uiClass',$device['definition'])) {
             if (!(self::createGenericActions($eqLogic, $device))) {
-                if (array_key_exists('definition',device) && array_key_exists('commands',$device['definition'])) {
+                if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
                     self::createCmdsAction($eqLogic, $device, $device['definition']['commands']);
                 }
             }   
@@ -203,20 +207,19 @@ public static function sendToDaemon($params) {
 
         //Create infos commands
         if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
-            self::createCmdsState($eqLogic, $device, $device['definition']['commands']);
+            self::createCmdsState($eqLogic, $device, $device['definition']['states']);
         }            
         
          self::updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device);
-
      }
 
   }
 
 
 private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
-    log::add(__CLASS__, 'debug', __FUNCTION__);
+  	log::add(__CLASS__, 'debug', __FUNCTION__);
     foreach ($eqLogic->getCmd() as $command) {
-
+		log::add(__CLASS__, 'debug', __FUNCTION__ . ' -> ' . $command->getName());
         // Mise a jour des generic_type
         if ($command->getType() == 'action') {
             if ($command->getName() == 'open') {
@@ -271,25 +274,24 @@ private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
         }
     }
 
+  	log::add(__CLASS__, 'debug', __FUNCTION__ . ' -> ' . json_encode($device));
     if (array_key_exists('available',$device)) {
         $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'available');
-        if (!(is_object($tahomaLocalPiCmd))) {
+        if (is_object($tahomaLocalPiCmd)) {
             $tahomaLocalPiCmd->event($device['available']);
         }
     }
 
     if (array_key_exists('synced',$device)) {
         $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'synced');
-        if (!(is_object($tahomaLocalPiCmd))) {
+        if (is_object($tahomaLocalPiCmd)) {
             $tahomaLocalPiCmd->event($device['synced']);
         }
     }
-
 }
 
 
 private static function createGenericActions($eqLogic, $device) {
-    log::add(__CLASS__, 'debug', __FUNCTION__);
     $response = true;
     if ($device['uiClass'] == "HitachiHeatingSystem") {
         if (!(is_object($eqLogic->getCmd(null, 'Automatic')))) {
@@ -449,10 +451,11 @@ private static function createGenericActions($eqLogic, $device) {
 }
 
 private static function createCmdsState($eqLogic, $device, $states) {
-    log::add(__CLASS__, 'debug', __FUNCTION__);
+	log::add(__CLASS__, 'debug', __FUNCTION__);
     if (array_key_exists('available',$device)) {
         $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'available');
         if (!(is_object($tahomaLocalPiCmd))) {
+          	$tahomaLocalPiCmd = new tahomalocalapiCmd();
             $tahomaLocalPiCmd->setName('available');
             $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
             $tahomaLocalPiCmd->setLogicalId('available');
@@ -463,13 +466,14 @@ private static function createCmdsState($eqLogic, $device, $states) {
         }
         $tahomaLocalPiCmd->save();
     }
-
+  
     if (array_key_exists('synced',$device)) {
         $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'synced');
         if (!(is_object($tahomaLocalPiCmd))) {
+          	$tahomaLocalPiCmd = new tahomalocalapiCmd();
             $tahomaLocalPiCmd->setName('synced');
             $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setLogicalId($state['name']);
+            $tahomaLocalPiCmd->setLogicalId('synced');
             $tahomaLocalPiCmd->setConfiguration('type', 'synced');
             $tahomaLocalPiCmd->setType('info');
             $tahomaLocalPiCmd->setSubType('binary');
@@ -479,12 +483,11 @@ private static function createCmdsState($eqLogic, $device, $states) {
     }
 
     foreach ($states as $state) {
-
+		log::add(__CLASS__, 'debug', __FUNCTION__ . ', state : ' . json_encode($state));
         $tahomaLocalPiCmd = $eqLogic->getCmd(null, $state['name']);
 
         if (!(is_object($tahomaLocalPiCmd))) {
             $tahomaLocalPiCmd = new tahomalocalapiCmd();
-
             $tahomaLocalPiCmd->setName($state['name']);
             $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
             $tahomaLocalPiCmd->setLogicalId($state['name']);
@@ -574,14 +577,10 @@ private static function createCmdsState($eqLogic, $device, $states) {
 }
 
 private static function createCmdsAction($eqLogic, $device, $commands) {
-    log::add(__CLASS__, 'debug', __FUNCTION__);
-    if (array_key_last('deviceURL',$device)) {
-        $eq = $eqLogic->byLogicalId($device['deviceURL']);
-
-        if (!(is_object($eq))) {
-            
+  	log::add(__CLASS__, 'debug', __FUNCTION__ . ' v2 -> ' . $device['deviceURL']);
+    if (array_key_exists('deviceURL',$device)) {
+        if (is_object($eqLogic)) {
             foreach ($commands as $command) {
-
                 if ($device['controllableName'] == "io:RollerShutterGenericIOComponent") {
                     // Store
                 }
@@ -604,10 +603,10 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
 
                 $useCmd = true;
 
-                $tahomaLocalPiCmd = $this->getCmd(null, $command['commandName']);
+                $tahomaLocalPiCmd = $eqLogic->getCmd(null, $command['commandName']);
                 if (!(is_object($tahomaLocalPiCmd))) {
+                  	log::add(__CLASS__, 'debug', __FUNCTION__ . ' ' . $command['commandName'] . ' cmd not exits for  '  .$eqLogic->getName());
                     $tahomaLocalPiCmd = new tahomalocalapiCmd();
-                    log::add(__CLASS__, 'debug', '      -> create cmd : ' . $command['commandName']);
 
                     if ($command['commandName'] == "setClosure") {                    
                         $tahomaLocalPiCmd->setType('action');
@@ -713,11 +712,12 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
 
                     if ($useCmd) {
                         $tahomaLocalPiCmd->setName($command['commandName']);
+                      	$tahomaLocalPiCmd->setLogicalId($command['commandName']);
                         $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
                         $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
                         $tahomaLocalPiCmd->setConfiguration('commandName', $command['commandName']);
                         $tahomaLocalPiCmd->setConfiguration('nparams', $command['nparams']);
-
+				log::add(__CLASS__, 'debug', __FUNCTION__ . ' before save . ' . $command['commandName'] . ' cmd not exits for  '  .$eqLogic->getName());
                         $tahomaLocalPiCmd->save();
                     }
                 }
