@@ -214,8 +214,8 @@ public static function sendToDaemon($params) {
   }
 
 
-private static updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
-    /*
+private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
+
     foreach ($eqLogic->getCmd() as $command) {
 
         // Mise a jour des generic_type
@@ -285,7 +285,7 @@ private static updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
             $tahomaLocalPiCmd->event($device['synced']);
         }
     }
-    */
+
 }
 
 
