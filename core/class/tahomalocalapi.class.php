@@ -193,7 +193,6 @@ public static function sendToDaemon($params) {
 
         /***********************************/
         //create Actions commands
-        /*
         if (array_key_exists('uiClass',$device)) {
             if (!(self::createGenericActions($eqLogic, $device))) {
                 if (array_key_exists('definition',device) && array_key_exists('commands',$device['definition'])) {
@@ -208,7 +207,7 @@ public static function sendToDaemon($params) {
         }            
         
          self::updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device);
-         */
+
      }
 
   }
