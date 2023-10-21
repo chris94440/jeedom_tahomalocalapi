@@ -111,7 +111,7 @@ protected static function getSocketPort() {
 }
 
 public function getImage() {
-    $typeMef=str_replace(array('internal:','io:'),array(''),$this->getConfiguration('type'));
+    $typeMef=str_replace(array('internal:','io:','rst:'),array(''),$this->getConfiguration('type'));
     $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';
 
     if (!(file_exists($path))) {
@@ -453,9 +453,9 @@ private static function createGenericActions($eqLogic, $device) {
 
 private static function createCmdsState($eqLogic, $device, $states) {
     if (array_key_exists('available',$device)) {
-      	log::add(__CLASS__, 'debug','|     create cmd info : available');
         $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'available');
         if (!(is_object($tahomaLocalPiCmd))) {
+          	log::add(__CLASS__, 'debug','|     create cmd info : available');
           	$tahomaLocalPiCmd = new tahomalocalapiCmd();
             $tahomaLocalPiCmd->setName('available');
             $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
