@@ -214,7 +214,7 @@ public static function sendToDaemon($params) {
 
 
 private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
-
+    log::add(__CLASS__, 'debug', __FUNCTION__);
     foreach ($eqLogic->getCmd() as $command) {
 
         // Mise a jour des generic_type
@@ -289,6 +289,7 @@ private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
 
 
 private static function createGenericActions($eqLogic, $device) {
+    log::add(__CLASS__, 'debug', __FUNCTION__);
     $response = true;
     if ($device['uiClass'] == "HitachiHeatingSystem") {
         if (!(is_object($eqLogic->getCmd(null, 'Automatic')))) {
@@ -448,7 +449,7 @@ private static function createGenericActions($eqLogic, $device) {
 }
 
 private static function createCmdsState($eqLogic, $device, $states) {
-
+    log::add(__CLASS__, 'debug', __FUNCTION__);
     if (array_key_exists('available',$device)) {
         $tahomaLocalPiCmd = $eqLogic->getCmd(null, 'available');
         if (!(is_object($tahomaLocalPiCmd))) {
@@ -573,6 +574,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
 }
 
 private static function createCmdsAction($eqLogic, $device, $commands) {
+    log::add(__CLASS__, 'debug', __FUNCTION__);
     if (array_key_last('deviceURL',$device)) {
         $eq = $eqLogic->byLogicalId($device['deviceURL']);
 
