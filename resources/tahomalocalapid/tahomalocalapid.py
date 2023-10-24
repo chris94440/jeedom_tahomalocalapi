@@ -221,7 +221,7 @@ def getGateways():
 		response = requests.request("GET", url, verify=False, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
-			logging.debug("Gateways lis : %s", response.json())
+			logging.debug("Gateways list : %s", response.json())
 			#jeedom_com.send_change_immediate({'gatewaysList' : response.json()})
 		else:
 			logging.error("Http code : %s", response.status_code)
