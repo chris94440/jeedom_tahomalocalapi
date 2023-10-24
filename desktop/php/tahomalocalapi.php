@@ -166,13 +166,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			<!-- Onglet des commandes de l'équipement -->
 <div role="tabpanel" class="tab-pane" id="commandtab">
 <legend>
-<center class="title_cmdtable">{{Tableau de commandes <?php echo ' - '.$plugName.': ';?>}}
+<center class="title_cmdtable">{{Tableau de commandes <?php echo ' - '.$plugin->getName().' : ';?>}}
 	<span class="eqName"></span>
 </center>
 </legend>
 
 <legend><i class="fas fa-info"></i>  {{Infos}}</legend>
-	
 	<table id="table_cmdi" class="table table-bordered table-condensed ">
 		<!--<table class="table  tablesorter tablesorter-bootstrap tablesorter hasResizable table-striped hasFilters" id="table_update" style="margin-top: 5px;" role="grid"><colgroup class="tablesorter-colgroup"></colgroup>
 		</table>-->
@@ -205,6 +204,22 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		</thead>
 		<tbody></tbody>
 	</table>
+      				<table id="table_cmd" class="table table-bordered table-condensed">
+					<thead>
+						<tr>
+							<th style="width: 300px;">{{Nom}}</th>
+							<th style="width: 100px;">{{Etat}}</th>
+							<th style="width: 200px;" class="zbtype_client">{{Topic}}</th>
+							<th style="width: 130px;" class="zbtype_eq zbtype_eqgrp">{{Type}}</th>
+							<th style="width: 150px;">{{Nom (clé) ou Action}}</th>
+							<th>{{Paramètres}}</th>
+							<th style="width: 250px;">{{Options}}</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
 
 </div><!-- /.tabpanel #commandtab-->
 
