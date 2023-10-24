@@ -206,6 +206,27 @@ def getDevicesList():
 		logging.error("rror when retrieving tahoma devices list -> %s",err)
 		shutdown()
 
+def getGateways():	
+	logging.debug(' * Retrieve devices list')
+	try:
+
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices'
+
+		response = requests.request("GET", url, verify=False, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("Gateways lis : %s", response.json())
+			#jeedom_com.send_change_immediate({'gatewaysList' : response.json()})
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)	
+			shutdown()	
+
+	except requests.exceptions.HTTPError as err:
+		logging.error("rror when retrieving tahoma devices list -> %s",err)
+		shutdown()
+
 def validateToken():
 	logging.debug(' * validate tahoma token')
 	try:
