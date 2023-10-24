@@ -166,13 +166,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
 			<!-- Onglet des commandes de l'équipement -->
 <div role="tabpanel" class="tab-pane" id="commandtab">
 <legend>
-<center class="title_cmdtable">{{Tableau de commandes <?php echo ' - '.$plugName.': ';?>}}
+<center class="title_cmdtable">{{Tableau de commandes <?php echo ' - '.$plugin->getName().' : ';?>}}
 	<span class="eqName"></span>
 </center>
 </legend>
 
 <legend><i class="fas fa-info"></i>  {{Infos}}</legend>
-	
 	<table id="table_cmdi" class="table table-bordered table-condensed ">
 		<!--<table class="table  tablesorter tablesorter-bootstrap tablesorter hasResizable table-striped hasFilters" id="table_update" style="margin-top: 5px;" role="grid"><colgroup class="tablesorter-colgroup"></colgroup>
 		</table>-->
@@ -205,7 +204,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		</thead>
 		<tbody></tbody>
 	</table>
-
 </div><!-- /.tabpanel #commandtab-->
 
 		</div><!-- /.tab-content -->
