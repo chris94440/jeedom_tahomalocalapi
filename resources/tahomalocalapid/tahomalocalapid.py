@@ -50,6 +50,9 @@ def read_socket():
 			elif message['action'] == 'synchronize':
 				logging.info('== action synchronize ==')
 				getDevicesList()
+			elif message['action'] == 'cancelExecution':
+				logging.info('== action cancelExecution ==')
+				deleteExecution(message['execId'])
 			else:
 				logging.info('== other action not manage yes : ' + message['action']  + ' ==')
 		except Exception as e:
@@ -74,6 +77,7 @@ def listen():
 		if _tokenTahoma:
 			validateToken()
 			getDevicesList()
+			#getGateways()
 			registerListener()	
 
 	try:
@@ -193,6 +197,32 @@ def getDevicesList():
 
 		if response.status_code and (response.status_code == 200):
 			jeedom_com.send_change_immediate({'devicesList' : response.json()})
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)	
+			shutdown()	
+
+	except requests.exceptions.HTTPError as err:
+		logging.error("rror when retrieving tahoma devices list -> %s",err)
+		shutdown()
+
+def getGateways():	
+	logging.debug(' * Retrieve gateways list')
+	try:
+
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/gateways'
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+
+		response = requests.request("GET", url, verify=False, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("Gateways list : %s", response.json())
+			#jeedom_com.send_change_immediate({'gatewaysList' : response.json()})
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -405,6 +435,8 @@ def execCmd(params):
 			logging.debug("ExecCmd http : %s", response.status_code)
 			if response.json().get('execId'):
 				logging.debug("Execution id : %s", response.json().get('execId'))
+				response=json.dumps({"deviceId": params['deviceId'],	"execId": response.json().get('execId')})
+				jeedom_com.send_change_immediate({'execIdEvent' : response})
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
