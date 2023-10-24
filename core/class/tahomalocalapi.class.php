@@ -1014,10 +1014,8 @@ class tahomalocalapiCmd extends cmd {
         }
 
         if ($commandName == "cancelExecutions") {
-            $execId = $parameters[0];
-
             log::add('tahomalocalapi', 'debug', "will cancelExecutions: (" . $execId . ")");
-            
+            $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'cancelExecution', 'execId' => $execId]);
         }
         return;
     }
