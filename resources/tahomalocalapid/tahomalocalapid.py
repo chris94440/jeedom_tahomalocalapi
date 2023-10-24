@@ -213,7 +213,7 @@ def getGateways():
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices'
 
-		response = requests.request("GET", url, verify=False, headers=headers)
+		response = requests.request("GET", url, verify=False)
 
 		if response.status_code and (response.status_code == 200):
 			logging.debug("Gateways lis : %s", response.json())
