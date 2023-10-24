@@ -214,7 +214,13 @@ public static function sendToDaemon($params) {
         
          self::updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device);
      }
-     log::add(__CLASS__, 'debug', '+----------------------End----- create_or_update_devices  --> '. $itemAnalyzed .'--------------------------');
+
+     if (sizeof($devices) != $itemAnalyzed) {
+        log::add(__CLASS__, 'debug', '+----------------------End----- create_or_update_devices  -> error, nb of items received : '. sizeof($devices) . ' vs nb of items analyzed : ' .$itemAnalyzed .'--------------------------');
+     } else {
+        log::add(__CLASS__, 'debug', '+----------------------End----- create_or_update_devices  -> nb of items received : '. sizeof($devices) . ' vs nb of items analyzed : ' .$itemAnalyzed .'--------------------------');
+     }
+
   }
 
 
