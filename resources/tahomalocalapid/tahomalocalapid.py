@@ -50,7 +50,7 @@ def read_socket():
 			elif message['action'] == 'synchronize':
 				logging.info('== action synchronize ==')
 				getDevicesList()
-			elif message['action'] == 'cancelExecution'
+			elif message['action'] == 'cancelExecution':
 				logging.info('== action cancelExecution ==')
 				deleteExecution(message['execId'])
 			else:
