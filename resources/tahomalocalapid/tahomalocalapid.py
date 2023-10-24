@@ -211,7 +211,7 @@ def getGateways():
 	logging.debug(' * Retrieve gateways list')
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices'
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/gateways'
 		
 		headers = {
 			'Content-Type' : 'application/json',
