@@ -152,7 +152,7 @@ public static function sendToDaemon($params) {
     if (array_key_exists('deviceId', $arr) && array_key_exists('execId', $arr)) {  
         log::add(__CLASS__, 'debug', '+ device id : ' . $arr['deviceId'] . ' -> ' . $arr['execId']);      
         foreach ($eqLogics as $eqLogic) {
-            if ($arr['deviceId'] == $eqLogic->Id()) {
+            if ($arr['deviceId'] == $eqLogic->getId()) {
                 log::add(__CLASS__, 'debug', '+     - update or set execId'); 
                 $eqLogic->setConfiguration('execId', $arr['execId']);                
                 break;
