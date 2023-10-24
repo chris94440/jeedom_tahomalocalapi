@@ -281,7 +281,13 @@ private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
                 $command->setDisplay('generic_type', 'LOCK_OPEN');
                 $command->save();
             }
-        }
+        } elseif ($command->getType() == 'info') {
+            if ($command->getName() == 'core:ClosureState') {
+                $command->setSubType('numeric');
+                $command->setDisplay('generic_type', 'FLAP_STATE');
+                $command->save();
+            }
+        } 
 
         //Recupération des valeur et mise a jour des commandes info par event
         if ($command->getType() == 'info') {
