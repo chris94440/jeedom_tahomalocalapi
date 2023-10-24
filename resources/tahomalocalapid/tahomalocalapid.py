@@ -77,7 +77,7 @@ def listen():
 		if _tokenTahoma:
 			validateToken()
 			getDevicesList()
-			getGateways()
+			#getGateways()
 			registerListener()	
 
 	try:
