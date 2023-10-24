@@ -24,8 +24,9 @@ try {
         log::add('tahomalocalapi', 'debug', '   - content  : ' . json_encode($result['devicesList']));
         tahomalocalapi::create_or_update_devices($result['devicesList']);
     } elseif (isset($result['execIdEvent'])) {
-        log::add('tahomalocalapi', 'debug', 'Message receive for execIdEvent : ' . json_encode($result['execIdEvent']));
-        tahomalocalapi::storeExecId($result['execIdEvent']);
+        $jsonMef=str_replace(array('\\','"{','}"'), array('','{','}'),json_encode($result['execIdEvent']));
+        log::add('tahomalocalapi', 'debug', 'Message receive for execIdEvent : ' . $jsonMef);
+        tahomalocalapi::storeExecId($jsonMef);
     }
     
 } catch (Exception $e) {

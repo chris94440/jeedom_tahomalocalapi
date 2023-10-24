@@ -146,14 +146,15 @@ public static function sendToDaemon($params) {
 
   public static function storeExecId($execIdEvent) {
     log::add(__CLASS__, 'debug', '+------------------------------ storeExecId---------------------------------');
-    log::add(__CLASS__, 'debug', '+ -> '. json_encode($execIdEvent));
+    log::add(__CLASS__, 'debug', '+ -> '. $execIdEvent);
+    $arr=json_decode($execIdEvent,true);
     $eqLogics=eqLogic::byType(__CLASS__);
-    if (array_key_exists('deviceId', $execIdEvent) && array_key_exists('execId', $execIdEvent)) {  
-        log::add(__CLASS__, 'debug', '+ device id : ' . $execIdEvent['deviceId'] . ' -> ' . $execIdEvent['execId']);      
+    if (array_key_exists('deviceId', $arr) && array_key_exists('execId', $arr)) {  
+        log::add(__CLASS__, 'debug', '+ device id : ' . $arr['deviceId'] . ' -> ' . $arr['execId']);      
         foreach ($eqLogics as $eqLogic) {
-            if ($execIdEvent['deviceId'] == $eqLogic->Id()) {
+            if ($arr['deviceId'] == $eqLogic->Id()) {
                 log::add(__CLASS__, 'debug', '+     - update or set execId'); 
-                $eqLogic->setConfiguration('execId', $execIdEvent['execId']);                
+                $eqLogic->setConfiguration('execId', $arr['execId']);                
                 break;
             }        
         }
