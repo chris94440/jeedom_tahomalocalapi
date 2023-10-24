@@ -145,15 +145,19 @@ public static function sendToDaemon($params) {
   /*     * *************************Attributs****************************** */
 
   public static function storeExecId($execIdEvent) {
+    log::add(__CLASS__, 'debug', '+------------------------------ storeExecId---------------------------------');
     $eqLogics=eqLogic::byType(__CLASS__);
-    if (array_key_exists('deviceId', $execIdEvent) && array_key_exists('execId', $execIdEvent)) {        
+    if (array_key_exists('deviceId', $execIdEvent) && array_key_exists('execId', $execIdEvent)) {  
+        log::add(__CLASS__, 'debug', '+ device id : ' . $execIdEvent['deviceId'] . ' -> ' . $execIdEvent['execId']);      
         foreach ($eqLogics as $eqLogic) {
-            if ($execIdEvent['deviceId'] == $eqLogic->getConfiguration('deviceURL')) {
+            if ($execIdEvent['deviceId'] == $eqLogic->Id()) {
+                log::add(__CLASS__, 'debug', '+     - update or set execId'); 
                 $eqLogic->setConfiguration('execId', $execIdEvent['execId']);                
                 break;
             }        
         }
-    }            
+    }           
+    log::add(__CLASS__, 'debug', '+-------------end-------------- storeExecId---------------------------------'); 
   }
 
   public static function create_or_update_devices($devices) {
