@@ -23,6 +23,10 @@ try {
         log::add('tahomalocalapi', 'debug', 'Message receive for devicesList, nb object : ' . sizeof($result['devicesList']));
         log::add('tahomalocalapi', 'debug', '   - content  : ' . json_encode($result['devicesList']));
         tahomalocalapi::create_or_update_devices($result['devicesList']);
+    } elseif (isset($result['execIdEvent'])) {
+        log::add('tahomalocalapi', 'debug', '   - content  : ' . json_encode($result['execIdEvent']));
+        tahomalocalapi::storeExecId($result['devicesList']);
+    }
    //}else {
     //    log::add('tahomalocalapi', 'error', 'unknown message received from daemon'); //remplacez template par l'id de votre plugin
     }

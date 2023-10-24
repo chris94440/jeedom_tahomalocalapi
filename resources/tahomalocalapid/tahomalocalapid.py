@@ -405,6 +405,8 @@ def execCmd(params):
 			logging.debug("ExecCmd http : %s", response.status_code)
 			if response.json().get('execId'):
 				logging.debug("Execution id : %s", response.json().get('execId'))
+				response=json.dumps({"deviceId": params['deviceId'],	"execId": response.json().get('execId')})
+				jeedom_com.send_change_immediate({'execIdEvent' : response})
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
