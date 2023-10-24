@@ -154,7 +154,8 @@ public static function sendToDaemon($params) {
         foreach ($eqLogics as $eqLogic) {
             if ($arr['deviceId'] == $eqLogic->getId()) {
                 log::add(__CLASS__, 'debug', '+     - update or set execId'); 
-                $eqLogic->setConfiguration('execId', $arr['execId']);                
+                $eqLogic->setConfiguration('execId', $arr['execId']);
+                $eqLogic->save();    
                 break;
             }        
         }
