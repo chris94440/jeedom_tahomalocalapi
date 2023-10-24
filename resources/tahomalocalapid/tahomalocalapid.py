@@ -192,7 +192,6 @@ def getDevicesList():
 		response = requests.request("GET", url, verify=False, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
-			logging.debug("	- nb items : %i", len(response))
 			jeedom_com.send_change_immediate({'devicesList' : response.json()})
 		else:
 			logging.error("Http code : %s", response.status_code)
