@@ -111,7 +111,7 @@ protected static function getSocketPort() {
 }
 
 public function getImage() {
-    $typeMef=str_replace(array('internal:','io:','rst:'),array(''),$this->getConfiguration('type'));
+    $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$this->getConfiguration('type'));
     $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';
 
     if (!(file_exists($path))) {
