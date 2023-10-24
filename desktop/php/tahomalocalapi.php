@@ -204,23 +204,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		</thead>
 		<tbody></tbody>
 	</table>
-      				<table id="table_cmd" class="table table-bordered table-condensed">
-					<thead>
-						<tr>
-							<th style="width: 300px;">{{Nom}}</th>
-							<th style="width: 100px;">{{Etat}}</th>
-							<th style="width: 200px;" class="zbtype_client">{{Topic}}</th>
-							<th style="width: 130px;" class="zbtype_eq zbtype_eqgrp">{{Type}}</th>
-							<th style="width: 150px;">{{Nom (clé) ou Action}}</th>
-							<th>{{Paramètres}}</th>
-							<th style="width: 250px;">{{Options}}</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-
 </div><!-- /.tabpanel #commandtab-->
 
 		</div><!-- /.tab-content -->
