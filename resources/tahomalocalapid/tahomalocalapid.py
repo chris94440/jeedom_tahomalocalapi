@@ -361,22 +361,37 @@ def execCmd(params):
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
-		payload=json.dumps({
-				"label": params['commandName'],								
-				"actions": [
-				{
-				"commands": [
+		if params['parameters'] != "":
+			payload=json.dumps({
+					"label": params['commandName'],								
+					"actions": [
 					{
-					"name": params['name'],
-					"parameters": [
-						params['parameters']
-					]
+					"commands": [
+						{
+						"name": params['name'],
+						"parameters": [
+							params['parameters']
+						]
+						}
+					],
+					"deviceURL": params['deviceUrl']
 					}
-				],
-				"deviceURL": params['deviceUrl']
-				}
-			]
-		})
+				]
+			})
+		else:
+			payload=json.dumps({
+					"label": params['commandName'],								
+					"actions": [
+					{
+					"commands": [
+						{
+						"name": params['name']
+						}
+					],
+					"deviceURL": params['deviceUrl']
+					}
+				]
+			})
 		
 		headers = {
 			'Content-Type' : 'application/json',
