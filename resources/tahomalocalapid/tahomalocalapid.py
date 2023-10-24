@@ -208,12 +208,17 @@ def getDevicesList():
 		shutdown()
 
 def getGateways():	
-	logging.debug(' * Retrieve devices list')
+	logging.debug(' * Retrieve gateways list')
 	try:
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices'
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
 
-		response = requests.request("GET", url, verify=False)
+		response = requests.request("GET", url, verify=False, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
 			logging.debug("Gateways lis : %s", response.json())
