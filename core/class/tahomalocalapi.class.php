@@ -799,34 +799,7 @@ private static function notExistsByName($eqLogic,$commandName) {
                 }
             }    
         }
-        /*
-    } elseif (array_key_exists('execId', $item)) { 
-        if (array_key_exists('actions',$item)) {
-            foreach($item['actions'] as $action) {
-                if (array_key_exists('deviceURL',$action)) {               
-                    foreach ($eqLogics as $eqLogic) {   
-                        if ($action['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
-                            //log::add(__CLASS__, 'debug','   - store execution id  ' . $action['execId'] . ' for device ' . $action['deviceURL']);
-                            $eqLogic->setConfiguration('execId',$action['execId']);
-                            $eqLogic->save();
-                            break;
-                        }
-                    }
-                }
-            }
-        } else {
-            if (array_key_exists('newState',$item) && $item['newState'] == 'COMPLETED') {
-                foreach ($eqLogics as $eqLogic) {   
-                    if ($item['execId'] == $eqLogic->getConfiguration('execId')) {
-                        $eqLogic->setConfiguration('execId','');
-                        $eqLogic->save();
-                        break;
-                    }
-                }
-            }
-        }
-        /*
-    }
+    }     
   }
   /*
   * Permet de définir les possibilités de personnalisation du widget (en cas d'utilisation de la fonction 'toHtml' par exemple)
@@ -1000,7 +973,7 @@ class tahomalocalapiCmd extends cmd {
                     case 'orientation':
                         if ($commandName == "setOrientation") {
                             $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['deviceId'] => $eqlogic->getId(), ['action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
+                            $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
                               return;
                         }
                         break;
@@ -1009,7 +982,7 @@ class tahomalocalapiCmd extends cmd {
                             $parameters = 100 - $parameters;
 
                             $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['deviceId'] => $eqlogic->getId(),['action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
+                            $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(),'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
 
                             return;
                         }
@@ -1022,7 +995,7 @@ class tahomalocalapiCmd extends cmd {
                 break;
           	case 'other':
             	//$parameters = array_map('intval', explode(",", $parameters));
-            	$eqlogic->sendToDaemon(['deviceId'] => $eqlogic->getId(), ['action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
+            	$eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
             	return;
            
         }

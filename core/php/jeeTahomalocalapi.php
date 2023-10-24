@@ -27,9 +27,6 @@ try {
         log::add('tahomalocalapi', 'debug', '   - content  : ' . json_encode($result['execIdEvent']));
         tahomalocalapi::storeExecId($result['devicesList']);
     }
-   //}else {
-    //    log::add('tahomalocalapi', 'error', 'unknown message received from daemon'); //remplacez template par l'id de votre plugin
-    }
     
 } catch (Exception $e) {
     log::add('tahomalocalapi', 'error', displayException($e)); //remplacez template par l'id de votre plugin
