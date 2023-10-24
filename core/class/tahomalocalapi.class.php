@@ -214,7 +214,7 @@ public static function sendToDaemon($params) {
         
          self::updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device);
      }
-     log::add(__CLASS__, 'debug', '+----------------------End----- create_or_update_devices  --> . '.$itemAnalyzed++;.'--------------------------');
+     log::add(__CLASS__, 'debug', '+----------------------End----- create_or_update_devices  --> . '. $itemAnalyzed .'--------------------------');
   }
 
 
