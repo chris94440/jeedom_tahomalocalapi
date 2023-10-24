@@ -146,6 +146,7 @@ public static function sendToDaemon($params) {
 
   public static function storeExecId($execIdEvent) {
     log::add(__CLASS__, 'debug', '+------------------------------ storeExecId---------------------------------');
+    log::add(__CLASS__, 'debug', '+ -> '. json_encode($execIdEvent));
     $eqLogics=eqLogic::byType(__CLASS__);
     if (array_key_exists('deviceId', $execIdEvent) && array_key_exists('execId', $execIdEvent)) {  
         log::add(__CLASS__, 'debug', '+ device id : ' . $execIdEvent['deviceId'] . ' -> ' . $execIdEvent['execId']);      
