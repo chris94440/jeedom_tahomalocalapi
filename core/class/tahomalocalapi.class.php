@@ -1001,8 +1001,12 @@ class tahomalocalapiCmd extends cmd {
                 }
                 break;
           	case 'other':
-            	//$parameters = array_map('intval', explode(",", $parameters));
-            	$eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
+                if ($commandName == "cancelExecutions") {
+                    log::add('tahomalocalapi', 'debug', "will cancelExecutions: (" . $execId . ")");
+                    $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'cancelExecution', 'execId' => $execId]);
+                } else {
+                    $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
+                }
             	return;
            
         }
@@ -1015,10 +1019,7 @@ class tahomalocalapiCmd extends cmd {
             $parameters = explode(",", $parameters);
         }
 
-        if ($commandName == "cancelExecutions") {
-            log::add('tahomalocalapi', 'debug', "will cancelExecutions: (" . $execId . ")");
-            $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'cancelExecution', 'execId' => $execId]);
-        }
+        
         return;
     }
 
