@@ -146,9 +146,12 @@ public static function sendToDaemon($params) {
 
   public static function create_or_update_devices($devices) {
     log::add(__CLASS__, 'debug', '+------------------------------ create_or_update_devices---------------------------------');
+    log::add(__CLASS__, 'debug', '+ Number of items : ' . sizeof($devices));
+    $itemAnalyzed=0;
     
     $eqLogics=eqLogic::byType(__CLASS__);
     foreach ($devices as $device) {
+        $itemAnalyzed++;
       	log::add(__CLASS__, 'debug','| ' . $device['deviceURL'] . ' -> ' . $device['label']);
          $found = false;
 
@@ -211,7 +214,7 @@ public static function sendToDaemon($params) {
         
          self::updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device);
      }
-
+     log::add(__CLASS__, 'debug', '+----------------------End----- create_or_update_devices  --> . '.$itemAnalyzed++;.'--------------------------');
   }
 
 
