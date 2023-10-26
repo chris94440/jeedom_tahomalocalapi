@@ -23,8 +23,19 @@ function tahomalocalapi_install() {
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
 function tahomalocalapi_update() {
+    $dir = __DIR__.'/../data/img/';
+    array_map('unlink', glob("{$dir}*.png"));
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin
 function tahomalocalapi_remove() {
+    while (1) {
+		$eqLogics = eqLogic::byType('tahomalocalapi');
+
+		if (count($eqLogics) == 0) {
+			break;
+		}
+
+		$eqLogics[0]->remove();
+	}
 }
