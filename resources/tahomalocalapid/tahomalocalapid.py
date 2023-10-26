@@ -437,6 +437,32 @@ def execCmd(params):
 				logging.debug("Execution id : %s", response.json().get('execId'))
 				response=json.dumps({"deviceId": params['deviceId'],	"execId": response.json().get('execId')})
 				jeedom_com.send_change_immediate({'execIdEvent' : response})
+				execForceRefresh(params)
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when executing cmd to tahoma -> %s",err)
+		shutdown()
+
+def execForceRefresh(params):	
+	logging.debug(' * Execute force refresh')
+	try:
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+
+		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": ["p1"]}],"deviceURL": params['deviceUrl']}]})
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+
+		logging.debug("	- payload :  %s", payload)
+		response = requests.request("POST", url, verify=False, headers=headers, data=payload)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("ExecCmd http : %s", response.status_code)
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
