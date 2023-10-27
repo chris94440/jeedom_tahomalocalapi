@@ -581,6 +581,13 @@ private static function createCmdsState($eqLogic, $device, $states) {
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STATE');
                     $tahomaLocalPiCmd->save();
                     break;
+                case 'core:LightIntensityState':
+                    $linkedCmdName = 'setIntensity';
+                    $tahomaLocalPiCmd->setDisplay('generic_type', 'LIGHT_BRIGHTNESS');
+                    $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                    $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                    $tahomaLocalPiCmd->save();
+                    break;                    
                 case 'core:SlateOrientationState':
                     $linkedCmdName = 'setOrientation';
                     break;
@@ -651,6 +658,15 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                    }  else if ($command['commandName'] == "setIntensity") {
+                        $tahomaLocalPiCmd->setType('action');
+                        $tahomaLocalPiCmd->setIsVisible(0);
+                        $tahomaLocalPiCmd->setSubType('slider');
+                        //$tahomaLocalPiCmd->setConfiguration('request', 'closure');
+                        $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                        $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                        $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                        $tahomaLocalPiCmd->setDisplay('generic_type', 'LIGHT_SLIDER');
                     } else if ($command['commandName'] == "setOrientation") {
                         $tahomaLocalPiCmd->setType('action');
                         $tahomaLocalPiCmd->setIsVisible(0);
@@ -740,6 +756,10 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setType('action');
                         $tahomaLocalPiCmd->setSubType('other');
                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-exchange"></i>');
+                    }  else if ($command['commandName'] == "advancedRefresh") {
+                        $tahomaLocalPiCmd->setType('action');
+                        $tahomaLocalPiCmd->setSubType('other');
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                   
                     } else {
                         $useCmd = false;
                     }
