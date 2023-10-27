@@ -328,6 +328,10 @@ def fetchListener():
 				for item in json_data:
 					#logging.debug(item['name'] + ' -> ' + item['deviceURL'])
 					jeedom_com.send_change_immediate({'eventItem' : item})
+					for action in item['actions']:
+						logging.debug("		-> event action on deviceUrl : " + action['deviceURL'])
+						if (action['deviceURL'] != ''):
+							execForceRefresh(action['deviceURL'])
 					#getDeviceStates(item['deviceURL'])	
 		else:
 			logging.error("Http code : %s", response.status_code)
@@ -437,7 +441,7 @@ def execCmd(params):
 				logging.debug("Execution id : %s", response.json().get('execId'))
 				response=json.dumps({"deviceId": params['deviceId'],	"execId": response.json().get('execId')})
 				jeedom_com.send_change_immediate({'execIdEvent' : response})
-				execForceRefresh(params)
+				#execForceRefresh(params['deviceUrl'])
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -446,12 +450,12 @@ def execCmd(params):
 		logging.error("Error when executing cmd to tahoma -> %s",err)
 		shutdown()
 
-def execForceRefresh(params):	
+def execForceRefresh(deviceUrl):	
 	logging.debug(' * Execute force refresh')
 	try:
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
-		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": ["p1"]}],"deviceURL": params['deviceUrl']}]})
+		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": ["p1"]}],"deviceURL": deviceUrl}]})
 		
 		headers = {
 			'Content-Type' : 'application/json',
