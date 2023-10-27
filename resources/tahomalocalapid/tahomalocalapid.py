@@ -330,11 +330,11 @@ def fetchListener():
 					jeedom_com.send_change_immediate({'eventItem' : item})
 					if 'actions' in item:						
 						for action in item['actions']:
-							logging.debug("		-> event action on deviceUrl : " + action['deviceURL'])
-							if (action['deviceURL'] != ''):
-								logging.debug("			-> execute execForceRefresh")
-								#execForceRefresh(action['deviceURL'])
-					#getDeviceStates(item['deviceURL'])	
+							if 'command' in action:
+								if action['command'] != "advancedRefresh":
+									if (action['deviceURL'] != ''):
+										logging.debug("			-> execute execForceRefresh for device " + action['deviceURL'])
+										execForceRefresh(action['deviceURL'])
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response header : %s", response.headers)		
