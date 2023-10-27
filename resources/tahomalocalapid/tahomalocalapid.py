@@ -328,10 +328,12 @@ def fetchListener():
 				for item in json_data:
 					#logging.debug(item['name'] + ' -> ' + item['deviceURL'])
 					jeedom_com.send_change_immediate({'eventItem' : item})
-					for action in item['actions']:
-						logging.debug("		-> event action on deviceUrl : " + action['deviceURL'])
-						if (action['deviceURL'] != ''):
-							execForceRefresh(action['deviceURL'])
+					if 'actions' in item:						
+						for action in item['actions']:
+							logging.debug("		-> event action on deviceUrl : " + action['deviceURL'])
+							if (action['deviceURL'] != ''):
+								logging.debug("			-> execute execForceRefresh')
+								#execForceRefresh(action['deviceURL'])
 					#getDeviceStates(item['deviceURL'])	
 		else:
 			logging.error("Http code : %s", response.status_code)
