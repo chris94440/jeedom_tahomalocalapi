@@ -332,7 +332,7 @@ def fetchListener():
 						for action in item['actions']:
 							logging.debug("		-> event action on deviceUrl : " + action['deviceURL'])
 							if (action['deviceURL'] != ''):
-								#logging.debug("			-> execute execForceRefresh")
+								logging.debug("			-> execute execForceRefresh")
 								#execForceRefresh(action['deviceURL'])
 					#getDeviceStates(item['deviceURL'])	
 		else:
