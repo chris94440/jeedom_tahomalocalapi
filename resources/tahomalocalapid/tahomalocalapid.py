@@ -335,7 +335,6 @@ def fetchListener():
 									if (action['deviceURL'] != ''):
 										logging.debug("			-> execute execForceRefresh for device " + action['deviceURL'])
 										execForceRefresh(action['deviceURL'])
-
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response header : %s", response.headers)		
