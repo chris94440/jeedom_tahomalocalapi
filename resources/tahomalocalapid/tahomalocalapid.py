@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: iso-8859-15 -*-
+
 # This file is part of Jeedom.
 #
 # Jeedom is free software: you can redistribute it and/or modify
@@ -62,31 +65,30 @@ def listen():
 	logging.debug('Listen socket jeedom')
 	jeedom_socket.open()
 
-	
 	httpLog()
 
-	if not _jsessionid and not _tokenTahoma:
-		loginTahoma()
+	if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
+		downloadTahomaCertificate()
 
-	if _jsessionid:
-		tahoma_token()
+	get_tahoma_token()
+	if not _tokenTahoma:
+		generate_tahoma_token()
 
-		if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
-			downloadTahomaCertificate()
+	if _tokenTahoma:
+		getDevicesList()
+		#getGateways()
+		registerListener()	
 
-		if _tokenTahoma:
-			validateToken()
-			getDevicesList()
-			#getGateways()
-			registerListener()	
+		try:
+			while 1:
+				time.sleep(0.5)
+				read_socket()
+				fetchListener()
 
-	try:
-		while 1:
-			time.sleep(0.5)
-			read_socket()
-			fetchListener()
-
-	except KeyboardInterrupt:
+		except KeyboardInterrupt:
+			shutdown()
+	else:
+		logging.error('Impossible to generate a tahoma local token. Please check your credentials and make sure you have enabled developer mode in your Somfy Tahoma box settings.')
 		shutdown()
 
 def httpLog():
@@ -125,8 +127,32 @@ def shutdown():
 	sys.stdout.flush()
 	os._exit(0)
 
+def get_tahoma_token():
+	logging.debug(' * try to load local token from disk')
+	try:
+		with open('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/token.txt', 'r') as f:
+			existing_token = f.read()
+			if not existing_token:
+				logging.error(" * token file is empty")
+			else:
+				global _tokenTahoma
+				logging.debug(" * existing token found")
+
+				url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup'
+				headers = {
+				    'Content-Type' : 'application/json',
+	                            'Authorization' : 'Bearer ' + existing_token
+		            }
+				response = requests.request("GET", url, verify=False, headers=headers)
+				if not (response.status_code and (response.status_code == 200)):
+					logging.warning(" * previous token not valid")
+				else:
+					_tokenTahoma = existing_token
+	except IOError as err:
+	    logging.debug("* no existing token exists on disk")
+
 def loginTahoma():
-	logging.debug(' * logging tahoma')
+	logging.debug(' * logging into Somfy online service')
 
 	try:
 		url = _overkizUrl +'/login'
@@ -153,12 +179,18 @@ def loginTahoma():
 			shutdown()
 			
 	except requests.exceptions.HTTPError as err:
-		logging.error("Error when logging to tahoma -> %s",err)
+		logging.error("Error when logging into tahoma -> %s",err)
 
-def tahoma_token():
-	logging.debug(' * retrieve tahoma_token')
+def generate_tahoma_token():
+	logging.debug(' * generate new tahoma token for local API')
+
+	loginTahoma()
+
+	if not _jsessionid:
+		logging.error("Error while connecting to Somfy online service. Please check your username and password")
+		shutdown()
+
 	try:
-
 		url = _overkizUrl +'/config/' + _pincode + '/local/tokens/generate'
 
 		headers = {
@@ -172,6 +204,8 @@ def tahoma_token():
 			if response.json().get('token'):
 				global _tokenTahoma
 				_tokenTahoma = response.json().get('token')
+				activateToken()
+
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -180,6 +214,42 @@ def tahoma_token():
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when retrieving tahoma token -> %s",err)
 		shutdown()
+
+def activateToken():
+	logging.debug(' * activate new token')
+	try:
+		url = _overkizUrl + '/config/' + _pincode + '/local/tokens'
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Cookie' : 'JSESSIONID=' + _jsessionid
+		}
+
+		payload=json.dumps({
+				"label": "JeedomTahomaLocalApi_" + datetime.datetime.now().strftime("%Y%m%d%H%M%S"),				
+				"token": _tokenTahoma ,
+				"scope": "devmode"
+		})		
+
+		response = requests.request("POST", url, headers=headers, data=payload)
+
+		if not response.status_code and not (response.status_code == 200):
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			shutdown()
+
+		with open('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/token.txt', 'w') as f:
+			logging.debug(" * storing new token on disk")    
+			try:
+				f.write(_tokenTahoma)
+			except IOError as err:
+				logging.error("Error while saving token on disk")
+
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when activating new tahoma token -> %s",err)
+		shutdown()
+
 
 def getDevicesList():	
 	logging.debug(' * Retrieve devices list')
