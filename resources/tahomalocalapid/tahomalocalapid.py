@@ -65,33 +65,43 @@ def listen():
 	logging.debug('Listen socket jeedom')
 	jeedom_socket.open()
 
-	
 	httpLog()
 
-	if not _jsessionid and not _tokenTahoma:
-		loginTahoma()
+	global _tahomaTokenList
+	tokenList = json.loads(_tahomaTokenList)	
+	for item in tokenList:
 
-	if _jsessionid:
-		availableToken()
-		tahoma_token()
+		if not 'token' in item:
+			item['token']=manageAuthentication(item)	
 
-		#if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
-		#	downloadTahomaCertificate()
+		getDevicesList(item)
+		item['listenerId']=registerListener(item)
+		logging.info('	- item detail : %s', item)
+		#jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : item['pinCode'], 'tokenValue' : token}})		
 
-		if _tokenTahoma:
-			validateToken()
-			getDevicesList()
-			#getGateways()
-			registerListener()	
-
+'''
+logging.info('	- box ip : %s', item['ip'])
+logging.info('	- box code pin : %s', item['pinCode'])
+logging.info('	- token tahoma : %s', item['token'])
+'''
 	try:
 		while 1:
 			time.sleep(0.5)
 			read_socket()
-			fetchListener()
+			fetchListeners()
 
 	except KeyboardInterrupt:
 		shutdown()
+
+def manageAuthentication(item)
+	jsessionid = loginTahoma(item['user'],item['passdword'])
+
+	if jsessionid:
+		availableToken(jsessionid,item['pinCode'])
+		tokenTahoma = tahoma_token(jsessionid)
+		if tokenTahoma:
+			validateToken(jsessionid,item['pinCode'],tokenTahoma)
+			return tokenTahoma
 
 def httpLog():
 	logging.getLogger("requests").setLevel(logging.ERROR)
@@ -110,7 +120,7 @@ def shutdown():
 	logging.debug("Removing PID file %s", _pidfile)
 	try:
 		if _listenerId:
-			unregisterListener()
+			unregisterListeners()
 	except:
 		pass
 	try:
@@ -129,15 +139,15 @@ def shutdown():
 	sys.stdout.flush()
 	os._exit(0)
 
-def loginTahoma():
+def loginTahoma(user,pwd):
 	logging.debug(' * logging tahoma')
 
 	try:
 		url = _overkizUrl +'/login'
 
 		payload ={
-			'userId' : _user,
-			'userPassword' : _pwd
+			'userId' : user,
+			'userPassword' : pwd
 		}
 
 		headers = {
@@ -148,8 +158,8 @@ def loginTahoma():
 
 		if response.status_code and (response.status_code == 200):
 			if response.cookies.get("JSESSIONID"):
-				global _jsessionid
-				_jsessionid =  response.cookies.get("JSESSIONID")			
+				#global _jsessionid
+				return response.cookies.get("JSESSIONID")			
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -159,23 +169,23 @@ def loginTahoma():
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when logging to tahoma -> %s",err)
 
-def tahoma_token():
+def tahoma_token(jsessionid,pincode):
 	logging.debug(' * retrieve tahoma_token')
 	try:
 
-		url = _overkizUrl +'/config/' + _pincode + '/local/tokens/generate'
+		url = _overkizUrl +'/config/' + pincode + '/local/tokens/generate'
 
 		headers = {
 			'Content-Type' : 'application/json',
-			'Cookie' : 'JSESSIONID=' + _jsessionid
+			'Cookie' : 'JSESSIONID=' + jsessionid
 		}
 
 		response = requests.request("GET", url, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
 			if response.json().get('token'):
-				global _tokenTahoma
-				_tokenTahoma = response.json().get('token')
+				#global _tokenTahoma
+				return response.json().get('token')
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -185,16 +195,16 @@ def tahoma_token():
 		logging.error("Error when retrieving tahoma token -> %s",err)
 		shutdown()
 
-def getDevicesList():	
+def getDevicesList(item):	
 	logging.debug(' * Retrieve devices list')
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices'
+		url = item['ip'] +'/enduser-mobile-web/1/enduserAPI/setup/devices'
 		
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + item['token']
 		}
 
 		response = requests.request("GET", url, verify=False, headers=headers)
@@ -211,15 +221,15 @@ def getDevicesList():
 		logging.error("rror when retrieving tahoma devices list -> %s",err)
 		shutdown()
 
-def getGateways():	
+def getGateways(ipBox,tokenTahoma):	
 	logging.debug(' * Retrieve gateways list')
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/gateways'
+		url = ipBox +'/enduser-mobile-web/1/enduserAPI/setup/gateways'
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + tokenTahoma
 		}
 
 		response = requests.request("GET", url, verify=False, headers=headers)
@@ -237,20 +247,20 @@ def getGateways():
 		logging.error("rror when retrieving tahoma devices list -> %s",err)
 		shutdown()
 
-def validateToken():
+def validateToken(jsessionid,pincode,tokenTahoma):
 	logging.debug(' * validate tahoma token')
 	try:
 	
-		url = _overkizUrl + '/config/' + _pincode + '/local/tokens'
+		url = _overkizUrl + '/config/' + pincode + '/local/tokens'
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Cookie' : 'JSESSIONID=' + _jsessionid
+			'Cookie' : 'JSESSIONID=' + jsessionid
 		}
 
 		payload=json.dumps({
 				"label": "JeedomTahomaLocalApi_token",				
-				"token": _tokenTahoma ,
+				"token": tokenTahoma ,
 				"scope": "devmode"
 		})		
 
@@ -261,23 +271,23 @@ def validateToken():
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
 			shutdown()
-		else:
-			jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : _pincode, 'tokenValue' : _tokenTahoma}})
+		#else:
+		#	jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : _pincode, 'tokenValue' : _tokenTahoma}})
 		
 
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when validate tahoma token -> %s",err)
 		shutdown()
 
-def availableToken():
+def availableToken(jsessionid,pincode):
 	logging.debug(' * Get available tahoma token')
 	try:
 	
-		url = _overkizUrl + '/config/' + _pincode + '/local/tokens/devmode'
+		url = _overkizUrl + '/config/' + pincode + '/local/tokens/devmode'
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Cookie' : 'JSESSIONID=' + _jsessionid
+			'Cookie' : 'JSESSIONID=' + jsessionid
 		}
 
 		response = requests.request("GET", url, headers=headers)
@@ -288,7 +298,7 @@ def availableToken():
 			for item in json_data:
 				logging.info(" token  : %s", item)
 				if (item['label'] == 'JeedomTahomaLocalApi_token' and item['scope'] == 'devmode'):
-					deleteToken(item['uuid'])
+					deleteToken(jsessionid,pincode,item['uuid'])
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -299,15 +309,15 @@ def availableToken():
 		logging.error("Error when retrieving available tahoma token -> %s",err)
 		shutdown()
 
-def deleteToken(uuid):
+def deleteToken(jsessionid,pincode,uuid):
 	logging.debug(' * Delete tahoma token : ' + uuid)
 	try:
 	
-		url = _overkizUrl + '/config/' + _pincode + '/local/tokens/' + uuid		
+		url = _overkizUrl + '/config/' + pincode + '/local/tokens/' + uuid		
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Cookie' : 'JSESSIONID=' + _jsessionid
+			'Cookie' : 'JSESSIONID=' + jsessionid
 		}
 
 		'''
@@ -340,27 +350,25 @@ def downloadTahomaCertificate():
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when downloading tahoma certificate -> %s",err)
 
-def registerListener():
+def registerListener(item):
 	logging.debug(' * Register listener')
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/events/register'
+		url = item['ip'] +'/enduser-mobile-web/1/enduserAPI/events/register'
 		
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + item['token']
 		}
 
 		
 		response = requests.request("POST", url, verify=False, headers=headers)
 
-
-
 		if response.status_code and (response.status_code == 200):
 			if response.json().get('id'):
 				global _listenerId
-				_listenerId = response.json().get('id')
+				return response.json().get('id')
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -371,14 +379,22 @@ def registerListener():
 		logging.error("Error when register listener tahoma -> %s",err)
 		shutdown()
 
-def fetchListener():
+def fetchListeners():
+	tokenList = json.loads(_tahomaTokenList)	
+	for item in tokenList:	
+		if ('token' in item) and ('ip' in item):
+			logging.info("fetch listener for box ip " + item['ip'] + ' and listener id ' + item['listenerId'])
+			fetchListener(item['ip'],item['token'],item['listenerId'])
+
+
+def fetchListener(ipBox,tokenTahoma,listenerId):
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/fetch'		
+		url = ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + listenerId + '/fetch'		
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + tokenTahoma
 		}
 		
 		response = requests.request("POST", url, verify=False, headers=headers)		
@@ -406,17 +422,17 @@ def fetchListener():
 		logging.error("Error when fetch listener tahoma -> %s",err)
 		shutdown()
 
-def getDeviceStates(deviceUrl):
+def getDeviceStates(ipBox,tokenTahoma,deviceUrl):
 	
 	logging.debug(' * getDeviceStates | '  + deviceUrl)
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ quote(deviceUrl) +'/states'
+		url = ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ quote(deviceUrl) +'/states'
 		logging.debug(' 	* url :  '  + url)
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + tokenTahoma
 		}
 		
 		response = requests.request("POST", url, verify=False, headers=headers)
@@ -435,29 +451,36 @@ def getDeviceStates(deviceUrl):
 		logging.error("Error when retrieving tahoma device states -> %s",err)
 		shutdown()
 
-def unregisterListener():
+def unregisterListeners()
+	tokenList = json.loads(_tahomaTokenList)	
+	for item in tokenList:		
+		if ('token' in item) and ('ip' in item):
+			logging.info("unregister listener for box ip -> %s",item['ip'])
+			unregisterListener(item['ip'],item['token'])
+
+def unregisterListener(ipBox,tokenTahoma):
 	#logging.debug(' * Tahoma fetchListener | '  + listenerId)
 	try:
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/unregister'	
+		url = ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/unregister'	
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + tokenTahoma
 		}
 		
 		response = requests.request("POST", url, verify=False, headers=headers)		
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when unregister listener to tahoma -> %s",err)
 
-def execCmd(params):	
+def execCmd(ipBox,tokenTahoma,params):	
 	logging.debug(' * Execute command')
 	try:
 
 		if params['commandName'] == "stop":
 			deleteExecutionForADevice(params['deviceUrl'])
 
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+		url = ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
 		if params['parameters'] != "":
 			payload=json.dumps({
@@ -493,7 +516,7 @@ def execCmd(params):
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + tokenTahoma
 		}
 
 		logging.debug("	- payload :  %s", payload)
@@ -514,16 +537,16 @@ def execCmd(params):
 		logging.error("Error when executing cmd to tahoma -> %s",err)
 		shutdown()
 
-def execForceRefresh(deviceUrl):	
+def execForceRefresh(ipBox,deviceUrl,tokenTahoma):	
 	logging.debug(' * Execute force refresh')
 	try:
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+		url = ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
 		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": ["p1"]}],"deviceURL": deviceUrl}]})
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + tokenTahoma
 		}
 
 		logging.debug("	- payload :  %s", payload)
@@ -539,14 +562,14 @@ def execForceRefresh(deviceUrl):
 		logging.error("Error when executing cmd to tahoma -> %s",err)
 		shutdown()
 
-def deleteExecutionForADevice(deviceUrl):
+def deleteExecutionForADevice(ipBox,deviceUrl,tokenTahoma):
 	logging.debug(' * Delete execution for a device: ' + deviceUrl)
 	try:
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current'
+		url = ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current'
 
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + _tokenTahoma
+			'Authorization' : 'Bearer ' + tokenTahoma
 		}
 
 		response = requests.request("GET", url, verify=False, headers=headers)
@@ -664,13 +687,16 @@ logging.info('PID file: %s', _pidfile)
 logging.info('Device: %s', _device)
 logging.info('User: %s', _user)
 #logging.info('Pwd: %s', _pwd)
-logging.info('Pin ocde: %s', _pincode)
-logging.info('Box IP: %s', _ipBox)
-logging.info('Tahoma token list : %s', _tahomaTokenList)
+#logging.info('Pin ocde: %s', _pincode)
+#logging.info('Box IP: %s', _ipBox)
+#logging.info('Tahoma token list : %s', _tahomaTokenList)
 
 tokenList = json.loads(_tahomaTokenList)
+logging.info('Tahoma conf')
 for item in tokenList:
-	logging.info('	token -> : %s', item)
+	logging.info('	- box ip : %s', item['ip'])
+	logging.info('	- box code pin : %s', item['pinCode'])
+	logging.info('	- token tahoma : %s', item['token'])		
 
 
 logging.info('*-------------------------------------------------------------------------*')

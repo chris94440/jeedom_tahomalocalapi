@@ -117,7 +117,7 @@ private static function getSavedTahomalocalapiToken() {
     $eqLogics=eqLogic::byType(__CLASS__);
     foreach ($eqLogics as $eqLogic) {
         if (stristr($eqLogic->getConfiguration('type'),'Pod')) {
-            array_push($resp,array('ip' => config::byKey('boxLocalIp', __CLASS__), 'pinCode' => config::byKey('pincode', __CLASS__),'token' => config::byKey('tahomalocalapi_session_'.$eqLogic->getId(), 'tahomalocalapi')));              
+            array_push($resp,array('user' => config::byKey('user', __CLASS__), 'pwd'=> config::byKey('password', __CLASS__),'ip' => config::byKey('boxLocalIp', __CLASS__), 'pinCode' => config::byKey('pincode', __CLASS__),'token' => config::byKey('tahomalocalapi_session_'.$eqLogic->getId(), 'tahomalocalapi')));              
         }        
     }
 
