@@ -1020,33 +1020,15 @@ class tahomalocalapiCmd extends cmd {
                 $type = $this->getConfiguration('request');
                 $parameters = str_replace('#slider#', $_options['slider'], $parameters);
 
-                $newEventValue = $parameters;
-
-                switch ($type) {
-                    /*
-                    case 'orientation':
-                        if ($commandName == "setOrientation") {
-                            $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
-                              return;
-                        }
-                        break;
-                    */
-                    case 'closure':
-                        if ($commandName == "setClosure") {
-                            $parameters = 100 - $parameters;
-
-                            $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(),'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
-
-                            return;
-                        }
-                        break;
-                    default:
-                        $parameters = array_map('intval', explode(",", $parameters));
-                        $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
-                        break;
+                //$newEventValue = $parameters;
+                
+                if ($commandName == "setClosure") {
+                    $parameters = 100 - $parameters;
                 }
+
+                $parameters = array_map('intval', explode(",", $parameters));
+                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
+                break;
             case 'select':
                 if ($commandName == 'setLockedUnlocked') {
                     $parameters = str_replace('#select#', $_options['select'], $parameters[0]);
