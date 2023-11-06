@@ -1020,6 +1020,10 @@ class tahomalocalapiCmd extends cmd {
                             return;
                         }
                         break;
+                    default:
+                        $parameters = array_map('intval', explode(",", $parameters));
+                        $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
+                        break;
                 }
             case 'select':
                 if ($commandName == 'setLockedUnlocked') {
