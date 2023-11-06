@@ -628,7 +628,7 @@ _ipBox='https://192.168.1.28:8443'
 _overkizUrl='https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI'
 _listenerId=''
 _tahomaTokenList=''
-_tokenList=''
+_tokenList=[]
 
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
