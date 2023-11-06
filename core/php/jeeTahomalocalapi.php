@@ -35,7 +35,7 @@ try {
             log::add('tahomalocalapi', 'debug', 'Message receive for saveTahomaSession, pin code : ' . $pincode . ' | token value : ' . $tokenValue);
             $eqLogics=eqLogic::byType('tahomalocalapi');
             foreach ($eqLogics as $eqLogic) {
-                if (stristr($eqLogic->getConfiguration('type'),'Pod') && stristr($eqLogic->getLogicalId(),$pincode)) {
+                if (stristr($eqLogic->getLogicalId(),'pod') && stristr($eqLogic->getLogicalId(),$pincode)) {
                     log::add('tahomalocalapi', 'debug', ' --> save token : ' .  $tokenValue . ' for device id ' . $eqLogic->getId());
                     config::save('tahomalocalapi_session_'.$eqLogic->getId(), $tokenValue,'tahomalocalapi');
                     break;
