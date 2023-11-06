@@ -70,7 +70,6 @@ def listen():
 	global _tahomaTokenList
 	tokenList = json.loads(_tahomaTokenList)	
 	for item in tokenList:
-
 		if not 'token' in item:
 			item['token']=manageAuthentication(item)	
 
@@ -79,11 +78,6 @@ def listen():
 		logging.info('	- item detail : %s', item)
 		#jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : item['pinCode'], 'tokenValue' : token}})		
 
-'''
-logging.info('	- box ip : %s', item['ip'])
-logging.info('	- box code pin : %s', item['pinCode'])
-logging.info('	- token tahoma : %s', item['token'])
-'''
 	try:
 		while 1:
 			time.sleep(0.5)
@@ -93,7 +87,7 @@ logging.info('	- token tahoma : %s', item['token'])
 	except KeyboardInterrupt:
 		shutdown()
 
-def manageAuthentication(item)
+def manageAuthentication(item):
 	jsessionid = loginTahoma(item['user'],item['passdword'])
 
 	if jsessionid:
@@ -199,7 +193,7 @@ def getDevicesList(item):
 	logging.debug(' * Retrieve devices list')
 	try:
 
-		url = item['ip'] +'/enduser-mobile-web/1/enduserAPI/setup/devices'
+		url = 'http://' + item['ip'] +'/enduser-mobile-web/1/enduserAPI/setup/devices'
 		
 		
 		headers = {
@@ -225,7 +219,7 @@ def getGateways(ipBox,tokenTahoma):
 	logging.debug(' * Retrieve gateways list')
 	try:
 
-		url = ipBox +'/enduser-mobile-web/1/enduserAPI/setup/gateways'
+		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/setup/gateways'
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -354,7 +348,7 @@ def registerListener(item):
 	logging.debug(' * Register listener')
 	try:
 
-		url = item['ip'] +'/enduser-mobile-web/1/enduserAPI/events/register'
+		url = 'http://' + item['ip'] +'/enduser-mobile-web/1/enduserAPI/events/register'
 		
 		
 		headers = {
@@ -390,7 +384,7 @@ def fetchListeners():
 def fetchListener(ipBox,tokenTahoma,listenerId):
 	try:
 
-		url = ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + listenerId + '/fetch'		
+		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + listenerId + '/fetch'		
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -427,7 +421,7 @@ def getDeviceStates(ipBox,tokenTahoma,deviceUrl):
 	logging.debug(' * getDeviceStates | '  + deviceUrl)
 	try:
 
-		url = ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ quote(deviceUrl) +'/states'
+		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ quote(deviceUrl) +'/states'
 		logging.debug(' 	* url :  '  + url)
 		
 		headers = {
@@ -451,7 +445,7 @@ def getDeviceStates(ipBox,tokenTahoma,deviceUrl):
 		logging.error("Error when retrieving tahoma device states -> %s",err)
 		shutdown()
 
-def unregisterListeners()
+def unregisterListeners():
 	tokenList = json.loads(_tahomaTokenList)	
 	for item in tokenList:		
 		if ('token' in item) and ('ip' in item):
@@ -462,7 +456,7 @@ def unregisterListener(ipBox,tokenTahoma):
 	#logging.debug(' * Tahoma fetchListener | '  + listenerId)
 	try:
 
-		url = ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/unregister'	
+		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/unregister'	
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -480,7 +474,7 @@ def execCmd(ipBox,tokenTahoma,params):
 		if params['commandName'] == "stop":
 			deleteExecutionForADevice(params['deviceUrl'])
 
-		url = ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
 		if params['parameters'] != "":
 			payload=json.dumps({
@@ -540,7 +534,7 @@ def execCmd(ipBox,tokenTahoma,params):
 def execForceRefresh(ipBox,deviceUrl,tokenTahoma):	
 	logging.debug(' * Execute force refresh')
 	try:
-		url = ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
 		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": ["p1"]}],"deviceURL": deviceUrl}]})
 		
@@ -565,7 +559,7 @@ def execForceRefresh(ipBox,deviceUrl,tokenTahoma):
 def deleteExecutionForADevice(ipBox,deviceUrl,tokenTahoma):
 	logging.debug(' * Delete execution for a device: ' + deviceUrl)
 	try:
-		url = ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current'
+		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current'
 
 		headers = {
 			'Content-Type' : 'application/json',
@@ -592,7 +586,7 @@ def deleteExecutionForADevice(ipBox,deviceUrl,tokenTahoma):
 def deleteExecution(executionId):
 	logging.debug(' * Delete execution : ' + executionId)
 	try:
-		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current/setup/' + executionId
+		url = 'http://' + _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current/setup/' + executionId
 
 		headers = {
 			'Content-Type' : 'application/json',
