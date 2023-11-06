@@ -69,14 +69,14 @@ def listen():
 
 	
 	#tokenList = json.loads(_tahomaTokenList)	
-	for i, item in _tokenList:
+	for item in _tokenList:
 		if not 'token' in item:
 			item['token']=manageAuthentication(item)	
 
 		getDevicesList(item)
 		item['listenerId']=registerListener(item)
 		logging.info('	- item detail : %s', item)
-		_tokenList[i]=item
+		_tokenList.append(item)
 		#jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : item['pinCode'], 'tokenValue' : token}})		
 
 	try:
