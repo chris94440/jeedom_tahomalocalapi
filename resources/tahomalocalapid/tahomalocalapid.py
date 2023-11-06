@@ -285,18 +285,42 @@ def availableToken():
 			json_data = response.json()
 			for item in json_data:
 				logging.info(" token  : %s", item)
-				#jeedom_com.send_change_immediate({'eventItem' : item})
-				#if 'actions' in item:						
-						#for action in item['actions']:
+				if (item['label'] == 'JeedomTahomaLocalApi_token' && item['scope'] == 'devmode'):
+					deleteToken(item['uuid'])
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
-			shutdown()
-		
+			shutdown()	
 
 	except requests.exceptions.HTTPError as err:
-		logging.error("Error when validate tahoma token -> %s",err)
+		logging.error("Error when retrieving available tahoma token -> %s",err)
+		shutdown()
+
+def deleteToken(uuid):
+	logging.debug(' * Delete tahoma token : ' + uuid)
+	try:
+	
+		url = _overkizUrl + '/config/' + _pincode + '/local/tokens/' + uuid		
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Cookie' : 'JSESSIONID=' + _jsessionid
+		}
+
+		'''
+		response = requests.request("DELETE", url, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("Token deleted : %s", uuid)
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			#shutdown()	
+		'''
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when deleting tahoma token -> %s",err)
 		shutdown()
 
 def downloadTahomaCertificate():
