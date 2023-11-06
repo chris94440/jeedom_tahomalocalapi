@@ -668,9 +668,9 @@ logging.info('Pin ocde: %s', _pincode)
 logging.info('Box IP: %s', _ipBox)
 logging.info('Tahoma token list : %s', _tahomaTokenList)
 
-#tokenList = json.loads(_tahomaTokenList)
-#for item in tokenList:
-#	logging.info('	token -> : %s', item)
+tokenList = json.loads(_tahomaTokenList)
+for item in tokenList:
+	logging.info('	token -> : %s', item)
 
 
 logging.info('*-------------------------------------------------------------------------*')
