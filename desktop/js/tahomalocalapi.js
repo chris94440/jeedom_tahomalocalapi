@@ -58,9 +58,9 @@ function getEqDetail(eqId) {
   function getEquipmentDetails(jsonDetail) {
 	$('#div_equipment_details').empty();
 	
-  	$('#div_equipment_details').html('<div class="alert alert-info">'+getInstructionVrs()+'</div>');
+  	//$('#div_equipment_details').html('<div class="alert alert-info">'+getInstructionVrs()+'</div>');
 
-	var resp = callBackDetail(eqId);
+	//var resp = callBackDetail(eqId);
 	/*
 	  var instruction ="<span><u>Ecoute commandes externes de contrôle du volet roulant : </u></span>";
   	instruction += "</br>";
