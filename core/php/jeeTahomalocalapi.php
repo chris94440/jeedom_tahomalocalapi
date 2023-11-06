@@ -37,7 +37,7 @@ try {
             foreach ($eqLogics as $eqLogic) {
                 if (stristr($eqLogic->getConfiguration('type'),'Pod') && stristr($eqLogic->getLogicalId(),$pincode)) {
                     log::add('tahomalocalapi', 'debug', ' --> save token : ' .  $tokenValue . ' for device id ' . $eqLogic->getId());
-                    config::save('tahomalocalapi_session_'.$eqLogic->getId(), tokenValue,'tahomalocalapi');
+                    config::save('tahomalocalapi_session_'.$eqLogic->getId(), $tokenValue,'tahomalocalapi');
                     break;
                 } 
             } 
@@ -45,9 +45,6 @@ try {
             log::add('tahomalocalapi', 'error', 'Error in content of received message for saveTahomaSession : ' . json_encode($result));
         }
       
-    }
-
-        //config::save('tahomalocalapi_session_'.$result['saveTahomaSession']['eqId'],$result['saveTahomaSession']['tokenValue'],'tahomalocalapi');
     }
 } catch (Exception $e) {
     log::add('tahomalocalapi', 'error', displayException($e)); //remplacez template par l'id de votre plugin
