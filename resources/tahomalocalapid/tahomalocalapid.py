@@ -278,7 +278,7 @@ def availableToken():
 			'Cookie' : 'JSESSIONID=' + _jsessionid
 		}
 
-		response = requests.request("POST", url, headers=headers)
+		response = requests.request("GET", url, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
 			logging.debug("Token list : %s", response.json())
