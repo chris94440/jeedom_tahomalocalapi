@@ -67,9 +67,9 @@ def listen():
 
 	httpLog()
 
-	
-	#tokenList = json.loads(_tahomaTokenList)	
-	for item in _tokenList:
+	global _tokenList
+	tokenList = json.loads(_tahomaTokenList)	
+	for item in tokenList:
 		if not 'token' in item:
 			item['token']=manageAuthentication(item)	
 
@@ -628,6 +628,7 @@ _ipBox='https://192.168.1.28:8443'
 _overkizUrl='https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI'
 _listenerId=''
 _tahomaTokenList=''
+_tokenList=''
 
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
@@ -689,9 +690,9 @@ logging.info('User: %s', _user)
 #logging.info('Box IP: %s', _ipBox)
 #logging.info('Tahoma token list : %s', _tahomaTokenList)
 
-_tokenList = json.loads(_tahomaTokenList)
+tokenList = json.loads(_tahomaTokenList)
 logging.info('Tahoma conf')
-for item in _tokenList:
+for item in tokenList:
 	logging.info('	- box ip : %s', item['ip'])
 	logging.info('	- box code pin : %s', item['pinCode'])
 	logging.info('	- token tahoma : %s', item['token'])		
