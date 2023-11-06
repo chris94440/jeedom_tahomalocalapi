@@ -68,15 +68,15 @@ def listen():
 	httpLog()
 
 	
-	tokenList = json.loads(_tahomaTokenList)	
-	for i, item in tokenList:
+	#tokenList = json.loads(_tahomaTokenList)	
+	for i, item in _tokenList:
 		if not 'token' in item:
 			item['token']=manageAuthentication(item)	
 
 		getDevicesList(item)
 		item['listenerId']=registerListener(item)
 		logging.info('	- item detail : %s', item)
-		_tahomaTokenList[i]=item
+		_tokenList[i]=item
 		#jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : item['pinCode'], 'tokenValue' : token}})		
 
 	try:
@@ -375,8 +375,8 @@ def registerListener(item):
 		shutdown()
 
 def fetchListeners():
-	tokenList = json.loads(_tahomaTokenList)	
-	for item in tokenList:	
+	#tokenList = json.loads(_tahomaTokenList)	
+	for item in _tokenList:	
 		if ('token' in item) and ('ip' in item):
 			logging.info('	- fetch listener item detail : %s', item)
 			fetchListener(item['ip'],item['token'],item['listenerId'])
@@ -447,8 +447,8 @@ def getDeviceStates(ipBox,tokenTahoma,deviceUrl):
 		shutdown()
 
 def unregisterListeners():
-	tokenList = json.loads(_tahomaTokenList)	
-	for item in tokenList:		
+	#tokenList = json.loads(_tahomaTokenList)	
+	for item in _tokenList:		
 		if ('token' in item) and ('ip' in item):
 			logging.info("unregister listener for box ip -> %s",item['ip'])
 			unregisterListener(item['ip'],item['token'])
@@ -686,9 +686,9 @@ logging.info('User: %s', _user)
 #logging.info('Box IP: %s', _ipBox)
 #logging.info('Tahoma token list : %s', _tahomaTokenList)
 
-tokenList = json.loads(_tahomaTokenList)
+_tokenList = json.loads(_tahomaTokenList)
 logging.info('Tahoma conf')
-for item in tokenList:
+for item in _tokenList:
 	logging.info('	- box ip : %s', item['ip'])
 	logging.info('	- box code pin : %s', item['pinCode'])
 	logging.info('	- token tahoma : %s', item['token'])		
