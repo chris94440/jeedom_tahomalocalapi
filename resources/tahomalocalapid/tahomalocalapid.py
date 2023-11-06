@@ -73,12 +73,10 @@ def listen():
 		if not 'token' in item:
 			item['token']=manageAuthentication(item)	
 
-		logging.info('	- before get devives list')
 		getDevicesList(item)
 		item['listenerId']=registerListener(item)
-		logging.info('	- item detail : %s', item)
+		#logging.info('	- item detail : %s', item)
 		_tokenList.append(item)
-		logging.info('	- after append')		
 		#jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : item['pinCode'], 'tokenValue' : token}})		
 
 	logging.info('	- after for and before fecth')
@@ -208,7 +206,7 @@ def getDevicesList(item):
 		response = requests.request("GET", url, verify=False, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
-			jeedom_com.send_change_immediate({'devicesList' : response.json()})
+			jeedom_com.send_change_immediate({'devicesList' : response.json(), 'ip' : item['ip'],'pinCode' : item['pinCode'] })
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -471,14 +469,13 @@ def unregisterListener(ipBox,tokenTahoma):
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when unregister listener to tahoma -> %s",err)
 
-def execCmd(ipBox,tokenTahoma,params):	
+def execCmd(params):	
 	logging.debug(' * Execute command')
 	try:
-
 		if params['commandName'] == "stop":
-			deleteExecutionForADevice(params['deviceUrl'])
+			deleteExecutionForADevice(params['deviceUrl'],params['ip'])
 
-		url = 'https://' + ipBox  + ':8443' +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+		url = 'https://' + params['ip']  + ':8443' +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
 		if params['parameters'] != "":
 			payload=json.dumps({
@@ -514,7 +511,7 @@ def execCmd(ipBox,tokenTahoma,params):
 		
 		headers = {
 			'Content-Type' : 'application/json',
-			'Authorization' : 'Bearer ' + tokenTahoma
+			'Authorization' : 'Bearer ' + params['tokenTahoma']
 		}
 
 		logging.debug("	- payload :  %s", payload)
@@ -526,7 +523,6 @@ def execCmd(ipBox,tokenTahoma,params):
 				logging.debug("Execution id : %s", response.json().get('execId'))
 				response=json.dumps({"deviceId": params['deviceId'],	"execId": response.json().get('execId')})
 				jeedom_com.send_change_immediate({'execIdEvent' : response})
-				#execForceRefresh(params['deviceUrl'])
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -560,10 +556,10 @@ def execForceRefresh(ipBox,deviceUrl,tokenTahoma):
 		logging.error("Error when executing cmd to tahoma -> %s",err)
 		shutdown()
 
-def deleteExecutionForADevice(ipBox,deviceUrl,tokenTahoma):
+def deleteExecutionForADevice(deviceUrl,tokenTahoma,ipBox):
 	logging.debug(' * Delete execution for a device: ' + deviceUrl)
 	try:
-		url = 'https://' + ipBox  + ':8443' +'/enduser-mobile-web/1/enduserAPI/exec/current'
+		url = 'https://' + params['ip']  + ':8443' +'/enduser-mobile-web/1/enduserAPI/exec/current'
 
 		headers = {
 			'Content-Type' : 'application/json',

@@ -183,7 +183,7 @@ public static function sendToDaemon($params) {
     log::add(__CLASS__, 'debug', '+-------------end-------------- storeExecId---------------------------------'); 
   }
 
-  public static function create_or_update_devices($devices) {
+  public static function create_or_update_devices($devices,$ip,$pinCode) {
     log::add(__CLASS__, 'debug', '+------------------------------ create_or_update_devices---------------------------------');
     log::add(__CLASS__, 'debug', '+ Number of items : ' . sizeof($devices));
     $itemAnalyzed=0;
@@ -211,6 +211,8 @@ public static function sendToDaemon($params) {
              $eqLogic->setName($device['label']);
              $eqLogic->setConfiguration('type', $device['controllableName']);
              $eqLogic->setConfiguration('deviceURL', $device['deviceURL']);
+             $eqLogic->setConfiguration('boxIp',$ip);
+             $eqLogic->setConfiguration('pinCodeBox',$pinCode);
            	 $eqLogic->setLogicalId( $device['deviceURL']);
              $eqLogic->save();
 
@@ -230,9 +232,11 @@ public static function sendToDaemon($params) {
                 $tahomaLocalPiCmd->save();			 
              }
          } else {
-             $eqLogic = $eqLogic_found;
-           	 $eqLogic->setLogicalId( $device['deviceURL']);
-           	 $eqLogic->save();
+            $eqLogic = $eqLogic_found;
+           	$eqLogic->setLogicalId( $device['deviceURL']);
+            $eqLogic->setConfiguration('boxIp',$ip);
+            $eqLogic->setConfiguration('pinCodeBox',$pinCode);
+           	$eqLogic->save();
          }
       	
 
@@ -1010,6 +1014,12 @@ class tahomalocalapiCmd extends cmd {
     $parameters=$this->getConfiguration('parameters');
     $execId=$eqlogic->getConfiguration('execId');
 
+
+    $boxIp=$this->setConfiguration('boxIp');
+    $pinCodeBox$this->setConfiguration('pinCodeBox');
+
+    $tahomaToken=config::byKey('tahomalocalapi_session_'.$this->getId(), 'tahomalocalapi')
+
     $type=$this->type;
     $subType=$this->subType;
     log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType . '| exec id : ' . $execId);
@@ -1025,7 +1035,7 @@ class tahomalocalapiCmd extends cmd {
                 }
 
                 $parameters = array_map('intval', explode(",", $parameters));
-                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
+                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId, 'ip' => $boxIp],'pinCode' => $pinCodeBox, 'tokenTahoma' => $tahomaToken]);
                 break;
             case 'select':
                 if ($commandName == 'setLockedUnlocked') {
@@ -1035,9 +1045,9 @@ class tahomalocalapiCmd extends cmd {
           	case 'other':
                 if ($commandName == "cancelExecutions") {
                     log::add('tahomalocalapi', 'debug', "will cancelExecutions: (" . $execId . ")");
-                    $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'cancelExecution', 'execId' => $execId]);
+                    $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'cancelExecution', 'execId' => $execId, 'ip' => $boxIp],'pinCode' => $pinCodeBox, 'tokenTahoma' => $tahomaToken]);
                 } else {
-                    $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
+                    $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId, 'ip' => $boxIp],'pinCode' => $pinCodeBox, 'tokenTahoma' => $tahomaToken]);
                 }
             	return;
            
