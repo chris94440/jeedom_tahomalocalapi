@@ -69,6 +69,7 @@ public static function deamon_start() {
   $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
   $cmd .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
   $cmd .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // IP box somfy
+  $cmd .= ' --tahomatokenapi "' . trim(str_replace('"', '\"', getSavedTahomalocalapiToken())) . '"'; // Token tahoma local
   
   log::add(__CLASS__, 'info', 'Lancement démon');
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
@@ -105,6 +106,23 @@ public static function synchronize() {
     self::sendToDaemon(['action' => 'synchronize']);
     sleep(5);
 }
+
+
+public static function eqlogicDetail($eqLogicId) {
+    return self::sendToDaemon(['action' => 'eqlogicDetail', 'eqId' => $eqLogicId]);
+}
+
+private static function getSavedTahomalocalapiToken() {
+    $resp=array();
+    $eqLogics=eqLogic::byType(__CLASS__);
+    foreach ($eqLogics as $eqLogic) {      
+        array_push($resp,array('ip' => config::byKey('boxLocalIp', __CLASS__), 'pinCode' => config::byKey('pincode', __CLASS__),'token' => config::byKey('tahomalocalapi_session_'.$eqLogic->getId(), 'tahomalocalapi')));              
+    }
+
+    log::add(__CLASS__, 'debug', '  getSavedTahomalocalapiToken --> ' . json_encode($resp));
+    return $resp;  
+}
+
 
 protected static function getSocketPort() {
     return config::byKey('socketport', __CLASS__, 55009);

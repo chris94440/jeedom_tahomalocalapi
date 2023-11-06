@@ -53,6 +53,9 @@ def read_socket():
 			elif message['action'] == 'cancelExecution':
 				logging.info('== action cancelExecution ==')
 				deleteExecution(message['execId'])
+			elif message['action'] == 'eqlogicDetail':
+				logging.info('== action eqlogicDetail ==')
+				getDevice(message['eqId'])
 			else:
 				logging.info('== other action not manage yes : ' + message['action']  + ' ==')
 		except Exception as e:

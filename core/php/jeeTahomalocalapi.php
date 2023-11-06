@@ -27,8 +27,10 @@ try {
         $jsonMef=str_replace(array('\\','"{','}"'), array('','{','}'),json_encode($result['execIdEvent']));
         log::add('tahomalocalapi', 'debug', 'Message receive for execIdEvent : ' . $jsonMef);
         tahomalocalapi::storeExecId($jsonMef);
+    } elseif (isset($result['saveTahomaSession'])) {
+        log::add('tahomalocalapi', 'debug', 'Message receive for saveTahomaSession, eq id : ' . $result['eqId'] . ' | token value : ' . $result['tokenValue']);
+        config::save('tahomalocalapi_session_'.$result['eqId'],$result['tokenValue'],'tahomalocalapi');
     }
-    
 } catch (Exception $e) {
     log::add('tahomalocalapi', 'error', displayException($e)); //remplacez template par l'id de votre plugin
 }

@@ -33,6 +33,46 @@ $("#table_cmda").sortable({
 	forcePlaceholderSize: true
   })
 
+getEqDetail($('.eqLogicAttr[data-l1key=id]').value());
+
+
+
+function getEqDetail(eqId) {
+	$.ajax({// fonction permettant de faire de l'ajax
+		type: "POST", // méthode de transmission des données au fichier php
+		url: "plugins/tahomalocalapi/core/ajax/tahomalocalapi.ajax.php", // url du fichier php
+		data: {
+			action: "getEqlogicDetails",
+			id : eqId
+		},
+		dataType: 'json',
+		error: function (request, status, error) {
+			handleAjaxError(request, status, error);
+		},
+		success: function (data) { // si l'appel a bien fonctionné
+			getEquipmentDetails(data['result'])
+	}
+  });
+  }
+
+  function getEquipmentDetails(jsonDetail) {
+	$('#div_equipment_details').empty();
+	
+  	$('#div_equipment_details').html('<div class="alert alert-info">'+getInstructionVrs()+'</div>');
+
+	var resp = callBackDetail(eqId);
+	/*
+	  var instruction ="<span><u>Ecoute commandes externes de contrôle du volet roulant : </u></span>";
+  	instruction += "</br>";
+  	instruction += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- permet de choisir les commandes (montée, descente, stop) externes permettant de piloter le volet roualnt</span>";
+  	instruction += "</br>";
+  	instruction += "<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=> Exemple d'un appui sur un bouton d'une télécommande physique non appairée à jeedom</span>";
+  	instruction += "</br>";
+  
+  	return instruction;
+	*/
+}
+
 /* Fonction permettant l'affichage des commandes dans l'équipement */
 function addCmdToTable(_cmd) {
   	//buildContactList();
