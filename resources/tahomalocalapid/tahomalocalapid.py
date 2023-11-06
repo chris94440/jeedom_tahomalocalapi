@@ -73,12 +73,15 @@ def listen():
 		if not 'token' in item:
 			item['token']=manageAuthentication(item)	
 
+		logging.info('	- before get devives list')
 		getDevicesList(item)
 		item['listenerId']=registerListener(item)
 		logging.info('	- item detail : %s', item)
 		_tokenList.append(item)
+		logging.info('	- after append')		
 		#jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : item['pinCode'], 'tokenValue' : token}})		
 
+	logging.info('	- after for and before fecth')
 	try:
 		while 1:
 			time.sleep(0.5)
