@@ -72,10 +72,11 @@ def listen():
 		loginTahoma()
 
 	if _jsessionid:
+		availableToken()
 		tahoma_token()
 
-		if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
-			downloadTahomaCertificate()
+		#if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
+		#	downloadTahomaCertificate()
 
 		if _tokenTahoma:
 			validateToken()
@@ -256,6 +257,38 @@ def validateToken():
 		response = requests.request("POST", url, headers=headers, data=payload)
 
 		if not response.status_code and not (response.status_code == 200):
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			shutdown()
+		
+
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when validate tahoma token -> %s",err)
+		shutdown()
+
+def availableToken():
+	logging.debug(' * Get available tahoma token')
+	try:
+	
+		url = _overkizUrl + '/config/' + _pincode + '/local/tokens/devmode'
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Cookie' : 'JSESSIONID=' + _jsessionid
+		}
+
+		response = requests.request("POST", url, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("Token list : %s", response.json())
+			json_data = response.json()
+			for item in json_data:
+				logging.info(" token  : %s", item.json())
+				#jeedom_com.send_change_immediate({'eventItem' : item})
+				#if 'actions' in item:						
+						#for action in item['actions']:
+		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
