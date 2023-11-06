@@ -606,6 +606,7 @@ _tokenTahoma=''
 _ipBox='https://192.168.1.28:8443'
 _overkizUrl='https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI'
 _listenerId=''
+_tahomaTokenList=''
 
 parser = argparse.ArgumentParser(
     description='Desmond Daemon for Jeedom plugin')
@@ -646,6 +647,8 @@ if args.pincode:
 	_pincode=args.pincode
 if args.boxLocalIp:
 	_ipBox='https://' + args.boxLocalIp + ':8443'
+if args.tahomatokenapi:
+	_tahomaTokenList=args.tahomatokenapi
 
 _socket_port = int(_socket_port)
 
@@ -663,6 +666,13 @@ logging.info('User: %s', _user)
 #logging.info('Pwd: %s', _pwd)
 logging.info('Pin ocde: %s', _pincode)
 logging.info('Box IP: %s', _ipBox)
+logging.info('Tahoma token list : %s', _tahomaTokenList)
+
+tokenList = json.loads(_tahomaTokenList.decode('utf-8'))
+for item in tokenList:
+	logging.info('	token -> : %s', item)
+
+
 logging.info('*-------------------------------------------------------------------------*')
 
 signal.signal(signal.SIGINT, handler)

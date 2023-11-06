@@ -1019,8 +1019,6 @@ class tahomalocalapiCmd extends cmd {
             case 'slider':
                 $type = $this->getConfiguration('request');
                 $parameters = str_replace('#slider#', $_options['slider'], $parameters);
-
-                //$newEventValue = $parameters;
                 
                 if ($commandName == "setClosure") {
                     $parameters = 100 - $parameters;
