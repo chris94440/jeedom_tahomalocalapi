@@ -621,7 +621,7 @@ parser.add_argument("--user", help="User for local api Tahoma", type=str)
 parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 parser.add_argument("--pincode", help="Tahoma pin code", type=str)
 parser.add_argument("--boxLocalIp", help="Tahoma IP", type=str)
-parser.add_argument("--tahomatokenapi", help="Tahoma toke", type=str)
+parser.add_argument("--tahomatokenapi", help="Tahoma token list", type=str)
 
 args = parser.parse_args()
 
@@ -668,9 +668,9 @@ logging.info('Pin ocde: %s', _pincode)
 logging.info('Box IP: %s', _ipBox)
 logging.info('Tahoma token list : %s', _tahomaTokenList)
 
-tokenList = json.loads(_tahomaTokenList)
-for item in tokenList:
-	logging.info('	token -> : %s', item)
+#tokenList = json.loads(_tahomaTokenList)
+#for item in tokenList:
+#	logging.info('	token -> : %s', item)
 
 
 logging.info('*-------------------------------------------------------------------------*')

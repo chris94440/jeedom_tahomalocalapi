@@ -122,7 +122,7 @@ private static function getSavedTahomalocalapiToken() {
     }
 
     log::add(__CLASS__, 'debug', '  getSavedTahomalocalapiToken --> ' . json_encode($resp));
-    return $resp;  
+    return json_encode($resp);  
 }
 
 
