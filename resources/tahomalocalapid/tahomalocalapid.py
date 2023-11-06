@@ -594,6 +594,8 @@ parser.add_argument("--user", help="User for local api Tahoma", type=str)
 parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 parser.add_argument("--pincode", help="Tahoma pin code", type=str)
 parser.add_argument("--boxLocalIp", help="Tahoma IP", type=str)
+parser.add_argument("--tahomatokenapi", help="Tahoma toke", type=str)
+
 args = parser.parse_args()
 
 if args.device:
