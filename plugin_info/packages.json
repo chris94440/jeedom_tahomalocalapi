@@ -5,7 +5,8 @@
   },
   "pip3": {
     "pyserial" : {"reinstall" : true},
-    "requests" : {"reinstall" : true}
+    "requests" : {"reinstall" : true},
+    "pyudev": {"reinstall" : true}
   },
   "npm": {
   },
