@@ -381,7 +381,7 @@ def fetchListeners():
 	#tokenList = json.loads(_tahomaTokenList)	
 	for item in _tokenList:	
 		if ('token' in item) and ('ip' in item):
-			logging.info('	- fetch listener item detail : %s', item)
+			#logging.info('	- fetch listener item detail : %s', item)
 			fetchListener(item['ip'],item['token'],item['listenerId'])
 
 
