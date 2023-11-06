@@ -261,6 +261,8 @@ def validateToken():
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
 			shutdown()
+		else:
+			jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : _pincode, 'tokenValue' : _tokenTahoma}})
 		
 
 	except requests.exceptions.HTTPError as err:
@@ -285,7 +287,7 @@ def availableToken():
 			json_data = response.json()
 			for item in json_data:
 				logging.info(" token  : %s", item)
-				if (item['label'] == 'JeedomTahomaLocalApi_token' && item['scope'] == 'devmode'):
+				if (item['label'] == 'JeedomTahomaLocalApi_token' and item['scope'] == 'devmode'):
 					deleteToken(item['uuid'])
 		else:
 			logging.error("Http code : %s", response.status_code)

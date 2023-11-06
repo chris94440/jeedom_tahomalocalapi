@@ -28,8 +28,26 @@ try {
         log::add('tahomalocalapi', 'debug', 'Message receive for execIdEvent : ' . $jsonMef);
         tahomalocalapi::storeExecId($jsonMef);
     } elseif (isset($result['saveTahomaSession'])) {
-        log::add('tahomalocalapi', 'debug', 'Message receive for saveTahomaSession, eq id : ' . $result['eqId'] . ' | token value : ' . $result['tokenValue']);
-        config::save('tahomalocalapi_session_'.$result['eqId'],$result['tokenValue'],'tahomalocalapi');
+        if (array_key_exists('saveTahomaSession',$result) && array_key_exists('pinCode',$result['saveTahomaSession']) && array_key_exists('tokenValue',$result['saveTahomaSession'])) {
+            $pincode=$result['saveTahomaSession']['pinCode'];
+            $tokenValue=$result['saveTahomaSession']['tokenValue'];
+
+            log::add('tahomalocalapi', 'debug', 'Message receive for saveTahomaSession, pin code : ' . $pincode . ' | token value : ' . $tokenValue);
+            $eqLogics=eqLogic::byType('tahomalocalapi');
+            foreach ($eqLogics as $eqLogic) {
+                if (stristr($eqLogic->getConfiguration('type'),'Pod') && stristr($eqLogic->getLogicalId(),$pincode)) {
+                    log::add('tahomalocalapi', 'debug', ' --> save token : ' .  $tokenValue . ' for device id ' . $eqLogic->getId());
+                    config::save('tahomalocalapi_session_'.$eqLogic->getId(), tokenValue,'tahomalocalapi');
+                    break;
+                } 
+            } 
+        } else {
+            log::add('tahomalocalapi', 'error', 'Error in content of received message for saveTahomaSession : ' . json_encode($result));
+        }
+      
+    }
+
+        //config::save('tahomalocalapi_session_'.$result['saveTahomaSession']['eqId'],$result['saveTahomaSession']['tokenValue'],'tahomalocalapi');
     }
 } catch (Exception $e) {
     log::add('tahomalocalapi', 'error', displayException($e)); //remplacez template par l'id de votre plugin
