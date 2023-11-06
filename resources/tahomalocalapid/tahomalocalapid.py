@@ -193,7 +193,7 @@ def getDevicesList(item):
 	logging.debug(' * Retrieve devices list')
 	try:
 
-		url = 'http://' + item['ip'] +'/enduser-mobile-web/1/enduserAPI/setup/devices'
+		url = 'https://' + item['ip'] + ':8443' +'/enduser-mobile-web/1/enduserAPI/setup/devices'
 		
 		
 		headers = {
@@ -219,7 +219,7 @@ def getGateways(ipBox,tokenTahoma):
 	logging.debug(' * Retrieve gateways list')
 	try:
 
-		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/setup/gateways'
+		url = 'https://' + ipBox + ':8443'  +'/enduser-mobile-web/1/enduserAPI/setup/gateways'
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -348,7 +348,7 @@ def registerListener(item):
 	logging.debug(' * Register listener')
 	try:
 
-		url = 'http://' + item['ip'] +'/enduser-mobile-web/1/enduserAPI/events/register'
+		url = 'https://' + item['ip']  + ':8443' +'/enduser-mobile-web/1/enduserAPI/events/register'
 		
 		
 		headers = {
@@ -384,7 +384,7 @@ def fetchListeners():
 def fetchListener(ipBox,tokenTahoma,listenerId):
 	try:
 
-		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + listenerId + '/fetch'		
+		url = 'https://' + ipBox  + ':8443' +'/enduser-mobile-web/1/enduserAPI/events/' + listenerId + '/fetch'		
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -421,7 +421,7 @@ def getDeviceStates(ipBox,tokenTahoma,deviceUrl):
 	logging.debug(' * getDeviceStates | '  + deviceUrl)
 	try:
 
-		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ quote(deviceUrl) +'/states'
+		url = 'https://' + ipBox  + ':8443' +'/enduser-mobile-web/1/enduserAPI/setup/devices/'+ quote(deviceUrl) +'/states'
 		logging.debug(' 	* url :  '  + url)
 		
 		headers = {
@@ -456,7 +456,7 @@ def unregisterListener(ipBox,tokenTahoma):
 	#logging.debug(' * Tahoma fetchListener | '  + listenerId)
 	try:
 
-		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/unregister'	
+		url = 'https://' + ipBox  + ':8443' +'/enduser-mobile-web/1/enduserAPI/events/' + _listenerId + '/unregister'	
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -474,7 +474,7 @@ def execCmd(ipBox,tokenTahoma,params):
 		if params['commandName'] == "stop":
 			deleteExecutionForADevice(params['deviceUrl'])
 
-		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+		url = 'https://' + ipBox  + ':8443' +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
 		if params['parameters'] != "":
 			payload=json.dumps({
@@ -534,7 +534,7 @@ def execCmd(ipBox,tokenTahoma,params):
 def execForceRefresh(ipBox,deviceUrl,tokenTahoma):	
 	logging.debug(' * Execute force refresh')
 	try:
-		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+		url = 'https://' + ipBox  + ':8443' +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
 		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": ["p1"]}],"deviceURL": deviceUrl}]})
 		
@@ -559,7 +559,7 @@ def execForceRefresh(ipBox,deviceUrl,tokenTahoma):
 def deleteExecutionForADevice(ipBox,deviceUrl,tokenTahoma):
 	logging.debug(' * Delete execution for a device: ' + deviceUrl)
 	try:
-		url = 'http://' + ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current'
+		url = 'https://' + ipBox  + ':8443' +'/enduser-mobile-web/1/enduserAPI/exec/current'
 
 		headers = {
 			'Content-Type' : 'application/json',
@@ -586,7 +586,7 @@ def deleteExecutionForADevice(ipBox,deviceUrl,tokenTahoma):
 def deleteExecution(executionId):
 	logging.debug(' * Delete execution : ' + executionId)
 	try:
-		url = 'http://' + _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/current/setup/' + executionId
+		url = 'https://' + _ipBox  + ':8443' +'/enduser-mobile-web/1/enduserAPI/exec/current/setup/' + executionId
 
 		headers = {
 			'Content-Type' : 'application/json',
