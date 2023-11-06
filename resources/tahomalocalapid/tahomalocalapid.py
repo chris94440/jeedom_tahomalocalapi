@@ -67,7 +67,7 @@ def listen():
 
 	httpLog()
 
-	global _tahomaTokenList
+	
 	tokenList = json.loads(_tahomaTokenList)	
 	for i, item in tokenList:
 		if not 'token' in item:
@@ -76,6 +76,7 @@ def listen():
 		getDevicesList(item)
 		item['listenerId']=registerListener(item)
 		logging.info('	- item detail : %s', item)
+		global _tahomaTokenList
 		_tahomaTokenList[i]=item
 		#jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : item['pinCode'], 'tokenValue' : token}})		
 
