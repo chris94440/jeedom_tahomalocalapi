@@ -69,13 +69,14 @@ def listen():
 
 	global _tahomaTokenList
 	tokenList = json.loads(_tahomaTokenList)	
-	for item in tokenList:
+	for i, item in tokenList:
 		if not 'token' in item:
 			item['token']=manageAuthentication(item)	
 
 		getDevicesList(item)
 		item['listenerId']=registerListener(item)
 		logging.info('	- item detail : %s', item)
+		_tahomaTokenList[i]=item
 		#jeedom_com.send_change_immediate({'saveTahomaSession' : {'pinCode' : item['pinCode'], 'tokenValue' : token}})		
 
 	try:
@@ -377,7 +378,7 @@ def fetchListeners():
 	tokenList = json.loads(_tahomaTokenList)	
 	for item in tokenList:	
 		if ('token' in item) and ('ip' in item):
-			logging.info("fetch listener for box ip " + item['ip'] + ' and listener id ' + item['listenerId'])
+			logging.info('	- fetch listener item detail : %s', item)
 			fetchListener(item['ip'],item['token'],item['listenerId'])
 
 
