@@ -284,7 +284,7 @@ def availableToken():
 			logging.debug("Token list : %s", response.json())
 			json_data = response.json()
 			for item in json_data:
-				logging.info(" token  : %s", item.json())
+				logging.info(" token  : %s", item)
 				#jeedom_com.send_change_immediate({'eventItem' : item})
 				#if 'actions' in item:						
 						#for action in item['actions']:
