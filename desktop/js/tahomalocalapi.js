@@ -148,7 +148,8 @@ function getEqDetail(eqId) {
 		detail += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
 	});
 
-	$('#div_equipment_details').html('<div class="alert alert-info">'+detail+'</div>');
+	//$('#div_equipment_details').html('<div class="alert alert-info">'+detail+'</div>');
+	$('#div_equipment_details').html('<div">'+detail+'</div>');
 }
 
 function getImage(eqId) {
