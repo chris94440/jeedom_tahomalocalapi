@@ -102,10 +102,12 @@ function addCmdToTable(_cmd) {
         $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init(_cmd.type));
     }
     jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
-
-	getImage($('.eqLogicAttr[data-l1key=id]').value());
-	//getEqDetail($('.eqLogicAttr[data-l1key=id]').value());
+	
 }
+
+getImage($('.eqLogicAttr[data-l1key=id]').value());
+
+getEqDetail($('.eqLogicAttr[data-l1key=id]').value());
 
 $('.eqLogicAction[data-action=syncDevices]').on('click', function () {
 	$('#div_alert').showAlert({message: '{{Synchronisation en cours}}', level: 'warning'});
@@ -131,7 +133,7 @@ function getEqDetail(eqId) {
   }
 
   function getEquipmentDetails(jsonDetail) {
-	console.log("ChD -> " + jsonDetail);
+	console.log("ChD -> " + JSON.stringify(jsonDetail));
 	$('#div_equipment_details').empty();
 	
   	//$('#div_equipment_details').html('<div class="alert alert-info">'+getInstructionVrs()+'</div>');
