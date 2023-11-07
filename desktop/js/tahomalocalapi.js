@@ -102,8 +102,10 @@ function addCmdToTable(_cmd) {
         $('#table_cmd tbody tr:last .cmdAttr[data-l1key=type]').value(init(_cmd.type));
     }
     jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
-	getImage(getUrlVars('id'));
-	getEqDetail(getUrlVars('id'));
+	//getImage(getUrlVars('id'));
+	//getEqDetail(getUrlVars('id'));
+	getImage($('.eqLogicAttr[data-l1key=id]').value());
+	getEqDetail($('.eqLogicAttr[data-l1key=id]').value());
 }
 
 
