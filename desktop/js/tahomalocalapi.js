@@ -134,13 +134,13 @@ function getEqDetail(eqId) {
   function getEquipmentDetails(jsonDetail) {
 	$('#div_equipment_details').empty();
 
-	var detail ="<span><u>Commandes infos disponibles : </u></span>";
+	var detail ="<span><u>Commandes info disponibles : </u></span>";
 	(jsonDetail['cmdsInfo']).forEach((item,index) => {
 		detail += "</br>";
 		detail += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
 	});
 
-	var detail ="<span><u>Commandes infos disponibles : </u></span>";
+	var detail ="<span><u>Commandes action disponibles : </u></span>";
 	(jsonDetail['cmdsAction']).forEach((item,index) => {
 		console.log(item['name']);
 		detail += "</br>";
