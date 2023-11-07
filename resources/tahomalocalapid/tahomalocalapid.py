@@ -198,7 +198,7 @@ def availableToken():
 			for item in json_data:
 				#logging.info(" token  : %s", item)
 				if (item['label'] == 'JeedomTahomaLocalApi_token' and item['scope'] == 'devmode'):
-					deleteToken(jsessionid,pincode,item['uuid'])
+					deleteToken(item['uuid'])
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -209,7 +209,7 @@ def availableToken():
 		logging.error("Error when retrieving available tahoma token -> %s",err)
 		shutdown()
 
-def deleteToken():
+def deleteToken(uuid):
 	logging.debug(' * Delete tahoma token : ' + uuid)
 	try:
 	
