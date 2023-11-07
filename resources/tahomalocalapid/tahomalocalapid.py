@@ -220,17 +220,15 @@ def deleteToken(uuid):
 			'Cookie' : 'JSESSIONID=' + _jsessionid
 		}
 
-		'''
 		response = requests.request("DELETE", url, headers=headers)
 
 		if response.status_code and (response.status_code == 200):
-			logging.debug("Token deleted : %s", uuid)
+			logging.debug("		-> Token %s deleted", uuid)
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
 			#shutdown()	
-		'''
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when deleting tahoma token -> %s",err)
 		shutdown()
