@@ -159,9 +159,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<img id="img_eqTahomalocalapi" src="" style="height : 200px"/>										
 							</div>
 						</div>
-						<div class="col-lg-6">
+						<div class="col-lg-4">
 							<legend><i class="fas fa-info"></i> {{Commandes disponibles}}</legend>
-							<div class="col-lg-4">
+							<div class="col-lg-6">
 								<div class="form-group">
 									<div id="div_equipment_details_info"></div>				
 								</div>
