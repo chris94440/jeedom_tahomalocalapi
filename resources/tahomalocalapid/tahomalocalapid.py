@@ -524,10 +524,8 @@ parser.add_argument("--user", help="User for local api Tahoma", type=str)
 parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 parser.add_argument("--pincode", help="Tahoma pin code", type=str)
 parser.add_argument("--boxLocalIp", help="Tahoma IP", type=str)
-parser.add_argument("--tahomaSession", help="Tahoma session", type=str)
+parser.add_argument("--tahoma_token", help="Tahoma token", type=str)
 args = parser.parse_args()
-
-logging.info('ChD Tahoma session : %s', args.tahomaSession)
 
 if args.device:
 	_device = args.device
@@ -551,11 +549,8 @@ if args.pincode:
 	_pincode=args.pincode
 if args.boxLocalIp:
 	_ipBox='https://' + args.boxLocalIp + ':8443'
-if args.tahomaSession:
-	logging.info('Tahoma session : %s', args.tahomaSession)
-	tokenList = json.loads(args.tahomaSession)
-	if tokenList['token']:
-		_tokenTahoma=tokenList['token']
+if args.tahoma_token:
+	_tokenTahoma=args.tahoma_token
 
 _socket_port = int(_socket_port)
 
