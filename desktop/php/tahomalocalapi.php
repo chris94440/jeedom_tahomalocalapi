@@ -161,8 +161,15 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						</div>
 						<div class="col-lg-3">
 							<legend><i class="fas fa-info"></i> {{Commandes disponibles}}</legend>
-							<div class="form-group">
-								<div id="div_equipment_details"></div>				
+							<div class="col-lg-2">
+								<div class="form-group">
+									<div id="div_equipment_details_info"></div>				
+								</div>
+							</div>
+							<div class="col-lg-2">
+								<div class="form-group">
+									<div id="div_equipment_details_action"></div>				
+								</div>
 							</div>
 						</div>
 					</fieldset>

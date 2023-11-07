@@ -132,24 +132,23 @@ function getEqDetail(eqId) {
   }
 
   function getEquipmentDetails(jsonDetail) {
-	$('#div_equipment_details').empty();
+	$('#div_equipment_details_info').empty();
+	$('#div_equipment_details_action').empty();
 
-	var detail ="<span><u>Commandes info disponibles : </u></span>";
+	var detailInfo ="<span><u>Commandes info disponibles : </u></span>";
 	(jsonDetail['cmdsInfo']).forEach((item,index) => {
-		detail += "</br>";
-		detail += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
+		detailInfo += "</br>";
+		detailInfo += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
 	});
 
-	detail += "</br>";
-	detail +="<span><u>Commandes action disponibles : </u></span>";
+	var detailAction ="<span><u>Commandes action disponibles : </u></span>";
 	(jsonDetail['cmdsAction']).forEach((item,index) => {
-		console.log(item['name']);
-		detail += "</br>";
-		detail += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
+		detailAction += "</br>";
+		detailAction += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
 	});
 
-	//$('#div_equipment_details').html('<div class="alert alert-info">'+detail+'</div>');
-	$('#div_equipment_details').html('<div">'+detail+'</div>');
+	$('#div_equipment_details_info').html('<div">'+detailInfo+'</div>');
+	$('#div_equipment_details_action').html('<div">'+detailAction+'</div>');
 }
 
 function getImage(eqId) {
