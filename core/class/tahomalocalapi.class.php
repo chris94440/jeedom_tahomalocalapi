@@ -72,7 +72,6 @@ public static function deamon_start() {
   
   
   log::add(__CLASS__, 'info', 'Lancement démon');
-  log::add(__CLASS__, 'info', ' token : ' + (config::byKey('tahomalocalapi_session',  __CLASS__))['token']);
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
   $i = 0;
   while ($i < 20) {

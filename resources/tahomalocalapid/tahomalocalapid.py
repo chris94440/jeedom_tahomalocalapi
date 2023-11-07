@@ -71,8 +71,9 @@ def listen():
 
 		if _jsessionid:
 			tahoma_token()
-
-	validateToken()
+			if _tokenTahoma:
+				validateToken()
+	
 	getDevicesList()
 	registerListener()	
 
