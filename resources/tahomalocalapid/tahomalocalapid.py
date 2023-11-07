@@ -527,6 +527,8 @@ parser.add_argument("--boxLocalIp", help="Tahoma IP", type=str)
 parser.add_argument("--tahomaSession", help="Tahoma session", type=str)
 args = parser.parse_args()
 
+logging.info('ChD Tahoma session : %s', args.tahomaSession)
+
 if args.device:
 	_device = args.device
 if args.loglevel:
