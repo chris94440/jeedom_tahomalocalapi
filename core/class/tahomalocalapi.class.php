@@ -125,7 +125,7 @@ public function getEqlogicDetails() {
             array_push($aInfoCmd,array('name' => 'synced'));
         }
     
-        foreach ($states as $state) {
+        foreach ($device['definition']['states'] as $state) {
             array_push($aInfoCmd,array('name' => $state['name']));
         }
     }  
