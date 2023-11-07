@@ -132,24 +132,22 @@ function getEqDetail(eqId) {
   }
 
   function getEquipmentDetails(jsonDetail) {
-	console.log("ChD -> " + JSON.stringify(jsonDetail));
-	console.log("ChD info -> " + JSON.stringify(jsonDetail['cmdsInfo']));
-	console.log("ChD action -> " + JSON.stringify(jsonDetail['cmdsAction']));
 	$('#div_equipment_details').empty();
-	
-  	//$('#div_equipment_details').html('<div class="alert alert-info">'+getInstructionVrs()+'</div>');
 
-	//var resp = callBackDetail(eqId);
-	/*
-	  var instruction ="<span><u>Ecoute commandes externes de contrôle du volet roulant : </u></span>";
-  	instruction += "</br>";
-  	instruction += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- permet de choisir les commandes (montée, descente, stop) externes permettant de piloter le volet roualnt</span>";
-  	instruction += "</br>";
-  	instruction += "<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=> Exemple d'un appui sur un bouton d'une télécommande physique non appairée à jeedom</span>";
-  	instruction += "</br>";
-  
-  	return instruction;
-	*/
+	var detail ="<span><u>Commandes infos disponibles : </u></span>";
+	(jsonDetail['cmdsInfo']).forEach((item,index) => {
+		detail += "</br>";
+		detail += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
+	});
+
+	var detail ="<span><u>Commandes infos disponibles : </u></span>";
+	(jsonDetail['cmdsAction']).forEach((item,index) => {
+		console.log(item['name']);
+		detail += "</br>";
+		detail += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
+	});
+
+	$('#div_equipment_details').html('<div class="alert alert-info">'+detail+'</div>');
 }
 
 function getImage(eqId) {
