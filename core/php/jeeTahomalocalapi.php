@@ -27,6 +27,15 @@ try {
         $jsonMef=str_replace(array('\\','"{','}"'), array('','{','}'),json_encode($result['execIdEvent']));
         log::add('tahomalocalapi', 'debug', 'Message receive for execIdEvent : ' . $jsonMef);
         tahomalocalapi::storeExecId($jsonMef);
+    } elseif (isset($result['tahomaSession'])) {
+        if (array_key_exists('tahomaSession',$result) && array_key_exists('pinCode',$result['tahomaSession']) && array_key_exists('token',$result['tahomaSession'])) {
+            $pincode=$result['tahomaSession']['pinCode'];
+            $tokenValue=$result['tahomaSession']['token'];
+
+            config::save('tahomalocalapi_session', array('pinCode' => $pincode, 'token' => $tokenValue),'tahomalocalapi');
+        } else {
+            log::add('tahomalocalapi', 'error', 'Error in content of received message for tahomaSession : ' . json_encode($result));
+        }
     }
     
 } catch (Exception $e) {
