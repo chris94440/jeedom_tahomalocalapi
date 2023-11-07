@@ -107,6 +107,7 @@ function addCmdToTable(_cmd) {
 
 getImage($('.eqLogicAttr[data-l1key=id]').value());
 
+console.log("CHD");
 getEqDetail($('.eqLogicAttr[data-l1key=id]').value());
 
 $('.eqLogicAction[data-action=syncDevices]').on('click', function () {
