@@ -140,6 +140,7 @@ function getEqDetail(eqId) {
 		detail += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
 	});
 
+	detail += "</br>";
 	detail +="<span><u>Commandes action disponibles : </u></span>";
 	(jsonDetail['cmdsAction']).forEach((item,index) => {
 		console.log(item['name']);
