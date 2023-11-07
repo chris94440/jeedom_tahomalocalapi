@@ -550,6 +550,7 @@ if args.pincode:
 if args.boxLocalIp:
 	_ipBox='https://' + args.boxLocalIp + ':8443'
 if args.tahomaSession:
+	logging.info('Tahoma session : %s', args.tahomaSession)
 	tokenList = json.loads(args.tahomaSession)
 	if tokenList['token']:
 		_tokenTahoma=tokenList['token']
