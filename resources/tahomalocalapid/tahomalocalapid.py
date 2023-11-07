@@ -550,16 +550,10 @@ if args.pincode:
 if args.boxLocalIp:
 	_ipBox='https://' + args.boxLocalIp + ':8443'
 if args.tahomaSession:
-	_tokenTahoma=args.tahomaSession['token']
+	tokenList = json.loads(args.tahomaSession)
+	if tokenList['token']:
+		_tokenTahoma=tokenList['token']
 
-'''
-tokenList = json.loads(_tahomaTokenList)
-logging.info('Tahoma conf')
-for item in tokenList:
-	logging.info('	- box ip : %s', item['ip'])
-	logging.info('	- box code pin : %s', item['pinCode'])
-	logging.info('	- token tahoma : %s', item['token'])	
-'''
 _socket_port = int(_socket_port)
 
 jeedom_utils.set_log_level(_log_level)
