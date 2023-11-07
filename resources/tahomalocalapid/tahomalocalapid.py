@@ -65,20 +65,16 @@ def listen():
 	
 	httpLog()
 
-	if not _jsessionid and not _tokenTahoma:
-		loginTahoma()
+	if not _tokenTahoma:
+		if not _jsessionid and not _tokenTahoma:
+			loginTahoma()
 
-	if _jsessionid:
-		tahoma_token()
+		if _jsessionid:
+			tahoma_token()
 
-		if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
-			downloadTahomaCertificate()
-
-		if _tokenTahoma:
-			validateToken()
-			getDevicesList()
-			#getGateways()
-			registerListener()	
+	validateToken()
+	getDevicesList()
+	registerListener()	
 
 	try:
 		while 1:
@@ -257,6 +253,8 @@ def validateToken():
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
 			shutdown()
+		else:
+			jeedom_com.send_change_immediate({'tahomaSession' : {'pinCode' : _pincode, 'token' : _tokenTahoma}})
 		
 
 	except requests.exceptions.HTTPError as err:
@@ -526,6 +524,8 @@ parser.add_argument("--user", help="User for local api Tahoma", type=str)
 parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 parser.add_argument("--pincode", help="Tahoma pin code", type=str)
 parser.add_argument("--boxLocalIp", help="Tahoma IP", type=str)
+parser.add_argument("--tahomaSession", help="Tahoma session", type=str)
+tahomaSession
 args = parser.parse_args()
 
 if args.device:
@@ -550,6 +550,8 @@ if args.pincode:
 	_pincode=args.pincode
 if args.boxLocalIp:
 	_ipBox='https://' + args.boxLocalIp + ':8443'
+if args.tahomaSession:
+	_tokenTahoma=tahomaSession['token']
 
 _socket_port = int(_socket_port)
 
@@ -567,6 +569,7 @@ logging.info('User: %s', _user)
 logging.info('Pwd: %s', _pwd)
 logging.info('Pin ocde: %s', _pincode)
 logging.info('Box IP: %s', _ipBox)
+logging.info('Tahoma token: %s', _tokenTahoma)
 logging.info('*-------------------------------------------------------------------------*')
 
 signal.signal(signal.SIGINT, handler)

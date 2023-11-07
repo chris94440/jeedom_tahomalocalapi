@@ -68,7 +68,8 @@ public static function deamon_start() {
   $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
   $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
   $cmd .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
-  $cmd .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // IP box somfy
+  $cmd .= ' --tahomaSession "' . trim(str_replace('"', '\"', config::byKey('tahomalocalapi_session',  __CLASS__))) . '"'; // TahomaSession
+  
   
   log::add(__CLASS__, 'info', 'Lancement démon');
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
@@ -109,6 +110,7 @@ public static function synchronize() {
 protected static function getSocketPort() {
     return config::byKey('socketport', __CLASS__, 55009);
 }
+
 
 public function getImage() {
     $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$this->getConfiguration('type'));
