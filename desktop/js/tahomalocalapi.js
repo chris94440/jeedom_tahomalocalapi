@@ -104,11 +104,15 @@ function addCmdToTable(_cmd) {
     jeedom.cmd.changeType($('#table_cmd tbody tr:last'), init(_cmd.subType));
 	//getImage(getUrlVars('id'));
 	//getEqDetail(getUrlVars('id'));
-	getImage($('.eqLogicAttr[data-l1key=id]').value());
-	getEqDetail($('.eqLogicAttr[data-l1key=id]').value());
+	
 }
 
 
+$(".eqLogicDisplayCard").on('click', function(event) {
+	var eqlogicId=$(this).attr('data-eqlogic_id');
+	getImage(eqlogicId);
+	getEqDetail(eqlogicId);	
+});
 
 $('.eqLogicAction[data-action=syncDevices]').on('click', function () {
 	$('#div_alert').showAlert({message: '{{Synchronisation en cours}}', level: 'warning'});
