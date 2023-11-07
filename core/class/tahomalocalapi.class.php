@@ -72,6 +72,7 @@ public static function deamon_start() {
   
   
   log::add(__CLASS__, 'info', 'Lancement démon');
+  log::add(__CLASS__, 'info', $cmd);
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
   $i = 0;
   while ($i < 20) {
