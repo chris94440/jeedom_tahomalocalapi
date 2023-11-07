@@ -35,6 +35,9 @@ try {
     } else if (init('action') == 'getEqlogicImage') {
       $eqLogic = tahomalocalapi::byId(init('id'));
       ajax::success($eqLogic->getImage());
+    } else if ( init('action') == 'getEqlogicDetails') {
+      $eqLogic = tahomalocalapi::byId(init('id'));
+      ajax::success($eqLogic->getEqlogicDetails());
     }
 
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));

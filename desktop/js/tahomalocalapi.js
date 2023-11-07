@@ -125,12 +125,13 @@ function getEqDetail(eqId) {
 			handleAjaxError(request, status, error);
 		},
 		success: function (data) { // si l'appel a bien fonctionné
-			getEquipmentDetails(data['result'])
+			getEquipmentDetails(data['result']);
 	}
   });
   }
 
   function getEquipmentDetails(jsonDetail) {
+	console.log("ChD -> " + jsonDetail);
 	$('#div_equipment_details').empty();
 	
   	//$('#div_equipment_details').html('<div class="alert alert-info">'+getInstructionVrs()+'</div>');

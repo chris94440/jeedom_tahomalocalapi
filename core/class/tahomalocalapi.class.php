@@ -110,6 +110,34 @@ protected static function getSocketPort() {
     return config::byKey('socketport', __CLASS__, 55009);
 }
 
+public function getEqlogicDetails() {
+    $device = json_decode($this->getConfiguration( 'rawDevice'),true);
+    $aInfoCmd=array();
+    $aActionCmd=array();
+
+    //info cmd
+    if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
+        if (array_key_exists('available',$device)) {
+            array_push($aInfoCmd,array('name' => 'available'));
+        }
+      
+        if (array_key_exists('synced',$device)) {
+            array_push($aInfoCmd,array('name' => 'synced'));
+        }
+    
+        foreach ($states as $state) {
+            array_push($aInfoCmd,array('name' => $state['name']));
+        }
+    }  
+
+    //action cmd
+    if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
+        foreach ($device['definition']['commands'] as $command) {
+             array_push($aActionCmd,array('name' =>$command['commandName']));
+        }
+    }
+    return array('cmdInfo' => $aInfoCmd, 'cmdAction' =>$aActionCmd);
+}
 
 public function getImage() {
     $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$this->getConfiguration('type'));
@@ -192,6 +220,7 @@ public static function sendToDaemon($params) {
              $eqLogic->setName($device['label']);
              $eqLogic->setConfiguration('type', $device['controllableName']);
              $eqLogic->setConfiguration('deviceURL', $device['deviceURL']);
+             $eqLogic->setConfiguration( 'rawDevice',json_encode($device));
            	 $eqLogic->setLogicalId( $device['deviceURL']);
              $eqLogic->save();
 
@@ -213,6 +242,7 @@ public static function sendToDaemon($params) {
          } else {
              $eqLogic = $eqLogic_found;
            	 $eqLogic->setLogicalId( $device['deviceURL']);
+             $eqLogic->setConfiguration( 'rawDevice',json_encode($device));
            	 $eqLogic->save();
          }
       	
