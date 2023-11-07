@@ -105,10 +105,8 @@ function addCmdToTable(_cmd) {
 	
 }
 
-getImage($('.eqLogicAttr[data-l1key=id]').value());
-
-console.log("CHD");
-getEqDetail($('.eqLogicAttr[data-l1key=id]').value());
+getImage(getUrlVars('id'));
+getEqDetail(getUrlVars('id'));
 
 $('.eqLogicAction[data-action=syncDevices]').on('click', function () {
 	$('#div_alert').showAlert({message: '{{Synchronisation en cours}}', level: 'warning'});
