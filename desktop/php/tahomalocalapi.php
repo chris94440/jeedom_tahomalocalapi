@@ -153,11 +153,17 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 						<!-- Partie droite de l'onglet "Équipement" -->
 						<!-- Affiche un champ de commentaire par défaut mais vous pouvez y mettre ce que vous voulez -->
-						<div class="col-lg-6">
+						<div class="col-lg-3">
 							<legend><i class="fas fa-info"></i> {{Informations}}</legend>
 							<div class="form-group">
-							<img id="img_eqTahomalocalapi" src="" style="height : 200px"/>		
+								<img id="img_eqTahomalocalapi" src="" style="height : 200px"/>		
 							<div id="div_equipment_details"></div>				
+							</div>
+						</div>
+						<div class="col-lg-3">
+							<legend><i class="fas fa-info"></i> {{Commandes disponibles}}</legend>
+							<div class="form-group">
+								<div id="div_equipment_details"></div>				
 							</div>
 						</div>
 					</fieldset>
