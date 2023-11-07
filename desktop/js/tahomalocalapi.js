@@ -135,6 +135,8 @@ function getEqDetail(eqId) {
 
   function getEquipmentDetails(jsonDetail) {
 	console.log("ChD -> " + JSON.stringify(jsonDetail));
+	console.log("ChD info -> " + JSON.stringify(jsonDetail['cmdsInfo']));
+	console.log("ChD action -> " + JSON.stringify(jsonDetail['cmdsAction']));
 	$('#div_equipment_details').empty();
 	
   	//$('#div_equipment_details').html('<div class="alert alert-info">'+getInstructionVrs()+'</div>');

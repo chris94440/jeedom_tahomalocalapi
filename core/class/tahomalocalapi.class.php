@@ -136,7 +136,7 @@ public function getEqlogicDetails() {
              array_push($aActionCmd,array('name' =>$command['commandName']));
         }
     }
-    return array('cmdInfo' => $aInfoCmd, 'cmdAction' =>$aActionCmd);
+    return array('cmdsInfo' => $aInfoCmd, 'cmdsAction' =>$aActionCmd);
 }
 
 public function getImage() {
