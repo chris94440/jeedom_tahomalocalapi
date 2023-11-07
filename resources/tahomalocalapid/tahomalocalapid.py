@@ -595,7 +595,7 @@ _pwd = ''
 _jsessionid=''
 _pincode=''
 _tokenTahoma=''
-_ipBox='https://192.168.1.28:8443'
+_ipBox=''
 _overkizUrl='https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI'
 _listenerId=''
 
