@@ -70,6 +70,7 @@ def listen():
 			loginTahoma()
 
 		if _jsessionid:
+			availableToken()
 			tahoma_token()
 			if _tokenTahoma:
 				validateToken()
@@ -176,6 +177,62 @@ def tahoma_token():
 			shutdown()
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when retrieving tahoma token -> %s",err)
+		shutdown()
+
+def availableToken():
+	logging.debug(' * Get available tahoma token')
+	try:
+	
+		url = _overkizUrl + '/config/' + _pincode + '/local/tokens/devmode'
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Cookie' : 'JSESSIONID=' + _jsessionid
+		}
+
+		response = requests.request("GET", url, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("Token list : %s", response.json())
+			json_data = response.json()
+			for item in json_data:
+				#logging.info(" token  : %s", item)
+				if (item['label'] == 'JeedomTahomaLocalApi_token' and item['scope'] == 'devmode'):
+					deleteToken(jsessionid,pincode,item['uuid'])
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			shutdown()	
+
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when retrieving available tahoma token -> %s",err)
+		shutdown()
+
+def deleteToken():
+	logging.debug(' * Delete tahoma token : ' + uuid)
+	try:
+	
+		url = _overkizUrl + '/config/' + _pincode + '/local/tokens/' + uuid		
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Cookie' : 'JSESSIONID=' + _jsessionid
+		}
+
+		'''
+		response = requests.request("DELETE", url, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("Token deleted : %s", uuid)
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			#shutdown()	
+		'''
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when deleting tahoma token -> %s",err)
 		shutdown()
 
 def getDevicesList():	
