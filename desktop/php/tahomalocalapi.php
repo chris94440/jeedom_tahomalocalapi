@@ -156,7 +156,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						<div class="col-lg-2">
 							<legend><i class="fas fa-info"></i> {{Informations}}</legend>
 							<div class="form-group">
-								<img id="img_eqTahomalocalapi" src="" style="height : 200px"/>										
+								<img id="img_eqTahomalocalapi" src="" style="height : 75%;width : 75%"/>										
 							</div>
 						</div>
 						<div class="col-lg-4">
