@@ -135,13 +135,13 @@ function getEqDetail(eqId) {
 	$('#div_equipment_details_info').empty();
 	$('#div_equipment_details_action').empty();
 
-	var detailInfo ="<span><u>Commandes info disponibles : </u></span>";
+	var detailInfo ="<span><u>Type information : </u></span>";
 	(jsonDetail['cmdsInfo']).forEach((item,index) => {
 		detailInfo += "</br>";
 		detailInfo += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
 	});
 
-	var detailAction ="<span><u>Commandes action disponibles : </u></span>";
+	var detailAction ="<span><u>Type action : </u></span>";
 	(jsonDetail['cmdsAction']).forEach((item,index) => {
 		detailAction += "</br>";
 		detailAction += "<span>&nbsp;&nbsp;&nbsp;&nbsp;- "+item['name']+"</span>";
