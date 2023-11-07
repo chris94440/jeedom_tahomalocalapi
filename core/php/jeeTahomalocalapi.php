@@ -30,7 +30,7 @@ try {
     } elseif (isset($result['tahomaSession'])) {
         if (array_key_exists('tahomaSession',$result) && array_key_exists('pinCode',$result['tahomaSession']) && array_key_exists('token',$result['tahomaSession'])) {
             $pincode=$result['tahomaSession']['pinCode'];
-            $tokenValue=$result['tahomaSession']['tokenValue'];
+            $tokenValue=$result['tahomaSession']['token'];
 
             config::save('tahomalocalapi_session', array('pinCode' => $pincode, 'token' => $tokenValue),'tahomalocalapi');
         } else {

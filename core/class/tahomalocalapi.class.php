@@ -68,11 +68,12 @@ public static function deamon_start() {
   $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
   $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
   $cmd .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
-  $cmd .= ' --tahomaSession "' . trim(str_replace('"', '\"', config::byKey('tahomalocalapi_session',  __CLASS__))) . '"'; // TahomaSession
+  $cmd .= ' --tahomaSession "' . trim(str_replace('"', '\"', json_encode(config::byKey('tahomalocalapi_session',  __CLASS__)))) . '"'; // TahomaSession
   
   
   log::add(__CLASS__, 'info', 'Lancement démon');
   log::add(__CLASS__, 'info', $cmd);
+  log::add(__CLASS__,'info',json_encode(config::byKey('tahomalocalapi_session',  __CLASS__)));
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
   $i = 0;
   while ($i < 20) {
