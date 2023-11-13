@@ -140,6 +140,15 @@ public function getEqlogicDetails() {
     return array('cmdsInfo' => $aInfoCmd, 'cmdsAction' =>$aActionCmd);
 }
 
+public static function getDevicesDetails() {
+    $eqLogics=eqLogic::byType(__CLASS__);
+    $aDevicesList=array();
+    foreach ($eqLogics as $eqLogic) {
+            array_push($aDevicesList,json_decode($this->getConfiguration( 'rawDevice'),true))
+    }
+    return array('DevicesList' => $aDevicesList);
+}
+
 public function getImage() {
     $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$this->getConfiguration('type'));
     $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';

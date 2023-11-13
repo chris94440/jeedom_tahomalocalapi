@@ -198,3 +198,58 @@ function syncSomfyDevices() {
   }
 });
 }
+
+$('.eqLogicAction[data-action=infosCommunity]').off('click').on('click', function () {
+	infosCommunity($('.txtInfoPlugin').html())  
+});
+
+async function infosCommunity(txtInfoPlugin) {
+
+	var data = {
+	  action: 'getDevicesDetails'
+	}
+	var infoPlugin = await asyncAjaxGenericFunction(data);
+  
+	getSimpleModal({
+	  title: "Forum",
+	  width: 0.5 * $(window).width(),
+	  fields: [{
+		type: "string",
+		value: txtInfoPlugin
+	  },
+	  {
+		type: "string",
+		id: "infoPluginModal",
+		value: infoPlugin.result
+	  }],
+	  buttons: {
+		"Fermer": function () {
+		  $('#simpleModalAlert').hide();
+		  $(this).dialog("close");
+		},
+		"Copier": function () {
+		  copyDivToClipboard('#infoPluginModal', true)
+		}
+	  }
+	}, function (result) { }); 
+  }
+
+  function copyDivToClipboard(myInput, addBacktick = false) {
+	var initialText = $(myInput).html();
+	if (addBacktick) {
+	  $(myInput).html('```<br/>' + initialText.replaceAll('<b>', '').replaceAll('</b>', '') + '```');
+	}
+	var range = document.createRange();
+	range.selectNode($(myInput).get(0));
+	window.getSelection().removeAllRanges(); // clear current selection
+	window.getSelection().addRange(range); // to select text
+	document.execCommand("copy");
+	window.getSelection().removeAllRanges();// to deselect
+	$('#div_simpleModalAlert').showAlert({
+	  message: 'Infos copiées',
+	  level: 'success'
+	});
+	if (addBacktick) {
+	  $(myInput).html(initialText);
+	}
+  }
