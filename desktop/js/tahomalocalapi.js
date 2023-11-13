@@ -193,7 +193,7 @@ function syncSomfyDevices() {
           $('#div_alert').showAlert({message: data.result, level: 'danger'});
           return;
       }
-      $('#div_alert').showAlert({message: '{{Synchronisation terminée avec succès}}', level: 'success'});
+      $('#div_alert').showAlert({message: '{{Récupération terminée avec succès}}', level: 'success'});
       window.location.reload();
   }
 });
@@ -204,11 +204,21 @@ $('.eqLogicAction[data-action=infosCommunity]').off('click').on('click', functio
 });
 
 async function infosCommunity(txtInfoPlugin) {
-
-	var data = {
-	  action: 'getDevicesDetails'
-	}
-	var infoPlugin = await asyncAjaxGenericFunction(data);
+	var infoPlugin = "";
+	$.ajax({// fonction permettant de faire de l'ajax
+		type: "POST", // méthode de transmission des données au fichier php
+		url: "plugins/tahomalocalapi/core/ajax/tahomalocalapi.ajax.php", // url du fichier php
+		data: {
+			action: "getDevicesDetails",
+		},
+		dataType: 'json',
+		error: function (request, status, error) {
+			handleAjaxError(request, status, error);
+		},
+		success: function (data) { // si l'appel a bien fonctionné
+			infoPlugin = data['result'];
+		}
+	});
   
 	getSimpleModal({
 	  title: "Forum",
