@@ -314,7 +314,7 @@ async function asyncAjaxGenericFunction(data) {
     $.fn.hideAlert();
 
     const result = await $.post({
-        url: "plugins/JeedomConnect/core/ajax/jeedomConnect.ajax.php",
+        url: "plugins/tahomalocalapi/core/ajax/tahomalocalapi.ajax.php",
         data: data,
         cache: false,
         dataType: 'json',
