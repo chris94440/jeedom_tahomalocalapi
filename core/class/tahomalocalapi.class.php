@@ -147,14 +147,14 @@ public static function getDevicesDetails() {
     $htmlTab='<table>';
     $htmlTab.='<thead>';
     $htmlTab.='<tr>';
-    $htmlTab.='<th colspan="2" style="text-align: center>Liste des équipements Somfy</th>';
+    $htmlTab.='<th colspan="2" style="text-align: center">Liste des équipements Somfy</th>';
     $htmlTab.='</tr>';
     $htmlTab.='</thead>';
     $htmlTab.='<tbody>';
     $htmlTab.='<tr>';
-    $htmlTab.='<td style="text-align: center>ID</td>';
-    $htmlTab.='<td style="text-align: center>NOM</td>';
-    $htmlTab.='<td style="text-align: center>ACTIF</td>';
+    $htmlTab.='<td style="text-align: center">ID</td>';
+    $htmlTab.='<td style="text-align: center">NOM</td>';
+    $htmlTab.='<td style="text-align: center">ACTIF</td>';
     $htmlTab.='</tr>';
 
 
@@ -175,10 +175,10 @@ public static function getDevicesDetails() {
         
 
         if ($bFound) {
-            $htmlTab.='<td style="text-align: center><i class="fas fa-check"></i></td>';
+            $htmlTab.='<td style="text-align: center"><i class="fas fa-check"></i></td>';
             log::add(__CLASS__, 'debug', '|         - device found : '. $device['deviceURL']);
         } else {
-            $htmlTab.='<td style="text-align: center><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';
+            $htmlTab.='<td style="text-align: center"><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';
             log::add(__CLASS__, 'debug', '|         - device not found : '. $device['deviceURL']);
         }
         $htmlTab.='</tr>';
