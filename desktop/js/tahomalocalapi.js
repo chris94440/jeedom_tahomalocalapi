@@ -118,6 +118,12 @@ $("#table_cmdi").sortable({
 	  $('#div_alert').showAlert({message: '{{Synchronisation en cours}}', level: 'warning'});
 		syncSomfyDevices();
   });
+
+  $('.eqLogicAction[data-action=resetTahomaToken]').on('click', function () {
+	$('#div_alert').showAlert({message: '{{Initialisation du token Tahoma local en cours}}', level: 'warning'});
+		resetTahomaToken();
+	});
+  
   
   function getEqDetail(eqId) {
 	  $.ajax({// fonction permettant de faire de l'ajax
@@ -176,27 +182,48 @@ $("#table_cmdi").sortable({
 	}
 	
   
+	function resetTahomaToken() {
+		$.ajax({// fonction permettant de faire de l'ajax
+				type: "POST", // méthode de transmission des données au fichier php
+				url: "plugins/tahomalocalapi/core/ajax/tahomalocalapi.ajax.php", // url du fichier php
+				data: {
+					action: "syncSomresetTokenTahomafyDevices",
+				},
+				dataType: 'json',
+				error: function (request, status, error) {
+					handleAjaxError(request, status, error);
+				},
+				success: function (data) { // si l'appel a bien fonctionné
+				if (data.state != 'ok') {
+					$('#div_alert').showAlert({message: data.result, level: 'danger'});
+					return;
+				}
+				$('#div_alert').showAlert({message: '{{Token Tahoma réinitialisé avec succès}}', level: 'success'});
+				window.location.reload();
+			}
+		});
+	}
   
   function syncSomfyDevices() {
 	$.ajax({// fonction permettant de faire de l'ajax
-		type: "POST", // méthode de transmission des données au fichier php
-		url: "plugins/tahomalocalapi/core/ajax/tahomalocalapi.ajax.php", // url du fichier php
-		data: {
-			action: "syncSomfyDevices",
-		},
-		dataType: 'json',
-		error: function (request, status, error) {
-			handleAjaxError(request, status, error);
-		},
-		success: function (data) { // si l'appel a bien fonctionné
-		if (data.state != 'ok') {
-			$('#div_alert').showAlert({message: data.result, level: 'danger'});
-			return;
+			type: "POST", // méthode de transmission des données au fichier php
+			url: "plugins/tahomalocalapi/core/ajax/tahomalocalapi.ajax.php", // url du fichier php
+			data: {
+				action: "syncSomfyDevices",
+			},
+			dataType: 'json',
+			error: function (request, status, error) {
+				handleAjaxError(request, status, error);
+			},
+			success: function (data) { // si l'appel a bien fonctionné
+			if (data.state != 'ok') {
+				$('#div_alert').showAlert({message: data.result, level: 'danger'});
+				return;
+			}
+			$('#div_alert').showAlert({message: '{{Récupération terminée avec succès}}', level: 'success'});
+			window.location.reload();
 		}
-		$('#div_alert').showAlert({message: '{{Récupération terminée avec succès}}', level: 'success'});
-		window.location.reload();
-	}
-  });
+	});
   }
   
   $('.eqLogicAction[data-action=infosCommunity]').off('click').on('click', function () {

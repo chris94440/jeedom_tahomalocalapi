@@ -26,6 +26,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						<br/>
 						<span>{{Synchroniser}}</span>
 					</div>
+					<div class="cursor eqLogicAction logoSecondary" data-action="resetTahomaToken">
+						<i class="fas fa-undo"></i>
+						<br/>
+						<span>{{Reset token Tahoma local}}</span>
+					</div>
 					<div class="cursor eqLogicAction logoSecondary" data-action="infosCommunity" style="color:rgb(27,161,242);">
 						<i class="fas fa-question-circle"></i>
 						<br>

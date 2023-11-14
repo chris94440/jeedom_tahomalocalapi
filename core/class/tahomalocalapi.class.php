@@ -140,6 +140,14 @@ public function getEqlogicDetails() {
     return array('cmdsInfo' => $aInfoCmd, 'cmdsAction' =>$aActionCmd);
 }
 
+public static function resetTokenTahoma() {
+    self::deamon_stop();
+    config::save('tahomalocalapi_session', '','tahomalocalapi');
+    sleep(5);
+    self::deamon_start();
+
+}
+
 public static function getDevicesDetails() {
     log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
     $aDevicesList=config::byKey('tahomalocalapi_devicesList',  __CLASS__);
@@ -147,7 +155,7 @@ public static function getDevicesDetails() {
     $htmlTab='<table style="margin: 0 auto; border: 1px solid">';
     $htmlTab.='<thead>';
     $htmlTab.='<tr style="border: 1px solid;">';
-    $htmlTab.='<th colspan="2" style="text-align: center">Liste des équipements Somfy</th>';
+    $htmlTab.='<th colspan="4" style="text-align: center">Liste des équipements Somfy</th>';
     $htmlTab.='</tr>';
     $htmlTab.='</thead>';
     $htmlTab.='<tbody>';
