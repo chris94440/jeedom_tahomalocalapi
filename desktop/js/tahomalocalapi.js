@@ -204,44 +204,36 @@ $('.eqLogicAction[data-action=infosCommunity]').off('click').on('click', functio
 });
 
 async function infosCommunity(txtInfoPlugin) {
-	var infoPlugin = "";
-	$.ajax({// fonction permettant de faire de l'ajax
-		type: "POST", // méthode de transmission des données au fichier php
-		url: "plugins/tahomalocalapi/core/ajax/tahomalocalapi.ajax.php", // url du fichier php
-		data: {
-			action: "getDevicesDetails",
-		},
-		dataType: 'json',
-		error: function (request, status, error) {
-			handleAjaxError(request, status, error);
-		},
-		success: function (data) { // si l'appel a bien fonctionné
-			infoPlugin = data['result'];
-		}
-	});
-  
-	getSimpleModal({
-	  title: "Forum",
-	  width: 0.5 * $(window).width(),
-	  fields: [{
-		type: "string",
-		value: txtInfoPlugin
-	  },
-	  {
-		type: "string",
-		id: "infoPluginModal",
-		value: infoPlugin.result
-	  }],
-	  buttons: {
-		"Fermer": function () {
-		  $('#simpleModalAlert').hide();
-		  $(this).dialog("close");
-		},
-		"Copier": function () {
-		  copyDivToClipboard('#infoPluginModal', true)
-		}
+
+	var data = {
+		action: 'getDevicesDetails'
 	  }
-	}, function (result) { }); 
+	  var infoPlugin = await asyncAjaxGenericFunction(data);
+	
+	  getSimpleModal({
+		title: "Forum",
+		width: 0.5 * $(window).width(),
+		fields: [{
+		  type: "string",
+		  value: txtInfoPlugin
+		},
+		{
+		  type: "string",
+		  id: "infoPluginModal",
+		  value: infoPlugin.result
+		}],
+		buttons: {
+		  "Fermer": function () {
+			$('#simpleModalAlert').hide();
+			$(this).dialog("close");
+		  },
+		  "Copier": function () {
+			copyDivToClipboard('#infoPluginModal', true)
+		  }
+		}
+	  }, function (result) { });
+
+	
   }
 
   function copyDivToClipboard(myInput, addBacktick = false) {
@@ -263,3 +255,78 @@ async function infosCommunity(txtInfoPlugin) {
 	  $(myInput).html(initialText);
 	}
   }
+
+  function getSimpleModal(_options, _callback) {
+	if (!isset(_options)) {
+		return;
+	}
+	$("#simpleModal").dialog('destroy').remove();
+	if ($("#simpleModal").length == 0) {
+		$('body').append('<div id="simpleModal"></div>');
+		$("#simpleModal").dialog({
+			title: _options.title,
+			closeText: '',
+			autoOpen: false,
+			modal: true,
+			width: 350
+		});
+		jQuery.ajaxSetup({
+			async: false
+		});
+		$('#simpleModal').load('index.php?v=d&plugin=Tahomalocalapi&modal=modal.tahomalocalapi');
+		jQuery.ajaxSetup({
+			async: true
+		});
+	}
+	setSimpleModalData(_options.fields);
+	$("#simpleModal").dialog({
+		title: _options.title, buttons: {
+			"Annuler": function () {
+				$(this).dialog("close");
+			}
+		}
+	});
+	$('#simpleModal').dialog('open');
+	$('#simpleModal').keydown(function (e) {
+		if (e.which == 13) {
+			$('#saveSimple').click();
+			return false;
+		}
+	})
+};
+
+function setSimpleModalData(options) {
+  items = [];
+  options.forEach(option => {
+    if (option.type == "string") {
+      var id = (option.id !== undefined) ? `id="${option.id}"` : '';
+      items.push(`<li ${id}>${option.value}</li>`);
+    }
+  });
+
+  $("#modalOptions").append(items.join(""));
+  refreshSwipe("swipeUp");
+  refreshSwipe("swipeDown");
+  refreshSwipe("action");
+}
+
+async function asyncAjaxGenericFunction(data) {
+    $.fn.hideAlert();
+
+    const result = await $.post({
+        url: "plugins/JeedomConnect/core/ajax/jeedomConnect.ajax.php",
+        data: data,
+        cache: false,
+        dataType: 'json',
+        async: false,
+    });
+
+    if (result.state != 'ok') {
+        $.fn.showAlert({
+            message: result.result,
+            level: 'danger'
+        });
+    }
+
+    return result;
+}

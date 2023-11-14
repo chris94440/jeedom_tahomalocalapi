@@ -21,5 +21,31 @@ if (!isConnect('admin')) {
 }
 ?>
 
-Exemple de modale
+<style>
+  .required:after {
+    content: " *";
+    color: red;
+  }
+</style>
+<div style="display: none;" id="div_simpleModalAlert"></div>
+<form class="form-horizontal" style="overflow: hidden;">
+  <div id="simpleModalAlert" style="display:none"></div>
+  <ul id="modalOptions" style="padding-left:10px; list-style-type: none;">
+    <li id="object-li" style="display:none;">
+      <div class='form-group'>
+        <label class='col-xs-3 '>Objet</label>
+        <div class='col-xs-9'>
+          <select id="object-select" onchange="objectSelected();">
+            <option value="none">{{Aucun}}</option>
+            <?php
+            foreach ((jeeObject::buildTree(null, false)) as $object) {
+              echo '<option value="' . $object->getId() . '">' . str_repeat('&nbsp;&nbsp;', $object->getConfiguration('parentNumber')) . $object->getName() . '</option>';
+            }
+            ?>
+          </select>
+        </div>
+    </li>
+  </ul>
+</form>
+
 
