@@ -65,20 +65,18 @@ def listen():
 	
 	httpLog()
 
-	if not _jsessionid and not _tokenTahoma:
-		loginTahoma()
+	if not _tokenTahoma:
+		if not _jsessionid and not _tokenTahoma:
+			loginTahoma()
 
-	if _jsessionid:
-		tahoma_token()
-
-		if not os.path.exists('/var/www/html/plugins/tahomalocalapi/resources/tahomalocalapid/overkiz-root-ca-2048.crt'):
-			downloadTahomaCertificate()
-
-		if _tokenTahoma:
-			validateToken()
-			getDevicesList()
-			#getGateways()
-			registerListener()	
+		if _jsessionid:
+			availableToken()
+			tahoma_token()
+			if _tokenTahoma:
+				validateToken()
+	
+	getDevicesList()
+	registerListener()	
 
 	try:
 		while 1:
@@ -181,6 +179,60 @@ def tahoma_token():
 		logging.error("Error when retrieving tahoma token -> %s",err)
 		shutdown()
 
+def availableToken():
+	logging.debug(' * Get available tahoma token')
+	try:
+	
+		url = _overkizUrl + '/config/' + _pincode + '/local/tokens/devmode'
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Cookie' : 'JSESSIONID=' + _jsessionid
+		}
+
+		response = requests.request("GET", url, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("Token list : %s", response.json())
+			json_data = response.json()
+			for item in json_data:
+				#logging.info(" token  : %s", item)
+				if (item['label'] == 'JeedomTahomaLocalApi_token' and item['scope'] == 'devmode'):
+					deleteToken(item['uuid'])
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			shutdown()	
+
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when retrieving available tahoma token -> %s",err)
+		shutdown()
+
+def deleteToken(uuid):
+	logging.debug(' * Delete tahoma token : ' + uuid)
+	try:
+	
+		url = _overkizUrl + '/config/' + _pincode + '/local/tokens/' + uuid		
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Cookie' : 'JSESSIONID=' + _jsessionid
+		}
+
+		response = requests.request("DELETE", url, headers=headers)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("		-> Token %s deleted", uuid)
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+			#shutdown()	
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when deleting tahoma token -> %s",err)
+		shutdown()
+
 def getDevicesList():	
 	logging.debug(' * Retrieve devices list')
 	try:
@@ -257,6 +309,8 @@ def validateToken():
 			logging.error("Response : %s", response.json())
 			logging.error("Response header : %s", response.headers)
 			shutdown()
+		else:
+			jeedom_com.send_change_immediate({'tahomaSession' : {'pinCode' : _pincode, 'token' : _tokenTahoma}})
 		
 
 	except requests.exceptions.HTTPError as err:
@@ -328,7 +382,13 @@ def fetchListener():
 				for item in json_data:
 					#logging.debug(item['name'] + ' -> ' + item['deviceURL'])
 					jeedom_com.send_change_immediate({'eventItem' : item})
-					#getDeviceStates(item['deviceURL'])	
+					if 'actions' in item:						
+						for action in item['actions']:
+							if 'command' in action:
+								if action['command'] != "advancedRefresh":
+									if (action['deviceURL'] != ''):
+										logging.debug("			-> execute execForceRefresh for device " + action['deviceURL'])
+										execForceRefresh(action['deviceURL'])
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response header : %s", response.headers)		
@@ -437,6 +497,32 @@ def execCmd(params):
 				logging.debug("Execution id : %s", response.json().get('execId'))
 				response=json.dumps({"deviceId": params['deviceId'],	"execId": response.json().get('execId')})
 				jeedom_com.send_change_immediate({'execIdEvent' : response})
+				#execForceRefresh(params['deviceUrl'])
+		else:
+			logging.error("Http code : %s", response.status_code)
+			logging.error("Response : %s", response.json())
+			logging.error("Response header : %s", response.headers)
+	except requests.exceptions.HTTPError as err:
+		logging.error("Error when executing cmd to tahoma -> %s",err)
+		shutdown()
+
+def execForceRefresh(deviceUrl):	
+	logging.debug(' * Execute force refresh')
+	try:
+		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
+
+		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": ["p1"]}],"deviceURL": deviceUrl}]})
+		
+		headers = {
+			'Content-Type' : 'application/json',
+			'Authorization' : 'Bearer ' + _tokenTahoma
+		}
+
+		logging.debug("	- payload :  %s", payload)
+		response = requests.request("POST", url, verify=False, headers=headers, data=payload)
+
+		if response.status_code and (response.status_code == 200):
+			logging.debug("ExecCmd http : %s", response.status_code)
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -509,7 +595,7 @@ _pwd = ''
 _jsessionid=''
 _pincode=''
 _tokenTahoma=''
-_ipBox='https://192.168.1.28:8443'
+_ipBox=''
 _overkizUrl='https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI'
 _listenerId=''
 
@@ -526,6 +612,7 @@ parser.add_argument("--user", help="User for local api Tahoma", type=str)
 parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 parser.add_argument("--pincode", help="Tahoma pin code", type=str)
 parser.add_argument("--boxLocalIp", help="Tahoma IP", type=str)
+parser.add_argument("--tahoma_token", help="Tahoma token", type=str)
 args = parser.parse_args()
 
 if args.device:
@@ -550,6 +637,8 @@ if args.pincode:
 	_pincode=args.pincode
 if args.boxLocalIp:
 	_ipBox='https://' + args.boxLocalIp + ':8443'
+if args.tahoma_token:
+	_tokenTahoma=args.tahoma_token
 
 _socket_port = int(_socket_port)
 
@@ -561,12 +650,13 @@ logging.info('Log level: %s', _log_level)
 logging.info('Socket port: %s', _socket_port)
 logging.info('Socket host: %s', _socket_host)
 logging.info('PID file: %s', _pidfile)
-logging.info('Apikey: %s', _apikey)
+#logging.info('Apikey: %s', _apikey)
 logging.info('Device: %s', _device)
 logging.info('User: %s', _user)
-logging.info('Pwd: %s', _pwd)
+#logging.info('Pwd: %s', _pwd)
 logging.info('Pin ocde: %s', _pincode)
 logging.info('Box IP: %s', _ipBox)
+logging.info('Tahoma token: %s', _tokenTahoma)
 logging.info('*-------------------------------------------------------------------------*')
 
 signal.signal(signal.SIGINT, handler)

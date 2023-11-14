@@ -68,7 +68,8 @@ public static function deamon_start() {
   $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
   $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
   $cmd .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
-  $cmd .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // IP box somfy
+  $cmd .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // local IP box Somfy
+  $cmd .= ' --tahoma_token "' . trim(str_replace('"', '\"', (config::byKey('tahomalocalapi_session',  __CLASS__))['token'])) . '"'; // TahomaSession  
   
   log::add(__CLASS__, 'info', 'Lancement démon');
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
@@ -108,6 +109,35 @@ public static function synchronize() {
 
 protected static function getSocketPort() {
     return config::byKey('socketport', __CLASS__, 55009);
+}
+
+public function getEqlogicDetails() {
+    $device = json_decode($this->getConfiguration( 'rawDevice'),true);
+    $aInfoCmd=array();
+    $aActionCmd=array();
+
+    //info cmd
+    if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
+        if (array_key_exists('available',$device)) {
+            array_push($aInfoCmd,array('name' => 'available'));
+        }
+      
+        if (array_key_exists('synced',$device)) {
+            array_push($aInfoCmd,array('name' => 'synced'));
+        }
+    
+        foreach ($device['definition']['states'] as $state) {
+            array_push($aInfoCmd,array('name' => $state['name']));
+        }
+    }  
+
+    //action cmd
+    if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
+        foreach ($device['definition']['commands'] as $command) {
+             array_push($aActionCmd,array('name' =>$command['commandName']));
+        }
+    }
+    return array('cmdsInfo' => $aInfoCmd, 'cmdsAction' =>$aActionCmd);
 }
 
 public function getImage() {
@@ -191,6 +221,7 @@ public static function sendToDaemon($params) {
              $eqLogic->setName($device['label']);
              $eqLogic->setConfiguration('type', $device['controllableName']);
              $eqLogic->setConfiguration('deviceURL', $device['deviceURL']);
+             $eqLogic->setConfiguration( 'rawDevice',json_encode($device));
            	 $eqLogic->setLogicalId( $device['deviceURL']);
              $eqLogic->save();
 
@@ -212,6 +243,7 @@ public static function sendToDaemon($params) {
          } else {
              $eqLogic = $eqLogic_found;
            	 $eqLogic->setLogicalId( $device['deviceURL']);
+             $eqLogic->setConfiguration( 'rawDevice',json_encode($device));
            	 $eqLogic->save();
          }
       	
@@ -581,6 +613,13 @@ private static function createCmdsState($eqLogic, $device, $states) {
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STATE');
                     $tahomaLocalPiCmd->save();
                     break;
+                case 'core:LightIntensityState':
+                    $linkedCmdName = 'setIntensity';
+                    $tahomaLocalPiCmd->setDisplay('generic_type', 'LIGHT_BRIGHTNESS');
+                    $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                    $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                    $tahomaLocalPiCmd->save();
+                    break;                    
                 case 'core:SlateOrientationState':
                     $linkedCmdName = 'setOrientation';
                     break;
@@ -651,6 +690,15 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                    }  else if ($command['commandName'] == "setIntensity") {
+                        $tahomaLocalPiCmd->setType('action');
+                        $tahomaLocalPiCmd->setIsVisible(0);
+                        $tahomaLocalPiCmd->setSubType('slider');
+                        //$tahomaLocalPiCmd->setConfiguration('request', 'closure');
+                        $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                        $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                        $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                        $tahomaLocalPiCmd->setDisplay('generic_type', 'LIGHT_SLIDER');
                     } else if ($command['commandName'] == "setOrientation") {
                         $tahomaLocalPiCmd->setType('action');
                         $tahomaLocalPiCmd->setIsVisible(0);
@@ -740,6 +788,10 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setType('action');
                         $tahomaLocalPiCmd->setSubType('other');
                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-exchange"></i>');
+                    }  else if ($command['commandName'] == "advancedRefresh") {
+                        $tahomaLocalPiCmd->setType('action');
+                        $tahomaLocalPiCmd->setSubType('other');
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                   
                     } else {
                         $useCmd = false;
                     }
@@ -999,6 +1051,10 @@ class tahomalocalapiCmd extends cmd {
 
                             return;
                         }
+                        break;
+                    default:
+                        $parameters = array_map('intval', explode(",", $parameters));
+                        $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
                         break;
                 }
             case 'select':

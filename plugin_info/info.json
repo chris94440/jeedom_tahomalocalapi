@@ -8,7 +8,7 @@
 	"author" : "chris94440",
 	"require" : "4.2.0",
 	"category" : "automation protocol",
-	"hasDependency" : false,
+	"hasDependency" : true,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 0,
 	"changelog" : "https://github.com/chris94440/jeedom_tahomalocalapi/blob/master/docs/fr_FR/changelog.md",

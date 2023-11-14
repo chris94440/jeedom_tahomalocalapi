@@ -52,7 +52,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		<legend><i class="fas fa-table"></i> {{Mes équipements Somfy}}</legend>
 		<?php
 		if (count($eqLogics) == 0) {
-			echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement Somfy trouvé, allez dans la configuration du plugin pour paramétrer les accès à votre box Somfy" pour commencer}}</div>';
+			echo '<br><div class="text-center" style="font-size:1.2em;font-weight:bold;">{{Aucun équipement Somfy trouvé, allez dans la configuration du plugin pour paramétrer les accès à votre box Somfy pour commencer}}</div>';
 		} else {
 			// Champ de recherche
 			echo '<div class="input-group" style="margin:5px;">';
@@ -153,10 +153,23 @@ $eqLogics = eqLogic::byType($plugin->getId());
 
 						<!-- Partie droite de l'onglet "Équipement" -->
 						<!-- Affiche un champ de commentaire par défaut mais vous pouvez y mettre ce que vous voulez -->
-						<div class="col-lg-6">
+						<div class="col-lg-2">
 							<legend><i class="fas fa-info"></i> {{Informations}}</legend>
 							<div class="form-group">
-							<img id="img_eqTahomalocalapi" src="" style="height : 200px"/>						
+								<img id="img_eqTahomalocalapi" src="" style="height : 75%;width : 75%"/>										
+							</div>
+						</div>
+						<div class="col-lg-4">
+							<legend><i class="fas fa-info"></i> {{Commandes disponibles}}</legend>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div id="div_equipment_details_info"></div>				
+								</div>
+							</div>
+							<div class="col-lg-6">
+								<div class="form-group">
+									<div id="div_equipment_details_action"></div>				
+								</div>
 							</div>
 						</div>
 					</fieldset>
