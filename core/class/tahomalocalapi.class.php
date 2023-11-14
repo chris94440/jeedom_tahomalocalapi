@@ -144,16 +144,16 @@ public static function getDevicesDetails() {
     log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
     $aDevicesList=config::byKey('tahomalocalapi_devicesList',  __CLASS__);
     log::add(__CLASS__, 'debug', '|  '. json_encode($aDevicesList));
-    $htmlTab='<table style="margin: 0 auto; border: 1px solid;text-align: center">';
+    $htmlTab='<table style="margin: 0 auto; border: 1px solid">';
     $htmlTab.='<thead>';
-    $htmlTab.='<tr>';
+    $htmlTab.='<tr style="border: 1px solid;">';
     $htmlTab.='<th colspan="2" style="text-align: center">Liste des équipements Somfy</th>';
     $htmlTab.='</tr>';
     $htmlTab.='</thead>';
     $htmlTab.='<tbody>';
     $htmlTab.='<tr>';
-    $htmlTab.='<td style="text-align: center">ID</td>';
     $htmlTab.='<td style="text-align: center">NOM</td>';
+    $htmlTab.='<td style="text-align: center">ID</td>';
     $htmlTab.='<td style="text-align: center">ACTIF</td>';
     $htmlTab.='</tr>';
 
@@ -169,9 +169,10 @@ public static function getDevicesDetails() {
             }
         }
 
-        $htmlTab.='<tr>';
-        $htmlTab.='<td>'.$device['deviceURL'].'</td>';
+        $htmlTab.='<tr style="border: 1px solid;">';
         $htmlTab.='<td style="text-align: center">'.$device['label'].'</td>';
+        $htmlTab.='<td>'.$device['deviceURL'].'</td>';
+        
         
 
         if ($bFound) {
