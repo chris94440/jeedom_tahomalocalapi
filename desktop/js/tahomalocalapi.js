@@ -248,6 +248,12 @@ $("#table_cmdi").sortable({
 			type: "string",
 			id: "infoPluginModal",
 			value: infoPlugin.result['htmlTab']
+		  }
+		  ,
+		  {
+			type: "string",
+			id: "devicesList",
+			value: infoPlugin.result['devicesList']
 		  }],
 		  buttons: {
 			"Fermer": function () {
