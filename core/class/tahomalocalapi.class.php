@@ -143,8 +143,45 @@ public function getEqlogicDetails() {
 public static function getDevicesDetails() {
     log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
     log::add(__CLASS__, 'debug', '|  '. json_encode(config::byKey('tahomalocalapi_devicesList',  __CLASS__)));
+    $htmlTab='<table>';
+    $htmlTab.='<thead>';
+    $htmlTab.='<tr>';
+    $htmlTab.='<th colspan="2">Liste des équipements Somfy</th>';
+    $htmlTab.='</tr>';
+    $htmlTab.='</thead>';
+    $htmlTab.='<tbody>';
+    $htmlTab.='<tr>';
+    $htmlTab.='<td>ID</td>';
+    $htmlTab.='<td>NOM</td>';
+    $htmlTab.='<td>équipement crée</td>';
+    $htmlTab.='</tr>';
+
+
+    $aDevicesList=config::byKey('tahomalocalapi_devicesList',  __CLASS__);
+    $eqLogics=eqLogic::byType(__CLASS__);
+    foreach ($aDevicesList as $device) {
+        $bFound=false;
+        foreach ($eqLogics as $eqLogic) {
+            if ($device['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+                
+                $bFound=true;
+            }
+        }
+
+        $htmlTab.='<td>'.$device['deviceURL'].'</td>';
+        $htmlTab.='<td>'.$device['label'].'</td>';
+        $htmlTab.='<td>'.$bFound.'</td>';
+
+        if ($bFound) {
+            log::add(__CLASS__, 'debug', '|         - device found : '. $device['deviceURL']);
+        } else {
+            log::add(__CLASS__, 'debug', '|         - device not found : '. $device['deviceURL']);
+        }
+    }
+    $htmlTab.='</tbody>';
+    $htmlTab.='</table>';
     log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
-    return json_encode(config::byKey('tahomalocalapi_devicesList',  __CLASS__));
+    return $htmlTab;
 }
 
 public function getImage() {
