@@ -273,7 +273,7 @@ async function infosCommunity(txtInfoPlugin) {
 		jQuery.ajaxSetup({
 			async: false
 		});
-		$('#simpleModal').load('index.php?v=d&plugin=Tahomalocalapi&modal=modal.tahomalocalapi');
+		$('#simpleModal').load('index.php?v=d&plugin=tahomalocalapi&modal=modal.tahomalocalapi');
 		jQuery.ajaxSetup({
 			async: true
 		});
