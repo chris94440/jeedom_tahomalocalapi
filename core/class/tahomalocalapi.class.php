@@ -152,8 +152,8 @@ public static function getDevicesDetails() {
     $htmlTab.='</thead>';
     $htmlTab.='<tbody>';
     $htmlTab.='<tr>';
-    $htmlTab.='<td style="text-align: center; width: 200px">NOM</td>';
-    $htmlTab.='<td style="text-align: center">ID</td>';
+    $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">NOM</td>';
+    $htmlTab.='<td style="text-align: center; width: 250px;border: 1px solid">ID</td>';
     $htmlTab.='<td style="text-align: center">ACTIF</td>';
     $htmlTab.='</tr>';
 
@@ -170,8 +170,8 @@ public static function getDevicesDetails() {
         }
 
         $htmlTab.='<tr style="border: 1px solid;">';
-        $htmlTab.='<td style="text-align: center; width: 200px">'.$device['label'].'</td>';
-        $htmlTab.='<td>'.$device['deviceURL'].'</td>';
+        $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['label'].'</td>';
+        $htmlTab.='<td style="width: 200px;border: 1px solid">'.$device['deviceURL'].'</td>';
         
         
 
