@@ -38,7 +38,7 @@ try {
     } else if ( init('action') == 'getEqlogicDetails') {
       $eqLogic = tahomalocalapi::byId(init('id'));
       ajax::success($eqLogic->getEqlogicDetails());
-    } else if (init('actions') == 'getDevicesDetails') {
+    } else if (init('action') == 'getDevicesDetails') {
       ajax::success(tahomalocalapi::getDevicesDetails());
     }
 
