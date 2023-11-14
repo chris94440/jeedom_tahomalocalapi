@@ -247,7 +247,7 @@ $("#table_cmdi").sortable({
 		  {
 			type: "string",
 			id: "infoPluginModal",
-			value: infoPlugin.result
+			value: infoPlugin.result['htmlTab']
 		  }],
 		  buttons: {
 			"Fermer": function () {
