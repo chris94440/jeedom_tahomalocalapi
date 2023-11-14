@@ -305,9 +305,9 @@ function setSimpleModalData(options) {
   });
 
   $("#modalOptions").append(items.join(""));
-  refreshSwipe("swipeUp");
-  refreshSwipe("swipeDown");
-  refreshSwipe("action");
+  //refreshSwipe("swipeUp");
+  //refreshSwipe("swipeDown");
+  //refreshSwipe("action");
 }
 
 async function asyncAjaxGenericFunction(data) {
