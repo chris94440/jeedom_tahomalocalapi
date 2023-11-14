@@ -162,8 +162,8 @@ public static function getDevicesDetails() {
     $htmlTab.='<tr>';
     $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">NOM</td>';
     $htmlTab.='<td style="text-align: center; width: 250px;border: 1px solid">ID</td>';
-    $htmlTab.='<td style="text-align: center;width: 100px">INCLUS</td>';
-    $htmlTab.='<td style="text-align: center;width: 650px">RAW</td>';
+    $htmlTab.='<td style="text-align: center;width: 100px;border: 1px solid">INCLUS</td>';
+    //$htmlTab.='<td style="text-align: center;width: 800px;border: 1px solid;word-wrap: break-word;word-break: break-all;">RAW</td>';
     $htmlTab.='</tr>';
 
 
@@ -191,7 +191,9 @@ public static function getDevicesDetails() {
             $htmlTab.='<td style="text-align: center"><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';
             log::add(__CLASS__, 'debug', '|         - device not found : '. $device['deviceURL']);
         }
-        $htmlTab.='<td style="text-align: center; width: 650px;border: 1px solid">'.json_encode($device).'</td>';
+        //$htmlTab.='<td style="text-align: center; width: 300px;border: 1px solid;word-wrap: break-word;word-break: break-all;">'.base64_encode(json_encode($device)).'</td>';
+      	//$htmlTab.='<td style="text-align: center; width: 300px;border: 1px solid;word-wrap: break-word;word-break: break-all;">'.json_encode($device).'</td>';
+      	//$htmlTab.='<td style="text-align: center; width: 800px;border: 1px solid">'.''.'</td>';
         $htmlTab.='</tr>';
     }
     $htmlTab.='</tbody>';

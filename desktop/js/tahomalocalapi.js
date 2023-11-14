@@ -296,7 +296,7 @@ $("#table_cmdi").sortable({
 			  closeText: '',
 			  autoOpen: false,
 			  modal: true,
-			  width: 1300
+			  width: 700
 		  });
 		  jQuery.ajaxSetup({
 			  async: false
@@ -371,4 +371,3 @@ $("#table_cmdi").sortable({
   
 	  return result;
   }
-  
