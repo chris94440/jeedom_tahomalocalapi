@@ -269,7 +269,7 @@ $("#table_cmdi").sortable({
 			  closeText: '',
 			  autoOpen: false,
 			  modal: true,
-			  width: 350
+			  width: 600
 		  });
 		  jQuery.ajaxSetup({
 			  async: false

@@ -169,6 +169,7 @@ public static function getDevicesDetails() {
             }
         }
 
+        $htmlTab.='<tr>';
         $htmlTab.='<td>'.$device['deviceURL'].'</td>';
         $htmlTab.='<td>'.$device['label'].'</td>';
         
@@ -180,6 +181,7 @@ public static function getDevicesDetails() {
             $htmlTab.='<td><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';
             log::add(__CLASS__, 'debug', '|         - device not found : '. $device['deviceURL']);
         }
+        $htmlTab.='</tr>';
     }
     $htmlTab.='</tbody>';
     $htmlTab.='</table>';
