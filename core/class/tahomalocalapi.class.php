@@ -163,7 +163,7 @@ public static function getDevicesDetails() {
     $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">NOM</td>';
     $htmlTab.='<td style="text-align: center; width: 250px;border: 1px solid">ID</td>';
     $htmlTab.='<td style="text-align: center;width: 100px">INCLUS</td>';
-    $htmlTab.='<td style="text-align: center;width: 500px">RAW</td>';
+    $htmlTab.='<td style="text-align: center;width: 650px">RAW</td>';
     $htmlTab.='</tr>';
 
 
@@ -191,7 +191,7 @@ public static function getDevicesDetails() {
             $htmlTab.='<td style="text-align: center"><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';
             log::add(__CLASS__, 'debug', '|         - device not found : '. $device['deviceURL']);
         }
-        $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.json_encode($device).'</td>';
+        $htmlTab.='<td style="text-align: center; width: 650px;border: 1px solid">'.json_encode($device).'</td>';
         $htmlTab.='</tr>';
     }
     $htmlTab.='</tbody>';
