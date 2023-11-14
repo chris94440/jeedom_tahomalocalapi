@@ -144,7 +144,7 @@ public static function getDevicesDetails() {
     log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
     $aDevicesList=config::byKey('tahomalocalapi_devicesList',  __CLASS__);
     log::add(__CLASS__, 'debug', '|  '. json_encode($aDevicesList));
-    $htmlTab='<table>';
+    $htmlTab='<table style="margin: 0 auto; border: 1px solid;text-align: center">';
     $htmlTab.='<thead>';
     $htmlTab.='<tr>';
     $htmlTab.='<th colspan="2" style="text-align: center">Liste des équipements Somfy</th>';
