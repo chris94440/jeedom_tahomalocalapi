@@ -154,7 +154,7 @@ public static function getDevicesDetails() {
     $htmlTab.='<tr>';
     $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">NOM</td>';
     $htmlTab.='<td style="text-align: center; width: 250px;border: 1px solid">ID</td>';
-    $htmlTab.='<td style="text-align: center">ACTIF</td>';
+    $htmlTab.='<td style="text-align: center;width: 100px">INCLUS</td>';
     $htmlTab.='</tr>';
 
 
