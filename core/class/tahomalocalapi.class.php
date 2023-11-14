@@ -144,7 +144,7 @@ public static function getDevicesDetails() {
     $eqLogics=eqLogic::byType(__CLASS__);
     $aDevicesList=array();
     foreach ($eqLogics as $eqLogic) {
-            array_push($aDevicesList,json_decode($this->getConfiguration( 'rawDevice'),true))
+            array_push($aDevicesList,json_decode($this->getConfiguration( 'rawDevice'),true));
     }
     return array('DevicesList' => $aDevicesList);
 }
