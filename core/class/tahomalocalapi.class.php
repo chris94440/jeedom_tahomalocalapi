@@ -281,7 +281,7 @@ public static function sendToDaemon($params) {
 
   public static function create_or_update_devices($devices) {
     log::add(__CLASS__, 'debug', '+------------------------------ create_or_update_devices---------------------------------');
-    config::save('tahomalocalapi_devicesList', $devices);
+    config::save('tahomalocalapi_devicesList', $devices,__CLASS__);
     log::add(__CLASS__, 'debug', '+ Number of items : ' . sizeof($devices));
     $itemAnalyzed=0;
     
