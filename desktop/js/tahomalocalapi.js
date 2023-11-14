@@ -187,7 +187,7 @@ $("#table_cmdi").sortable({
 				type: "POST", // méthode de transmission des données au fichier php
 				url: "plugins/tahomalocalapi/core/ajax/tahomalocalapi.ajax.php", // url du fichier php
 				data: {
-					action: "syncSomresetTokenTahomafyDevices",
+					action: "resetTokenTahoma",
 				},
 				dataType: 'json',
 				error: function (request, status, error) {
