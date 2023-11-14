@@ -281,13 +281,6 @@ $("#table_cmdi").sortable({
 	  }
 	  
 	setSimpleModalData(_options.fields);
-	var genericButton = {
-		"Annuler": function () {
-			$('#simpleModalAlert').hide();
-			$(this).dialog("close");
-		}
-	}
-
 
 	$("#simpleModal").dialog({
 		title: _options.title,
