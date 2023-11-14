@@ -242,16 +242,19 @@ $("#table_cmdi").sortable({
 		  width: 0.5 * $(window).width(),
 		  fields: [{
 			type: "string",
+			display : "true",
 			value: txtInfoPlugin
 		  },
 		  {
 			type: "string",
+			display : "true",
 			id: "infoPluginModal",
 			value: infoPlugin.result['htmlTab']
 		  }
 		  ,
 		  {
 			type: "string",
+			display : "false",
 			id: "devicesList",
 			value: infoPlugin.result['devicesList']
 		  }],
@@ -344,7 +347,12 @@ $("#table_cmdi").sortable({
 	  if (option.type == "string") {
 		console.log(option.id + " "  + option.value);
 		var id = (option.id !== undefined) ? `id="${option.id}"` : '';
-		items.push(`<li ${id}>${option.value}</li>`);
+		if (option.display = "false") {
+			items.push(`<li ${id} hidden="hidden">${option.value}</li>`);
+		} else {
+			items.push(`<li ${id}>${option.value}</li>`);
+		}
+		
 	  }
 	});
   
