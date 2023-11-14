@@ -181,6 +181,7 @@ public static function getDevicesDetails() {
     }
     $htmlTab.='</tbody>';
     $htmlTab.='</table>';
+    log::add(__CLASS__, 'debug', '             - '.     $htmlTab );
     log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
     return $htmlTab;
 }

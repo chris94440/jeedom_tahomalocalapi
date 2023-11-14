@@ -330,5 +330,6 @@ async function asyncAjaxGenericFunction(data) {
         });
     }
 
+	console.log("asyncAjaxGenericFunction result : " + result);
     return result;
 }
