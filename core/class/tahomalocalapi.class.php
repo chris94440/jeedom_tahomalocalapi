@@ -142,14 +142,10 @@ public function getEqlogicDetails() {
 
 public static function getDevicesDetails() {
     log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
-    $eqLogics=eqLogic::byType(__CLASS__);
-    $aDevicesList=array();
-    foreach ($eqLogics as $eqLogic) {
-            array_push($aDevicesList,json_decode($this->getConfiguration( 'rawDevice'),true));
-    }
-    log::add(__CLASS__, 'debug', '|  '. json_encode(array('DevicesList' => $aDevicesList)));
+    $aDevicesList=config::byKey('tahomalocalapi_devicesList');
+    log::add(__CLASS__, 'debug', '|  '. json_encode($aDevicesList));
     log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
-    return array('DevicesList' => $aDevicesList);
+    return json_encode($aDevicesList);
 }
 
 public function getImage() {
@@ -207,6 +203,7 @@ public static function sendToDaemon($params) {
 
   public static function create_or_update_devices($devices) {
     log::add(__CLASS__, 'debug', '+------------------------------ create_or_update_devices---------------------------------');
+    config::save('tahomalocalapi_devicesList', $devices);
     log::add(__CLASS__, 'debug', '+ Number of items : ' . sizeof($devices));
     $itemAnalyzed=0;
     
