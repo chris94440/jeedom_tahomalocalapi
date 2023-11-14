@@ -142,7 +142,8 @@ public function getEqlogicDetails() {
 
 public static function getDevicesDetails() {
     log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
-    log::add(__CLASS__, 'debug', '|  '. json_encode(config::byKey('tahomalocalapi_devicesList',  __CLASS__)));
+    $aDevicesList=config::byKey('tahomalocalapi_devicesList',  __CLASS__);
+    log::add(__CLASS__, 'debug', '|  '. json_encode($aDevicesList));
     $htmlTab='<table>';
     $htmlTab.='<thead>';
     $htmlTab.='<tr>';
@@ -157,7 +158,7 @@ public static function getDevicesDetails() {
     $htmlTab.='</tr>';
 
 
-    $aDevicesList=config::byKey('tahomalocalapi_devicesList',  __CLASS__);
+    
     $eqLogics=eqLogic::byType(__CLASS__);
     foreach ($aDevicesList as $device) {
         $bFound=false;
