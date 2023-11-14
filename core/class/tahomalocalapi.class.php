@@ -154,7 +154,7 @@ public static function getDevicesDetails() {
     $htmlTab.='<tr>';
     $htmlTab.='<td>ID</td>';
     $htmlTab.='<td>NOM</td>';
-    $htmlTab.='<td>équipement crée</td>';
+    $htmlTab.='<td>ACTIF</td>';
     $htmlTab.='</tr>';
 
 
@@ -171,11 +171,13 @@ public static function getDevicesDetails() {
 
         $htmlTab.='<td>'.$device['deviceURL'].'</td>';
         $htmlTab.='<td>'.$device['label'].'</td>';
-        $htmlTab.='<td>'.$bFound.'</td>';
+        
 
         if ($bFound) {
+            $htmlTab.='<td><i class="fas fa-check"></i></td>';
             log::add(__CLASS__, 'debug', '|         - device found : '. $device['deviceURL']);
         } else {
+            $htmlTab.='<td><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';
             log::add(__CLASS__, 'debug', '|         - device not found : '. $device['deviceURL']);
         }
     }
