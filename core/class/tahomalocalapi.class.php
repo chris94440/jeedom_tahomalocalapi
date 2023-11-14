@@ -142,10 +142,9 @@ public function getEqlogicDetails() {
 
 public static function getDevicesDetails() {
     log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
-    $aDevicesList=config::byKey('tahomalocalapi_devicesList');
-    log::add(__CLASS__, 'debug', '|  '. json_encode($aDevicesList));
+    log::add(__CLASS__, 'debug', '|  '. json_encode(config::byKey('tahomalocalapi_devicesList',  __CLASS__)));
     log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
-    return json_encode($aDevicesList);
+    return json_encode(config::byKey('tahomalocalapi_devicesList',  __CLASS__));
 }
 
 public function getImage() {
