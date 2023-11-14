@@ -295,13 +295,6 @@ $("#table_cmdi").sortable({
 	});
 
 
-	  $("#simpleModal").dialog({
-		  title: _options.title, buttons: {
-			  "Annuler": function () {
-				  $(this).dialog("close");
-			  }
-		  }
-	  });
 	  $('#simpleModal').dialog('open');
 	  $('#simpleModal').keydown(function (e) {
 		  if (e.which == 13) {
