@@ -264,7 +264,8 @@ $("#table_cmdi").sortable({
 			  $(this).dialog("close");
 			},
 			"Copier": function () {
-			  copyDivToClipboard('#infoPluginModal', true)
+			  copyDivToClipboard(infoPlugin, true);
+              //copyDivToClipboard('#devicesList', true);
 			}
 		  }
 		}, function (result) { });
@@ -273,23 +274,12 @@ $("#table_cmdi").sortable({
 	}
   
 	function copyDivToClipboard(myInput, addBacktick = false) {
-	  var initialText = $(myInput).html();
-	  if (addBacktick) {
-		$(myInput).html('```<br/>' + initialText.replaceAll('<b>', '').replaceAll('</b>', '') + '```');
-	  }
-	  var range = document.createRange();
-	  range.selectNode($(myInput).get(0));
-	  window.getSelection().removeAllRanges(); // clear current selection
-	  window.getSelection().addRange(range); // to select text
-	  document.execCommand("copy");
-	  window.getSelection().removeAllRanges();// to deselect
-	  $('#div_simpleModalAlert').showAlert({
-		message: 'Infos copiées',
-		level: 'success'
-	  });
-	  if (addBacktick) {
-		$(myInput).html(initialText);
-	  }
+      var dummy = document.createElement("textarea");
+      document.body.appendChild(dummy);
+      dummy.value ='```' + myInput.result['devicesList']+ '```';
+      dummy.select();
+      document.execCommand("copy");
+      document.body.removeChild(dummy);
 	}
   
 	function getSimpleModal(_options, _callback) {
@@ -341,14 +331,13 @@ $("#table_cmdi").sortable({
   };
   
   function setSimpleModalData(options) {
-	console.log("setSimpleModalData");
 	items = [];
 	options.forEach(option => {
 	  if (option.type == "string") {
-		console.log(option.id + " "  + option.value);
+		//console.log(option.id + " "  + option.value);
 		var id = (option.id !== undefined) ? `id="${option.id}"` : '';
-		if (option.display = "false") {
-			items.push(`<li ${id} hidden="hidden">${option.value}</li>`);
+		if (option.display == "false") {
+			items.push(`<li ${id} hidden=\"hidden\">${option.value}</li>`);
 		} else {
 			items.push(`<li ${id}>${option.value}</li>`);
 		}
