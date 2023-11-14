@@ -141,11 +141,14 @@ public function getEqlogicDetails() {
 }
 
 public static function getDevicesDetails() {
+    log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
     $eqLogics=eqLogic::byType(__CLASS__);
     $aDevicesList=array();
     foreach ($eqLogics as $eqLogic) {
             array_push($aDevicesList,json_decode($this->getConfiguration( 'rawDevice'),true));
     }
+    log::add(__CLASS__, 'debug', '|  '. json_encode(array('DevicesList' => $aDevicesList)));
+    log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
     return array('DevicesList' => $aDevicesList);
 }
 
