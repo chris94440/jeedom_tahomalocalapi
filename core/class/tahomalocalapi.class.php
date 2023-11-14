@@ -171,7 +171,7 @@ public static function getDevicesDetails() {
 
         $htmlTab.='<tr style="border: 1px solid;">';
         $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['label'].'</td>';
-        $htmlTab.='<td style="width: 200px;border: 1px solid">'.$device['deviceURL'].'</td>';
+        $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['deviceURL'].'</td>';
         
         
 
