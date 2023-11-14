@@ -140,6 +140,92 @@ public function getEqlogicDetails() {
     return array('cmdsInfo' => $aInfoCmd, 'cmdsAction' =>$aActionCmd);
 }
 
+public static function resetTokenTahoma() {
+    self::deamon_stop();
+    config::save('tahomalocalapi_session', '','tahomalocalapi');
+    sleep(5);
+    self::deamon_start();
+
+}
+
+public static function getDevicesDetails() {
+    log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
+    $aDevicesList=config::byKey('tahomalocalapi_devicesList',  __CLASS__);
+    log::add(__CLASS__, 'debug', '|  '. json_encode($aDevicesList));
+    $htmlTab='<table style="margin: 0 auto; border: 1px solid">';
+    $htmlTab.='<thead>';
+    $htmlTab.='<tr style="border: 1px solid;">';
+    $htmlTab.='<th colspan="4" style="text-align: center">Liste des équipements Somfy</th>';
+    $htmlTab.='</tr>';
+    $htmlTab.='</thead>';
+    $htmlTab.='<tbody>';
+    $htmlTab.='<tr>';
+    $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">NOM</td>';
+    $htmlTab.='<td style="text-align: center; width: 250px;border: 1px solid">ID</td>';
+    $htmlTab.='<td style="text-align: center;width: 100px;border: 1px solid">INCLUS</td>';
+    //$htmlTab.='<td style="text-align: center;width: 800px;border: 1px solid;word-wrap: break-word;word-break: break-all;">RAW</td>';
+    $htmlTab.='</tr>';
+
+
+    
+    $eqLogics=eqLogic::byType(__CLASS__);
+    foreach ($aDevicesList as $device) {
+        $bFound=false;
+        foreach ($eqLogics as $eqLogic) {
+            if ($device['deviceURL'] == $eqLogic->getConfiguration('deviceURL')) {
+                
+                $bFound=true;
+            }
+        }
+
+        $htmlTab.='<tr style="border: 1px solid;">';
+        $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['label'].'</td>';
+        $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['deviceURL'].'</td>';
+        
+        
+
+        if ($bFound) {
+            $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fas fa-check"></i></td>';
+            log::add(__CLASS__, 'debug', '|         - device found : '. $device['deviceURL']);
+        } else {
+            $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';
+            log::add(__CLASS__, 'debug', '|         - device not found : '. $device['deviceURL']);
+        }
+        //$htmlTab.='<td style="text-align: center; width: 300px;border: 1px solid;word-wrap: break-word;word-break: break-all;">'.base64_encode(json_encode($device)).'</td>';
+      	//$htmlTab.='<td style="text-align: center; width: 300px;border: 1px solid;word-wrap: break-word;word-break: break-all;">'.json_encode($device).'</td>';
+      	//$htmlTab.='<td style="text-align: center; width: 800px;border: 1px solid">'.''.'</td>';
+        $htmlTab.='</tr>';
+    }
+    $htmlTab.='</tbody>';
+    $htmlTab.='</table>';
+    $htmlTab.='<style>';
+    $htmlTab.='.CellWithComment{';
+    $htmlTab.='    position:relative;';
+    $htmlTab.='  }';
+    $htmlTab.='  .CellComment{';
+    $htmlTab.='    display:none;';
+    $htmlTab.='    position:absolute; ';
+    $htmlTab.='    z-index:100;';
+    $htmlTab.='    border:1px;';
+    $htmlTab.='    background-color:white;';
+    $htmlTab.='    border-style:solid;';
+    $htmlTab.='    border-width:1px;';
+    $htmlTab.='    border-color:red;';
+    $htmlTab.='    padding:3px;';
+    $htmlTab.='    color:red; ';
+    $htmlTab.='    top:20px; ';
+    $htmlTab.='    left:20px;';
+    $htmlTab.='  }';
+
+    $htmlTab.='  .CellWithComment:hover span.CellComment{';
+    $htmlTab.='    display:block;';
+    $htmlTab.='  }';
+    $htmlTab.='</style>';
+    log::add(__CLASS__, 'debug', '             - '.     $htmlTab );
+    log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
+    return array('devicesList' => json_encode($aDevicesList), 'htmlTab'=> $htmlTab);
+}
+
 public function getImage() {
     $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$this->getConfiguration('type'));
     $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';
@@ -195,6 +281,7 @@ public static function sendToDaemon($params) {
 
   public static function create_or_update_devices($devices) {
     log::add(__CLASS__, 'debug', '+------------------------------ create_or_update_devices---------------------------------');
+    config::save('tahomalocalapi_devicesList', $devices);
     log::add(__CLASS__, 'debug', '+ Number of items : ' . sizeof($devices));
     $itemAnalyzed=0;
     
