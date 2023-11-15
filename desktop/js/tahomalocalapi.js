@@ -276,7 +276,10 @@ $("#table_cmdi").sortable({
 	function copyDivToClipboard(myInput, addBacktick = false) {
       var dummy = document.createElement("textarea");
       document.body.appendChild(dummy);
-      dummy.value ='```' + myInput.result['devicesList']+ '```';
+	  dummy.value +=myInput.result['htmlTab'];
+	  dummy.value += '```';
+      dummy.value +=myInput.result['devicesList'];
+	  dummy.value += '```';
       dummy.select();
       document.execCommand("copy");
       document.body.removeChild(dummy);

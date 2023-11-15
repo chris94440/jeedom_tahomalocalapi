@@ -198,6 +198,7 @@ public static function getDevicesDetails() {
     }
     $htmlTab.='</tbody>';
     $htmlTab.='</table>';
+    /*
     $htmlTab.='<style>';
     $htmlTab.='.CellWithComment{';
     $htmlTab.='    position:relative;';
@@ -221,6 +222,7 @@ public static function getDevicesDetails() {
     $htmlTab.='    display:block;';
     $htmlTab.='  }';
     $htmlTab.='</style>';
+    */
     log::add(__CLASS__, 'debug', '             - '.     $htmlTab );
     log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
     return array('devicesList' => json_encode($aDevicesList), 'htmlTab'=> $htmlTab);
