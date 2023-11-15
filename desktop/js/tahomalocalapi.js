@@ -274,16 +274,16 @@ $("#table_cmdi").sortable({
 	}
   
 	function copyDivToClipboard(myInput, addBacktick = false) {
-      var dummy = document.createElement("textarea");
-      document.body.appendChild(dummy);
-	  dummy.value +=myInput.result['htmlTab'];
-	  dummy.value += '```';
-      dummy.value +=myInput.result['devicesList'];
-	  dummy.value += '```';
-      dummy.select();
-      document.execCommand("copy");
-      document.body.removeChild(dummy);
-	}
+		var dummy = document.createElement("textarea");
+		document.body.appendChild(dummy);
+		dummy.value += '```' + "\r\n";
+		dummy.value +=myInput.result['devicesList'] + "\r\n";
+		dummy.value += '```'+ "\r\n"+ "\r\n"+ "\r\n";
+		dummy.value +=myInput.result['htmlTab'] + "\r\n";
+		dummy.select();
+		document.execCommand("copy");
+		document.body.removeChild(dummy);
+	  }
   
 	function getSimpleModal(_options, _callback) {
 	  if (!isset(_options)) {
