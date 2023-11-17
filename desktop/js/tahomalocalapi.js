@@ -279,7 +279,7 @@ $("#table_cmdi").sortable({
 		dummy.value += '```' + "\r\n";
 		dummy.value +=myInput.result['devicesList'] + "\r\n";
 		dummy.value += '```'+ "\r\n"+ "\r\n"+ "\r\n";
-		dummy.value +=myInput.result['htmlTab'] + "\r\n";
+		dummy.value +=myInput.result['htmlTab'].replaceAll('<i class="fa-sharp fa-solid fa-xmark"></i>',"KO").replaceAll('<i class="fas fa-check"></i>',"OK") + "\r\n";
 		dummy.select();
 		document.execCommand("copy");
 		document.body.removeChild(dummy);
