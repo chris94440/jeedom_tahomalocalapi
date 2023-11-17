@@ -30,21 +30,29 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						<i class="fas fa-undo"></i>
 						<br/>
 						<span>{{Reset token Tahoma local}}</span>
-					</div>
-					<div class="cursor eqLogicAction logoSecondary" data-action="infosCommunity" style="color:rgb(27,161,242);">
-						<i class="fas fa-question-circle"></i>
-						<br>
-						<span>{{Infos}}</span>
-						<div style="display:none">
-							<span class="txtInfoPlugin">
-								Si vous avez des questions ou anomalies vous pouvez poster un message sur le <a href="https://community.jeedom.com/t/commande-somfy-tahoma-avec-l-api-locale" target="_blank"><span style="color:rgb(27,161,242);"> forum community</span> <i class="fas fa-external-link-alt"></i></a>								
-								<br /><br />Appuyez sur le bouton 'copier' en bas de la fenêtre pour récupérer l'ensemble des informations affichées, et partagez/collez-les à chaque nouveau post sur le forum !
-								<br /><br />
-							</span>
-						</div>
-					</div>
+					</div>					
 				</div>				
 			</div>
+  			<div class="col-sm-2">
+				<div class="hideWhileShowqrcode">
+					<legend><i class=" fas fa-comments"></i> {{Community}}</legend>
+					<!-- Boutons de gestion du plugin -->
+					<div class="eqLogicThumbnailContainer">
+						<div class="cursor eqLogicAction logoSecondary" data-action="infosCommunity" style="color:rgb(27,161,242);">
+							<i class="fas fa-question-circle"></i>
+							<br>
+							<span>{{Infos}}</span>
+                            <div style="display:none">
+                                <span class="txtInfoPlugin">
+                                    Si vous avez des questions ou anomalies vous pouvez poster un message sur le <a href="https://community.jeedom.com/t/commande-somfy-tahoma-avec-l-api-locale" target="_blank"><span style="color:rgb(27,161,242);"> forum community</span> <i class="fas fa-external-link-alt"></i></a>								
+                                    <br /><br />Appuyez sur le bouton 'copier' en bas de la fenêtre pour récupérer l'ensemble des informations affichées, et partagez/collez-les à chaque nouveau post sur le forum !
+                                    <br /><br />
+                                </span>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>  
 			<?php
 			// à conserver
 			// sera afficher uniquement si l'utilisateur est en version 4.4 ou supérieur
