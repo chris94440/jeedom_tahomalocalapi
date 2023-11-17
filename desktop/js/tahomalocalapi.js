@@ -283,7 +283,6 @@ $("#table_cmdi").sortable({
 		dummy.select();
 		document.execCommand("copy");
 		document.body.removeChild(dummy);
-		
 	  }
   
 	function getSimpleModal(_options, _callback) {
