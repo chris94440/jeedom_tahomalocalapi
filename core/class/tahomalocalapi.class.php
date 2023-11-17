@@ -162,7 +162,9 @@ public static function getDevicesDetails() {
     $htmlTab.='<tr>';
     $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">NOM</td>';
     $htmlTab.='<td style="text-align: center; width: 250px;border: 1px solid">ID</td>';
+    $htmlTab.='<td style="text-align: center; width: 250px;border: 1px solid">TYPE</td>';
     $htmlTab.='<td style="text-align: center;width: 100px;border: 1px solid">INCLUS</td>';
+    $htmlTab.='<td style="text-align: center; width: 100px;border: 1px solid">IMAGE</td>';
     //$htmlTab.='<td style="text-align: center;width: 800px;border: 1px solid;word-wrap: break-word;word-break: break-all;">RAW</td>';
     $htmlTab.='</tr>';
 
@@ -181,7 +183,7 @@ public static function getDevicesDetails() {
         $htmlTab.='<tr style="border: 1px solid;">';
         $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['label'].'</td>';
         $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['deviceURL'].'</td>';
-        
+        $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['controllableName'].'</td>';        
         
 
         if ($bFound) {
@@ -191,38 +193,22 @@ public static function getDevicesDetails() {
             $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';
             log::add(__CLASS__, 'debug', '|         - device not found : '. $device['deviceURL']);
         }
-        //$htmlTab.='<td style="text-align: center; width: 300px;border: 1px solid;word-wrap: break-word;word-break: break-all;">'.base64_encode(json_encode($device)).'</td>';
-      	//$htmlTab.='<td style="text-align: center; width: 300px;border: 1px solid;word-wrap: break-word;word-break: break-all;">'.json_encode($device).'</td>';
-      	//$htmlTab.='<td style="text-align: center; width: 800px;border: 1px solid">'.''.'</td>';
+
+        $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$device['controllableName']);
+        $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';
+
+        log::add(__CLASS__, 'debug', '             - '.     $path );
+
+        if (self::imageExist($device['controllableName'])) {
+            $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fas fa-check"></i></i></td>';
+        } else {
+            $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';    
+        }
+
         $htmlTab.='</tr>';
     }
     $htmlTab.='</tbody>';
     $htmlTab.='</table>';
-    /*
-    $htmlTab.='<style>';
-    $htmlTab.='.CellWithComment{';
-    $htmlTab.='    position:relative;';
-    $htmlTab.='  }';
-    $htmlTab.='  .CellComment{';
-    $htmlTab.='    display:none;';
-    $htmlTab.='    position:absolute; ';
-    $htmlTab.='    z-index:100;';
-    $htmlTab.='    border:1px;';
-    $htmlTab.='    background-color:white;';
-    $htmlTab.='    border-style:solid;';
-    $htmlTab.='    border-width:1px;';
-    $htmlTab.='    border-color:red;';
-    $htmlTab.='    padding:3px;';
-    $htmlTab.='    color:red; ';
-    $htmlTab.='    top:20px; ';
-    $htmlTab.='    left:20px;';
-    $htmlTab.='  }';
-
-    $htmlTab.='  .CellWithComment:hover span.CellComment{';
-    $htmlTab.='    display:block;';
-    $htmlTab.='  }';
-    $htmlTab.='</style>';
-    */
     log::add(__CLASS__, 'debug', '             - '.     $htmlTab );
     log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
     return array('devicesList' => json_encode($aDevicesList), 'htmlTab'=> $htmlTab);
@@ -242,6 +228,20 @@ public function getImage() {
     
     //log::add(__CLASS__, 'debug', 'getImage '. $this->getConfiguration('type') . ' -> ' . $path);
   	return str_replace(array('/var/www/html/'),array(''),$path);
+}
+
+public function imageExist($componentName) {
+    $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$componentName);
+    $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';
+
+    if (!(file_exists($path))) {
+        $path = '/var/www/html/plugins/tahomalocalapi/data/img/' . $typeMef . '.png';
+        if (!(file_exists($path))) {
+            return false;
+        }
+    }
+
+    return true;  	
 }
 
 /* Send data to daemon */
