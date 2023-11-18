@@ -190,7 +190,7 @@ public static function getDevicesDetails() {
             $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fas fa-check"></i></td>';
             log::add(__CLASS__, 'debug', '|         - device found : '. $device['deviceURL']);
         } else {
-            $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';
+            $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fas fa-minus"></i></i></td>';
             log::add(__CLASS__, 'debug', '|         - device not found : '. $device['deviceURL']);
         }
 
@@ -202,7 +202,7 @@ public static function getDevicesDetails() {
         if (self::imageExist($device['controllableName'])) {
             $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fas fa-check"></i></i></td>';
         } else {
-            $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fa-sharp fa-solid fa-xmark"></i></i></td>';    
+            $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fas fa-minus"></i></i></td>';    
         }
 
         $htmlTab.='</tr>';
