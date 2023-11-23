@@ -26,6 +26,7 @@ function tahomalocalapi_install() {
 function tahomalocalapi_update() {
     // $dir = __DIR__.'/../data/img/';
     // array_map('unlink', glob("{$dir}*.png"));
+	tahomalocalapi::deamon_start();
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin
