@@ -22,4 +22,5 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 function tahomalocalapi_pre_update() {
     $dir = __DIR__.'/../data/img/';
     array_map('unlink', glob("{$dir}*.png"));
+    
 }
