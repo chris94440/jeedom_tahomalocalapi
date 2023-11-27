@@ -19,13 +19,12 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 // Fonction exécutée automatiquement après l'installation du plugin
 function tahomalocalapi_install() {
-    $dir = __DIR__.'/../data/img/';
-    array_map('unlink', glob("{$dir}*.png"));
+
 }
 
 // Fonction exécutée automatiquement après la mise à jour du plugin
 function tahomalocalapi_update() {
-
+	tahomalocalapi::deamon_start();
 }
 
 // Fonction exécutée automatiquement après la suppression du plugin

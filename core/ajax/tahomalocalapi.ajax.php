@@ -38,6 +38,10 @@ try {
     } else if ( init('action') == 'getEqlogicDetails') {
       $eqLogic = tahomalocalapi::byId(init('id'));
       ajax::success($eqLogic->getEqlogicDetails());
+    } else if (init('action') == 'getDevicesDetails') {
+      ajax::success(tahomalocalapi::getDevicesDetails());
+    } else if (init('action') == 'resetTokenTahoma'){
+      ajax::success(tahomalocalapi::resetTokenTahoma());
     }
 
     throw new Exception(__('Aucune méthode correspondante à', __FILE__) . ' : ' . init('action'));

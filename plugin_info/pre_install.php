@@ -20,4 +20,7 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 // Fonction exécutée automatiquement avant la mise à jour du plugin
 function tahomalocalapi_pre_update() {
+    $dir = __DIR__.'/../data/img/';
+    array_map('unlink', glob("{$dir}*.png"));
+    
 }
