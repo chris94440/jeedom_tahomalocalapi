@@ -789,8 +789,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setType('action');
                         $tahomaLocalPiCmd->setIsVisible(0);
                         $tahomaLocalPiCmd->setSubType('slider');
-                        $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
-                        $tahomaLocalPiCmd->setConfiguration('parameters2', 'lowspeed');
+                        $tahomaLocalPiCmd->setConfiguration('parameters', array('#slider#','lowspeed'));
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');                        
@@ -798,8 +797,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setType('action');
                         $tahomaLocalPiCmd->setIsVisible(0);
                         $tahomaLocalPiCmd->setSubType('slider');
-                        $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
-                        $tahomaLocalPiCmd->setConfiguration('parameters2', 'lowspeed');
+                        $tahomaLocalPiCmd->setConfiguration('parameters', array('#slider#','lowspeed'));
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
@@ -808,8 +806,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setIsVisible(0);
                         $tahomaLocalPiCmd->setSubType('slider');
                         $tahomaLocalPiCmd->setConfiguration('request', 'closure');
-                        $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
-                        $tahomaLocalPiCmd->setConfiguration('parameters2', 'lowspeed');
+                        $tahomaLocalPiCmd->setConfiguration('parameters', array('#slider#','lowspeed'));
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
@@ -1154,25 +1151,19 @@ class tahomalocalapiCmd extends cmd {
         switch ($this->subType) {
             case 'slider':
                 $type = $this->getConfiguration('request');
-                $params=array();
-                $parameters = str_replace('#slider#', $_options['slider'], $parameters);
+                $params=implode(',',$parameters);
+                
 
                 switch ($type) {
                     case 'closure':
-                        $parameters = 100 - $parameters;
-                        $parameters = array_map('intval', explode(",", $parameters));
+                        $params = str_replace('#slider#', (100 - intval($_options['slider'])), $params);
                         break;
                     default:
-                        $parameters = array_map('intval', explode(",", $parameters));
+                        $params = str_replace('#slider#', intval($_options['slider']), $params);
                         break;
                 }
-
                 
-                array_push($params,$parameters[0]);
-                if ($parameters2 !='') {
-                    array_push($params,$parameters2);
-                }
-                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  implode(',',$params), 'name' =>  $this->getName(), 'execId' => $execId]);
+                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  params, 'name' =>  $this->getName(), 'execId' => $execId]);
                 /*
                 switch ($type) {
                     case 'orientation':
