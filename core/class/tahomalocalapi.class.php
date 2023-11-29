@@ -1151,7 +1151,12 @@ class tahomalocalapiCmd extends cmd {
         switch ($this->subType) {
             case 'slider':
                 $type = $this->getConfiguration('request');
-                $params=implode(',',$parameters);
+                if (is_array($parameters)) {
+                    $params=implode(',',$parameters);
+                }else {
+                    $params=$parameters;
+                }
+                
                 log::add('tahomalocalapi', 'debug','ChD -> ' . $params . ' | vs ' .json_encode($parameters));
                 
 
