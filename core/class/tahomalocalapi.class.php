@@ -1163,7 +1163,7 @@ class tahomalocalapiCmd extends cmd {
                         break;
                 }
                 
-                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  params, 'name' =>  $this->getName(), 'execId' => $execId]);
+                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $params, 'name' =>  $this->getName(), 'execId' => $execId]);
                 /*
                 switch ($type) {
                     case 'orientation':
