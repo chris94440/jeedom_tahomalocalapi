@@ -681,6 +681,8 @@ private static function createCmdsState($eqLogic, $device, $states) {
                             case 'core:ElectricalEnergyInWh':
                                 $tahomaLocalPiCmd->setUnite('Wh');
                                 break;
+                            default:
+                                break;
                         }
                         break;
                     case 'core:MaxSensedValue':
@@ -688,6 +690,8 @@ private static function createCmdsState($eqLogic, $device, $states) {
                         break;
                     case 'core:MinSensedValue':
                         $tahomaLocalPiCmd->setConfiguration('minValue', $attribute['value']);
+                        break;
+                    default:
                         break;
     
                 }
@@ -726,6 +730,8 @@ private static function createCmdsState($eqLogic, $device, $states) {
                     $linkedCmdName = 'setLockedUnlocked';
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'LOCK_STATE');
                     $tahomaLocalPiCmd->save();
+                    break;
+                default:
                     break;
             }
             if ($linkedCmdName !== '') {
@@ -779,7 +785,34 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
-                    }  else if ($command['commandName'] == "setIntensity") {
+                    } else if ($command['commandName'] == "setPosition") {
+                        $tahomaLocalPiCmd->setType('action');
+                        $tahomaLocalPiCmd->setIsVisible(0);
+                        $tahomaLocalPiCmd->setSubType('slider');
+                        //$tahomaLocalPiCmd->setConfiguration('request', 'closure');
+                        $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                        $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                        $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                        $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');                        
+                    } else if ($command['commandName'] == "setPositionAndLinearSpeed") {
+                        $tahomaLocalPiCmd->setType('action');
+                        $tahomaLocalPiCmd->setIsVisible(0);
+                        $tahomaLocalPiCmd->setSubType('slider');
+                        //$tahomaLocalPiCmd->setConfiguration('request', 'closure');
+                        $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                        $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                        $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                        $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                    }  else if ( $command['commandName'] == "setClosureAndLinearSpeed") {
+                        $tahomaLocalPiCmd->setType('action');
+                        $tahomaLocalPiCmd->setIsVisible(0);
+                        $tahomaLocalPiCmd->setSubType('slider');
+                        $tahomaLocalPiCmd->setConfiguration('request', 'closure');
+                        $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                        $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                        $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                        $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                    }else if ($command['commandName'] == "setIntensity") {
                         $tahomaLocalPiCmd->setType('action');
                         $tahomaLocalPiCmd->setIsVisible(0);
                         $tahomaLocalPiCmd->setSubType('slider');
@@ -1159,6 +1192,9 @@ class tahomalocalapiCmd extends cmd {
                     $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $this->getName(), 'execId' => $execId]);
                 }
             	return;
+            default:
+            log::add('tahomalocalapi', 'error','   - Execution demandée | subtype not managed -> ' . $type);
+                break;
            
         }
 
