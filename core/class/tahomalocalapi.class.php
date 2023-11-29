@@ -785,6 +785,15 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                    } else if ($command['commandName'] == "setPosition") {
+                        $tahomaLocalPiCmd->setType('action');
+                        $tahomaLocalPiCmd->setIsVisible(0);
+                        $tahomaLocalPiCmd->setSubType('slider');
+                        //$tahomaLocalPiCmd->setConfiguration('request', 'closure');
+                        $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                        $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                        $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                        $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');                        
                     } else if ($command['commandName'] == "setPositionAndLinearSpeed") {
                         $tahomaLocalPiCmd->setType('action');
                         $tahomaLocalPiCmd->setIsVisible(0);
