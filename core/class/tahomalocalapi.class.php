@@ -790,6 +790,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setIsVisible(0);
                         $tahomaLocalPiCmd->setSubType('slider');
                         $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                        $tahomaLocalPiCmd->setConfiguration('parameters2', 'lowspeed');
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');                        
@@ -798,6 +799,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setIsVisible(0);
                         $tahomaLocalPiCmd->setSubType('slider');
                         $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                        $tahomaLocalPiCmd->setConfiguration('parameters2', 'lowspeed');
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
@@ -807,6 +809,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setSubType('slider');
                         $tahomaLocalPiCmd->setConfiguration('request', 'closure');
                         $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                        $tahomaLocalPiCmd->setConfiguration('parameters2', 'lowspeed');
                         $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                         $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                         $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
@@ -1140,6 +1143,7 @@ class tahomalocalapiCmd extends cmd {
     $deviceUrl=$this->getConfiguration('deviceURL');
     $commandName=$this->getConfiguration('commandName');
     $parameters=$this->getConfiguration('parameters');
+    $parameters2=$this->getConfiguration('parameters2');
     $execId=$eqlogic->getConfiguration('execId');
 
     $type=$this->type;
@@ -1152,8 +1156,6 @@ class tahomalocalapiCmd extends cmd {
                 $type = $this->getConfiguration('request');
                 $parameters = str_replace('#slider#', $_options['slider'], $parameters);
 
-                $newEventValue = $parameters;
-
                 switch ($type) {
                     case 'closure':
                         $parameters = 100 - $parameters;
@@ -1163,7 +1165,15 @@ class tahomalocalapiCmd extends cmd {
                         $parameters = array_map('intval', explode(",", $parameters));
                         break;
                 }
-                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
+
+                $params;
+                if ($parameters2 !='') {
+                    array_push($params,$parameters[0]);
+                    array_push($params,$parameters2);
+                } else {
+                    $params=$parameters[0];
+                }
+                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $params, 'name' =>  $this->getName(), 'execId' => $execId]);
                 /*
                 switch ($type) {
                     case 'orientation':
