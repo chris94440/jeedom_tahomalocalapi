@@ -1154,6 +1154,7 @@ class tahomalocalapiCmd extends cmd {
         switch ($this->subType) {
             case 'slider':
                 $type = $this->getConfiguration('request');
+                $params=array();
                 $parameters = str_replace('#slider#', $_options['slider'], $parameters);
 
                 switch ($type) {
@@ -1166,14 +1167,12 @@ class tahomalocalapiCmd extends cmd {
                         break;
                 }
 
-                $params;
+                
+                array_push($params,$parameters[0]);
                 if ($parameters2 !='') {
-                    array_push($params,$parameters[0]);
                     array_push($params,$parameters2);
-                } else {
-                    $params=$parameters[0];
                 }
-                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $params, 'name' =>  $this->getName(), 'execId' => $execId]);
+                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  implode(',',$params), 'name' =>  $this->getName(), 'execId' => $execId]);
                 /*
                 switch ($type) {
                     case 'orientation':
