@@ -1166,9 +1166,6 @@ class tahomalocalapiCmd extends cmd {
                     $params=$parameters;
                 }
                 
-                log::add('tahomalocalapi', 'debug','ChD -> ' . $params . ' | vs ' .json_encode($parameters));
-                
-
                 switch ($type) {
                     case 'closure':
                         $params = str_replace('#slider#', (100 - intval($_options['slider'])), $params);
@@ -1176,8 +1173,7 @@ class tahomalocalapiCmd extends cmd {
                     default:
                         $params = str_replace('#slider#', intval($_options['slider']), $params);
                         break;
-                }
-                log::add('tahomalocalapi', 'debug','ChD 2-> ' . $params);
+                }               
                 
                 $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $params, 'name' =>  $this->getName(), 'execId' => $execId]);
                 /*

@@ -17,12 +17,12 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-// Fonction exécutée automatiquement après l'installation du plugin
+//Fonction exécutée automatiquement après l'installation du plugin
 function tahomalocalapi_install() {
 
 }
 
-// Fonction exécutée automatiquement après la mise à jour du plugin
+//Fonction exécutée automatiquement après la mise à jour du plugin
 function tahomalocalapi_update() {
 	tahomalocalapi::deamon_start();
 }
