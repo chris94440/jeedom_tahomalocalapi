@@ -20,19 +20,24 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 // Fonction exécutée automatiquement avant la mise à jour du plugin
 function tahomalocalapi_pre_update() {
+    log::add('tahomalocalapi_pre_update', 'info','!!! ChD pre update !!!');
+    $dir = __DIR__.'/../data/img/';
+    array_map('unlink', glob("{$dir}*.png"));
+    log::add('tahomalocalapi_pre_update', 'info','!!! ChD pre update end !!!');
 
+    /*
     //suppression commandes action inutile
     $eqLogics = eqLogic::byType('tahomalocalapi');
     foreach($eqLogics as $eq) {
 
-        if (is_object($eq) && ($eq->getName() == 'setPosition' || $eq->getName() == 'setPositionAndLinearSpeed')) {
+        if ($eq->getName() == 'setPosition' || $eq->getName() == 'setPositionAndLinearSpeed') {
             $eq->remove();
             $eq->save();
         }
     }
+    */
 
-    $dir = __DIR__.'/../data/img/';
-    array_map('unlink', glob("{$dir}*.png"));
+
 
 
 }
