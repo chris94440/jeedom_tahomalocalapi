@@ -26,7 +26,7 @@ function tahomalocalapi_pre_update() {
     //suppression commandes action inutile
     $eqLogics = eqLogic::byType('tahomalocalapi');
     foreach($eqLogics as $eq) {
-        foreach( $eq->getCmd('info') as $cmd) {
+        foreach( $eq->getCmd('action') as $cmd) {
             if ($cmd->getName() == 'setPosition' || $cmd->getName() == 'setPositionAndLinearSpeed') {
                 $cmd->remove();
             }
