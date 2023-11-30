@@ -745,7 +745,6 @@ private static function createCmdsState($eqLogic, $device, $states) {
                             $action->save();
                         }
                     }
-
                 }
             }
         }
