@@ -28,6 +28,7 @@ function tahomalocalapi_pre_update() {
     foreach($eqLogics as $eq) {
         if (is_object($eq) && ($eq->getName() == 'setPosition' || $eq->getName() == 'setPositionAndLinearSpeed')) {
             $eq->remove();
+            $eq->save();
         }
     }
 }
