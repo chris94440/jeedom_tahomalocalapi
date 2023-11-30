@@ -22,5 +22,12 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 function tahomalocalapi_pre_update() {
     $dir = __DIR__.'/../data/img/';
     array_map('unlink', glob("{$dir}*.png"));
-    
+
+    //suppression commandes action inutile
+    $eqLogics = eqLogic::byType('tahomalocalapi');
+    foreach($eqLogics as $eq) {
+        if (is_object($eq) && ($ed->getName() == 'setPosition' || $ed->getName() == 'setPositionAndLinearSpeed')) {
+            $eq->remove();
+        }
+    }
 }

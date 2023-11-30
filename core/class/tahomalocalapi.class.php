@@ -705,8 +705,8 @@ private static function createCmdsState($eqLogic, $device, $states) {
             case 'core:ClosureState':
                 array_push($aLinkedCmdName,'setClosure');
                 array_push($aLinkedCmdName,'setClosureAndLinearSpeed');
-                array_push($aLinkedCmdName,'setPosition');
-                array_push($aLinkedCmdName,'setPositionAndLinearSpeed');
+                //array_push($aLinkedCmdName,'setPosition');
+                //array_push($aLinkedCmdName,'setPositionAndLinearSpeed');
                 $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STATE');
                 $tahomaLocalPiCmd->save();
                 break;
@@ -742,7 +742,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
             foreach ($eqLogic->getCmd() as $action) {
                 foreach($aLinkedCmdName as $linkedCmdName) {
                     if ($action->getConfiguration('commandName') == $linkedCmdName) {
-                        $action->setValue($tahomaLocalPiCmd->getId());
+                        $action->setValue($tahomaLocalPiCmd->getId());                        
                         $action->save();
                     }
                 }
@@ -792,6 +792,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                     $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                /*
                 } else if ($command['commandName'] == "setPosition") {
                     $tahomaLocalPiCmd->setType('action');
                     //$tahomaLocalPiCmd->setIsVisible(0);
@@ -808,6 +809,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                     $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                */
                 }  else if ( $command['commandName'] == "setClosureAndLinearSpeed") {
                     $tahomaLocalPiCmd->setType('action');
                     //$tahomaLocalPiCmd->setIsVisible(0);
