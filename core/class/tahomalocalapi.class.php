@@ -697,57 +697,58 @@ private static function createCmdsState($eqLogic, $device, $states) {
                 }
             }
             $tahomaLocalPiCmd->save();
+        }
     
-            $aLinkedCmdName = array();
-            switch ($state['name']) {
-                //if ($state['name'] == "core:ClosureState") {
-                case 'core:ClosureState':
-                    array_push($aLinkedCmdName,'setClosure');
-                    array_push($aLinkedCmdName,'setClosureAndLinearSpeed');
-                    array_push($aLinkedCmdName,'setPosition');
-                    array_push($aLinkedCmdName,'setPositionAndLinearSpeed');
-                    $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STATE');
-                    $tahomaLocalPiCmd->save();
-                    break;
-                case 'core:LightIntensityState':
-                    array_push($aLinkedCmdName,'setIntensity');
-                    $tahomaLocalPiCmd->setDisplay('generic_type', 'LIGHT_BRIGHTNESS');
-                    $tahomaLocalPiCmd->setConfiguration('minValue', '0');
-                    $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
-                    $tahomaLocalPiCmd->save();
-                    break;                    
-                case 'core:SlateOrientationState':
-                    array_push($aLinkedCmdName,'setOrientation');
-                    break;
-                case 'core:ComfortRoomTemperatureState':
-                    array_push($aLinkedCmdName,'setComfortTemperature');
-                    break;
-                case 'core:EcoRoomTemperatureState':
-                    array_push($aLinkedCmdName,'setEcoTemperature');
-                    break;
-                case 'core:SecuredPositionTemperatureState':
-                    array_push($aLinkedCmdName,'setSecuredPositionTemperature');
-                    break;
-                case 'core:LockedUnlockedState':
-                    // Serrure connectée état lié
-                    array_push($aLinkedCmdName,'setLockedUnlocked');
-                    $tahomaLocalPiCmd->setDisplay('generic_type', 'LOCK_STATE');
-                    $tahomaLocalPiCmd->save();
-                    break;
-                default:
-                    break;
-            }
-            if ($linkedCmdName !== '') {
-                foreach ($eqLogic->getCmd() as $action) {
-                    foreach($aLinkedCmdName as $linkedCmdName) {
-                        if ($action->getConfiguration('commandName') == $linkedCmdName) {
-                            $action->setValue($tahomaLocalPiCmd->getId());
-                            $action->save();
-                        }
+        $aLinkedCmdName = array();
+        switch ($state['name']) {
+            //if ($state['name'] == "core:ClosureState") {
+            case 'core:ClosureState':
+                array_push($aLinkedCmdName,'setClosure');
+                array_push($aLinkedCmdName,'setClosureAndLinearSpeed');
+                array_push($aLinkedCmdName,'setPosition');
+                array_push($aLinkedCmdName,'setPositionAndLinearSpeed');
+                $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STATE');
+                $tahomaLocalPiCmd->save();
+                break;
+            case 'core:LightIntensityState':
+                array_push($aLinkedCmdName,'setIntensity');
+                $tahomaLocalPiCmd->setDisplay('generic_type', 'LIGHT_BRIGHTNESS');
+                $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                $tahomaLocalPiCmd->save();
+                break;                    
+            case 'core:SlateOrientationState':
+                array_push($aLinkedCmdName,'setOrientation');
+                break;
+            case 'core:ComfortRoomTemperatureState':
+                array_push($aLinkedCmdName,'setComfortTemperature');
+                break;
+            case 'core:EcoRoomTemperatureState':
+                array_push($aLinkedCmdName,'setEcoTemperature');
+                break;
+            case 'core:SecuredPositionTemperatureState':
+                array_push($aLinkedCmdName,'setSecuredPositionTemperature');
+                break;
+            case 'core:LockedUnlockedState':
+                // Serrure connectée état lié
+                array_push($aLinkedCmdName,'setLockedUnlocked');
+                $tahomaLocalPiCmd->setDisplay('generic_type', 'LOCK_STATE');
+                $tahomaLocalPiCmd->save();
+                break;
+            default:
+                break;
+        }
+        if ($linkedCmdName !== '') {
+            foreach ($eqLogic->getCmd() as $action) {
+                foreach($aLinkedCmdName as $linkedCmdName) {
+                    if ($action->getConfiguration('commandName') == $linkedCmdName) {
+                        $action->setValue($tahomaLocalPiCmd->getId());
+                        $action->save();
                     }
                 }
             }
         }
+        
     }
 }
 
