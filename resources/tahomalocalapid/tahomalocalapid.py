@@ -480,7 +480,6 @@ def execCmd(params):
 			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 
-		logging.debug("	- payload :  %s", payload)
 		response = requests.request("POST", url, verify=False, headers=headers, data=newPayload)
 
 		if response.status_code and (response.status_code == 200):
