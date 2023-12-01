@@ -451,37 +451,29 @@ def execCmd(params):
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
-		if params['parameters'] != "":
-			payload=json.dumps({
-					"label": params['commandName'],								
-					"actions": [
-					{
-					"commands": [
-						{
-						"name": params['name'],
-						"parameters": [
-							params['parameters']
-						]
-						}
-					],
-					"deviceURL": params['deviceUrl']
-					}
-				]
-			})
+		newPayload='{"label":"' + params['commandName'] + '", "actions": [{"commands": [{"name": "' + params['name'] +'","parameters": ['
+		
+		#logging.debug('ChD type : ' + type(params['parameters']))
+		splitParams=params['parameters'].split(',')
+
+		if (type(splitParams) == list):
+			for i in range(len(splitParams)):
+				if i >0:
+					newPayload += ','
+				if (splitParams[i].isnumeric()):
+					logging.debug('numeric')
+					newPayload += splitParams[i]
+				else:
+					logging.debug('not numeric')
+					newPayload += '"' + splitParams[i] + '"'    
 		else:
-			payload=json.dumps({
-					"label": params['commandName'],								
-					"actions": [
-					{
-					"commands": [
-						{
-						"name": params['name']
-						}
-					],
-					"deviceURL": params['deviceUrl']
-					}
-				]
-			})
+			if (params['parameters'].isnumeric()):
+				newPayload += params['parameters']
+			else:
+				newPayload += '"' + params['parameters'] + '"'
+
+		newPayload += ']}], "deviceURL":"' + params['deviceUrl'] + '"}]}'
+		logging.debug("	- newPayload :  %s", newPayload)       
 		
 		headers = {
 			'Content-Type' : 'application/json',
@@ -489,7 +481,7 @@ def execCmd(params):
 		}
 
 		logging.debug("	- payload :  %s", payload)
-		response = requests.request("POST", url, verify=False, headers=headers, data=payload)
+		response = requests.request("POST", url, verify=False, headers=headers, data=newPayload)
 
 		if response.status_code and (response.status_code == 200):
 			logging.debug("ExecCmd http : %s", response.status_code)
