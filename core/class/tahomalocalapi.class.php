@@ -650,54 +650,40 @@ private static function createCmdsState($eqLogic, $device, $states) {
             $tahomaLocalPiCmd->setLogicalId($state['name']);
             $tahomaLocalPiCmd->setConfiguration('type', $state['name']);
             $tahomaLocalPiCmd->setType('info');
-            switch ($state->type) {
-                case 1:
-                    $tahomaLocalPiCmd->setSubType('numeric');
+        }
+
+        $tahomaLocalPiCmd->setSubType(self::getCdmdTypeFromDevice($device['states'],$state['name']));        
+        $tahomaLocalPiCmd->setIsVisible(0);
+
+        foreach ($device['attributes'] as $attribute) {
+            switch ($attribute['name']) {
+                case 'core:MeasuredValueType':
+                    switch ($attribute['value']) {
+                        case 'core:TemperatureInCelcius':
+                            $tahomaLocalPiCmd->setUnite('°C');
+                            break;
+                        case 'core:VolumeInCubicMeter':
+                            $tahomaLocalPiCmd->setUnite('m3');
+                            break;
+                        case 'core:ElectricalEnergyInWh':
+                            $tahomaLocalPiCmd->setUnite('Wh');
+                            break;
+                        default:
+                            break;
+                    }
                     break;
-                case 2:
-                    $tahomaLocalPiCmd->setSubType('numeric');
+                case 'core:MaxSensedValue':
+                    $tahomaLocalPiCmd->setConfiguration('maxValue', $attribute['value']);
                     break;
-                case 3:
-                    $tahomaLocalPiCmd->setSubType('string');
-                    break;
-                case 6:
-                    $tahomaLocalPiCmd->setSubType('binary');
+                case 'core:MinSensedValue':
+                    $tahomaLocalPiCmd->setConfiguration('minValue', $attribute['value']);
                     break;
                 default:
-                    $tahomaLocalPiCmd->setSubType('string');
+                    break;
+
             }
-            $tahomaLocalPiCmd->setIsVisible(0);
-    
-            foreach ($device['attributes'] as $attribute) {
-                switch ($attribute['name']) {
-                    case 'core:MeasuredValueType':
-                        switch ($attribute['value']) {
-                            case 'core:TemperatureInCelcius':
-                                $tahomaLocalPiCmd->setUnite('°C');
-                                break;
-                            case 'core:VolumeInCubicMeter':
-                                $tahomaLocalPiCmd->setUnite('m3');
-                                break;
-                            case 'core:ElectricalEnergyInWh':
-                                $tahomaLocalPiCmd->setUnite('Wh');
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    case 'core:MaxSensedValue':
-                        $tahomaLocalPiCmd->setConfiguration('maxValue', $attribute['value']);
-                        break;
-                    case 'core:MinSensedValue':
-                        $tahomaLocalPiCmd->setConfiguration('minValue', $attribute['value']);
-                        break;
-                    default:
-                        break;
-    
-                }
-            }
-            $tahomaLocalPiCmd->save();
         }
+        $tahomaLocalPiCmd->save();
     
         $aLinkedCmdName = array();
         switch ($state['name']) {
@@ -750,6 +736,30 @@ private static function createCmdsState($eqLogic, $device, $states) {
         }
         
     }
+}
+
+private static function getCdmdTypeFromDevice($states, $cmdName) {
+	foreach($states as $state) {
+		if ($state['name'] == $cmdName){
+          switch ($state['type']) {
+            case 1:
+              return 'numeric';
+              break;
+            case 2:
+              return 'numeric';
+              break;
+            case 3:
+              return 'string';
+              break;
+            case 6:
+              return 'binary';
+              break;
+            default:
+              return 'string';
+          }
+        }
+    }
+  	return 'string';
 }
 
 private static function createCmdsAction($eqLogic, $device, $commands) {
