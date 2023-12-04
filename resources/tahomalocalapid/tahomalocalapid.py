@@ -451,29 +451,32 @@ def execCmd(params):
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
-		newPayload='{"label":"' + params['commandName'] + '", "actions": [{"commands": [{"name": "' + params['name'] +'","parameters": ['
-		
-		#logging.debug('ChD type : ' + type(params['parameters']))
+		newPayload='{"label":"' + params['commandName'] + '", "actions": [{"commands": [{"name": "' + params['name'] + '"'
 		splitParams=params['parameters'].split(',')
 
-		if (type(splitParams) == list):
-			for i in range(len(splitParams)):
-				if i >0:
-					newPayload += ','
-				if (splitParams[i].isnumeric()):
-					logging.debug('numeric')
-					newPayload += splitParams[i]
-				else:
-					logging.debug('not numeric')
-					newPayload += '"' + splitParams[i] + '"'    
-		else:
-			if (params['parameters'].isnumeric()):
-				newPayload += params['parameters']
+		if (params['parameters'] != ''):
+			newPayload +=',"parameters": ['
+			if (type(splitParams) == list):
+				for i in range(len(splitParams)):
+					if i >0:
+						newPayload += ','
+					if (splitParams[i].isnumeric()):
+						logging.debug('numeric')
+						newPayload += splitParams[i]
+					else:
+						logging.debug('not numeric')
+						newPayload += '"' + splitParams[i] + '"'    
 			else:
-				newPayload += '"' + params['parameters'] + '"'
-
-		newPayload += ']}], "deviceURL":"' + params['deviceUrl'] + '"}]}'
-		logging.debug("	- newPayload :  %s", newPayload)       
+				if (params['parameters'].isnumeric()):
+					newPayload += params['parameters']
+				else:
+					newPayload += '"' + params['parameters'] + '"'
+			newPayload += ']}]'
+		else:
+			newPayload += '}]'
+		
+		newPayload += ', "deviceURL":"' + params['deviceUrl'] + '"}]}'
+		logging.debug("	- newPayload :  %s", newPayload)        
 		
 		headers = {
 			'Content-Type' : 'application/json',
