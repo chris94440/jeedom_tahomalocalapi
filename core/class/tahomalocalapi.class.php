@@ -155,7 +155,7 @@ public static function getDevicesDetails() {
     $htmlTabGateways='<table style="margin: 0 auto; border: 1px solid">';
     $htmlTabGateways.='<thead>';
     $htmlTabGateways.='<tr style="border: 1px solid;">';
-    $htmlTabGateways.='<th colspan="4" style="text-align: center">Liste des équipements Somfy</th>';
+    $htmlTabGateways.='<th colspan="4" style="text-align: center">Liste des gateways Somfy</th>';
     $htmlTabGateways.='</tr>';
     $htmlTabGateways.='</thead>';
     $htmlTabGateways.='<tbody>';
@@ -166,8 +166,8 @@ public static function getDevicesDetails() {
     foreach ($aGatewaysList as $gateway) {
         $htmlTabGateways.='<tr style="border: 1px solid;">';
         $htmlTabGateways.='<td style="text-align: center; width: 200px;border: 1px solid">'.$gateway['gatewayId'].'</td>';
-        $htmlTabGateways.='<td style="text-align: center; width: 200px;border: 1px solid">'.$gateway['protocolVersion'].'</td>';
-        $htmlTabGateways.='<td style="text-align: center; width: 200px;border: 1px solid">'.$gateway['status'].'</td>';
+        $htmlTabGateways.='<td style="text-align: center; width: 200px;border: 1px solid">'.$gateway['connectivity']['protocolVersion'].'</td>';
+        $htmlTabGateways.='<td style="text-align: center; width: 200px;border: 1px solid">'.$gateway['connectivity']['status'].'</td>';
         $htmlTabGateways.='</tr>';
     }
     $htmlTabGateways.='</tbody>';
@@ -235,7 +235,7 @@ public static function getDevicesDetails() {
     }
     $htmlTab.='</tbody>';
     $htmlTab.='</table>';
-    log::add(__CLASS__, 'debug', '             - '.     $htmlTab );
+    //log::add(__CLASS__, 'debug', '             - '.     $htmlTab );
     log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
     return array('devicesList' => json_encode($aDevicesList), 'htmlTab'=> $htmlTabGateways . $htmlTab);
 }
