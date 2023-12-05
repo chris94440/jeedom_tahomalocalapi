@@ -237,7 +237,7 @@ public static function getDevicesDetails() {
     $htmlTab.='</table>';
     log::add(__CLASS__, 'debug', '             - '.     $htmlTab );
     log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
-    return array('devicesList' => json_encode($aDevicesList), 'htmlTab'=> htmlTabGateways . $htmlTab);
+    return array('devicesList' => json_encode($aDevicesList), 'htmlTab'=> $htmlTabGateways . $htmlTab);
 }
 
 public function getImage() {
