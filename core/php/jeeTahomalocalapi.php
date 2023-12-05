@@ -36,6 +36,11 @@ try {
         } else {
             log::add('tahomalocalapi', 'error', 'Error in content of received message for tahomaSession : ' . json_encode($result));
         }
+    } elseif (isset($result['gatewaysList'])) {
+        if (array_key_exists('gatewaysList',$result)) {
+            $jsonMef=str_replace(array('\\','"{','}"'), array('','{','}'),json_encode($result['gatewaysList']));
+            log::add('tahomalocalapi', 'debug', 'Gateways list : ' . $jsonMef);
+        }
     }
     
 } catch (Exception $e) {
