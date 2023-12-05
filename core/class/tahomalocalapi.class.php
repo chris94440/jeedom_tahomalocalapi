@@ -150,6 +150,32 @@ public static function resetTokenTahoma() {
 
 public static function getDevicesDetails() {
     log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
+
+    $aGatewaysList=config::byKey('tahomalocalapi_gatewaysList',  __CLASS__);
+    $htmlTabGateways='<table style="margin: 0 auto; border: 1px solid">';
+    $htmlTabGateways.='<thead>';
+    $htmlTabGateways.='<tr style="border: 1px solid;">';
+    $htmlTabGateways.='<th colspan="4" style="text-align: center">Liste des gateways Somfy</th>';
+    $htmlTabGateways.='</tr>';
+    $htmlTabGateways.='</thead>';
+    $htmlTabGateways.='<tbody>';
+    $htmlTabGateways.='<tr>';
+    $htmlTabGateways.='<td style="text-align: center; width: 200px;border: 1px solid">Gateway Id</td>';
+    $htmlTabGateways.='<td style="text-align: center; width: 250px;border: 1px solid">Protocol version</td>';
+    $htmlTabGateways.='<td style="text-align: center; width: 250px;border: 1px solid">Status </td>';
+    foreach ($aGatewaysList as $gateway) {
+        $htmlTabGateways.='<tr style="border: 1px solid;">';
+        $htmlTabGateways.='<td style="text-align: center; width: 200px;border: 1px solid">'.$gateway['gatewayId'].'</td>';
+        $htmlTabGateways.='<td style="text-align: center; width: 200px;border: 1px solid">'.$gateway['connectivity']['protocolVersion'].'</td>';
+        $htmlTabGateways.='<td style="text-align: center; width: 200px;border: 1px solid">'.$gateway['connectivity']['status'].'</td>';
+        $htmlTabGateways.='</tr>';
+    }
+    $htmlTabGateways.='</tbody>';
+    $htmlTabGateways.='</table>';
+    $htmlTabGateways.='</br>';
+
+
+
     $aDevicesList=config::byKey('tahomalocalapi_devicesList',  __CLASS__);
     log::add(__CLASS__, 'debug', '|  '. json_encode($aDevicesList));
     $htmlTab='<table style="margin: 0 auto; border: 1px solid">';
@@ -209,9 +235,9 @@ public static function getDevicesDetails() {
     }
     $htmlTab.='</tbody>';
     $htmlTab.='</table>';
-    log::add(__CLASS__, 'debug', '             - '.     $htmlTab );
+    //log::add(__CLASS__, 'debug', '             - '.     $htmlTab );
     log::add(__CLASS__, 'debug', '+-------------------------------------------------------------------------------');
-    return array('devicesList' => json_encode($aDevicesList), 'htmlTab'=> $htmlTab);
+    return array('devicesList' => json_encode($aDevicesList), 'htmlTab'=> $htmlTabGateways . $htmlTab);
 }
 
 public function getImage() {
