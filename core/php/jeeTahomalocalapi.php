@@ -40,6 +40,7 @@ try {
         if (array_key_exists('gatewaysList',$result)) {
             $jsonMef=str_replace(array('\\','"{','}"'), array('','{','}'),json_encode($result['gatewaysList']));
             log::add('tahomalocalapi', 'debug', 'Gateways list : ' . $jsonMef);
+            config::save('tahomalocalapi_gatewaysList',  $result['gatewaysList'],'tahomalocalapi');
         }
     }
     
