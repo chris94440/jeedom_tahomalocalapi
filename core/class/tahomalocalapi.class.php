@@ -507,13 +507,13 @@ private static function createGenericActions($eqLogic, $device) {
             if (is_object($eqLogic->getCmd(null, 'Manuel'))) {
                 $cmd = $eqLogic->getCmd(null, 'Manuel');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }   
             
             if (is_object($eqLogic->getCmd(null, 'Automatic'))) {
                 $cmd = $eqLogic->getCmd(null, 'Automatic');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }             
         }
 
@@ -535,7 +535,7 @@ private static function createGenericActions($eqLogic, $device) {
             if (is_object($eqLogic->getCmd(null, 'On'))) {
                 $cmd = $eqLogic->getCmd(null, 'On');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }           
         }
 
@@ -556,7 +556,7 @@ private static function createGenericActions($eqLogic, $device) {
             if (is_object($eqLogic->getCmd(null, 'Auto'))) {
                 $cmd = $eqLogic->getCmd(null, 'Auto');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }           
         }
 
@@ -616,25 +616,25 @@ private static function createGenericActions($eqLogic, $device) {
             if (is_object($eqLogic->getCmd(null, 'HG'))) {
                 $cmd = $eqLogic->getCmd(null, 'HG');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }
 
             if (is_object($eqLogic->getCmd(null, 'Confort'))) {
                 $cmd = $eqLogic->getCmd(null, 'Confort');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }
 
             if (is_object($eqLogic->getCmd(null, 'Eco'))) {
                 $cmd = $eqLogic->getCmd(null, 'Eco');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }
 
             if (is_object($eqLogic->getCmd(null, 'Off'))) {
                 $cmd = $eqLogic->getCmd(null, 'Off');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }            
         }
 
@@ -657,7 +657,7 @@ private static function createGenericActions($eqLogic, $device) {
             if (is_object($eqLogic->getCmd(null, 'Confort temperature'))) {
                 $cmd = $eqLogic->getCmd(null, 'Confort temperature');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }
         }
 
@@ -680,7 +680,7 @@ private static function createGenericActions($eqLogic, $device) {
             if (is_object($eqLogic->getCmd(null, 'Eco temperature'))) {
                 $cmd = $eqLogic->getCmd(null, 'Eco temperature');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }
         }
 
@@ -703,7 +703,7 @@ private static function createGenericActions($eqLogic, $device) {
             if (is_object($eqLogic->getCmd(null, 'HG temperature'))) {
                 $cmd = $eqLogic->getCmd(null, 'HG temperature');
                 $cmd->remove();
-                $eqLogic->save()
+                $eqLogic->save();
             }
         }
 
@@ -719,7 +719,7 @@ private static function checkExistCommand($device,$cmdName) {
 
     if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
         foreach($device['definition']['commands'] as $cmd) {
-            if ($cmd['commandName'] == $cmdName)
+            if ($cmd['commandName'] == $cmdName) {
                 $response=true;
                 break;
             }
