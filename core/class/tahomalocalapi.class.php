@@ -477,160 +477,254 @@ private static function createGenericActions($eqLogic, $device) {
     //log::add(__CLASS__, 'debug','|     create generic action for device ' .$device['definition']['uiClass'] . ' and eqLogic : ' . $eqLogic->getName());
     $response = true;
     if ($device['definition']['uiClass'] == "HitachiHeatingSystem") {
-        if (!(is_object($eqLogic->getCmd(null, 'Automatic')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('other');
-            $tahomaLocalPiCmd->setName('Automatic');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setAutoManu');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', 'auto');
-            $tahomaLocalPiCmd->save();
-        }
+        if (self::checkExistCommand($device,'setAutoManu')) {
+            if (!(is_object($eqLogic->getCmd(null, 'Automatic')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('Automatic');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setAutoManu');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', 'auto');
+                $tahomaLocalPiCmd->save();
+            }
 
-        if (!(is_object($eqLogic->getCmd(null, 'Manuel')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('other');
-            $tahomaLocalPiCmd->setName('Manuel');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setAutoManu');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', 'manu');
-            $tahomaLocalPiCmd->save();
+            if (!(is_object($eqLogic->getCmd(null, 'Manuel')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('Manuel');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setAutoManu');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', 'manu');
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            if (is_object($eqLogic->getCmd(null, 'Manuel'))) {
+                $cmd = $eqLogic->getCmd(null, 'Manuel');
+                $cmd->remove();
+                $eqLogic->save();
+            }   
+            
+            if (is_object($eqLogic->getCmd(null, 'Automatic'))) {
+                $cmd = $eqLogic->getCmd(null, 'Automatic');
+                $cmd->remove();
+                $eqLogic->save();
+            }             
         }
 
     } else if ($device['definition']['uiClass'] == "HeatingSystem") {
-        if (!(is_object($eqLogic->getCmd(null, 'On')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('other');
-            $tahomaLocalPiCmd->setName('On');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setOnOff');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', 'on');
-            $tahomaLocalPiCmd->save();
+        if (self::checkExistCommand($device,'setOnOff')) {
+            if (!(is_object($eqLogic->getCmd(null, 'On')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('On');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setOnOff');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', 'on');
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            if (is_object($eqLogic->getCmd(null, 'On'))) {
+                $cmd = $eqLogic->getCmd(null, 'On');
+                $cmd->remove();
+                $eqLogic->save();
+            }           
         }
 
-        if (!(is_object($eqLogic->getCmd(null, 'Off')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('other');
-            $tahomaLocalPiCmd->setName('Off');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', 'off');
-            $tahomaLocalPiCmd->save();
+        if (self::checkExistCommand($device,'setActiveMode')) {
+            if (!(is_object($eqLogic->getCmd(null, 'Auto')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('Auto');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setActiveMode');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', 'auto');
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            if (is_object($eqLogic->getCmd(null, 'Auto'))) {
+                $cmd = $eqLogic->getCmd(null, 'Auto');
+                $cmd->remove();
+                $eqLogic->save();
+            }           
         }
 
-        if (!(is_object($eqLogic->getCmd(null, 'Auto')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('other');
-            $tahomaLocalPiCmd->setName('Auto');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setActiveMode');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', 'auto');
-            $tahomaLocalPiCmd->save();
+        if (self::checkExistCommand($device,'setHeatingLevel')) {
+            if (!(is_object($eqLogic->getCmd(null, 'Off')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('Off');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', 'off');
+                $tahomaLocalPiCmd->save();
+            }
+
+            if (!(is_object($eqLogic->getCmd(null, 'Eco')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('Eco');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', 'eco');
+                $tahomaLocalPiCmd->save();
+            }
+
+            if (!(is_object($eqLogic->getCmd(null, 'Confort')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('Confort');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', 'comfort');
+                $tahomaLocalPiCmd->save();
+            }
+
+            if (!(is_object($eqLogic->getCmd(null, 'HG')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('HG');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', 'frostprotection');
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            if (is_object($eqLogic->getCmd(null, 'HG'))) {
+                $cmd = $eqLogic->getCmd(null, 'HG');
+                $cmd->remove();
+                $eqLogic->save();
+            }
+
+            if (is_object($eqLogic->getCmd(null, 'Confort'))) {
+                $cmd = $eqLogic->getCmd(null, 'Confort');
+                $cmd->remove();
+                $eqLogic->save();
+            }
+
+            if (is_object($eqLogic->getCmd(null, 'Eco'))) {
+                $cmd = $eqLogic->getCmd(null, 'Eco');
+                $cmd->remove();
+                $eqLogic->save();
+            }
+
+            if (is_object($eqLogic->getCmd(null, 'Off'))) {
+                $cmd = $eqLogic->getCmd(null, 'Off');
+                $cmd->remove();
+                $eqLogic->save();
+            }            
         }
 
-        if (!(is_object($eqLogic->getCmd(null, 'Eco')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('other');
-            $tahomaLocalPiCmd->setName('Eco');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', 'eco');
-            $tahomaLocalPiCmd->save();
+        if (self::checkExistCommand($device,'setComfortTemperature')) {
+            if (!(is_object($eqLogic->getCmd(null, 'Confort temperature')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('slider');
+                $tahomaLocalPiCmd->setName('Confort temperature');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setComfortTemperature');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                $tahomaLocalPiCmd->setConfiguration('minValue', '15');
+                $tahomaLocalPiCmd->setConfiguration('maxValue', '30');
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            if (is_object($eqLogic->getCmd(null, 'Confort temperature'))) {
+                $cmd = $eqLogic->getCmd(null, 'Confort temperature');
+                $cmd->remove();
+                $eqLogic->save();
+            }
         }
 
-        if (!(is_object($eqLogic->getCmd(null, 'Confort')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('other');
-            $tahomaLocalPiCmd->setName('Confort');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', 'comfort');
-            $tahomaLocalPiCmd->save();
+        if (self::checkExistCommand($device,'setEcoTemperature')) {
+            if (!(is_object($eqLogic->getCmd(null, 'Eco temperature')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('slider');
+                $tahomaLocalPiCmd->setName('Eco temperature');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setEcoTemperature');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                $tahomaLocalPiCmd->setConfiguration('minValue', '10');
+                $tahomaLocalPiCmd->setConfiguration('maxValue', '25');
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            if (is_object($eqLogic->getCmd(null, 'Eco temperature'))) {
+                $cmd = $eqLogic->getCmd(null, 'Eco temperature');
+                $cmd->remove();
+                $eqLogic->save();
+            }
         }
 
-        if (!(is_object($eqLogic->getCmd(null, 'HG')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('other');
-            $tahomaLocalPiCmd->setName('HG');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setHeatingLevel');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', 'frostprotection');
-            $tahomaLocalPiCmd->save();
-        }
-
-        if (!(is_object($eqLogic->getCmd(null, 'Confort temperature')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('slider');
-            $tahomaLocalPiCmd->setName('Confort temperature');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setComfortTemperature');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
-            $tahomaLocalPiCmd->setConfiguration('minValue', '15');
-            $tahomaLocalPiCmd->setConfiguration('maxValue', '30');
-            $tahomaLocalPiCmd->save();
-        }
-
-        if (!(is_object($eqLogic->getCmd(null, 'Eco temperature')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('slider');
-            $tahomaLocalPiCmd->setName('Eco temperature');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setEcoTemperature');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
-            $tahomaLocalPiCmd->setConfiguration('minValue', '10');
-            $tahomaLocalPiCmd->setConfiguration('maxValue', '25');
-            $tahomaLocalPiCmd->save();
-        }
-
-        if (!(is_object($eqLogic->getCmd(null, 'HG temperature')))) {
-            $tahomaLocalPiCmd = new tahomalocalapiCmd();
-            $tahomaLocalPiCmd->setType('action');
-            $tahomaLocalPiCmd->setSubType('slider');
-            $tahomaLocalPiCmd->setName('HG temperature');
-            $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
-            $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
-            $tahomaLocalPiCmd->setConfiguration('commandName', 'setSecuredPositionTemperature');
-            $tahomaLocalPiCmd->setConfiguration('nparams', 1);
-            $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
-            $tahomaLocalPiCmd->setConfiguration('minValue', '5');
-            $tahomaLocalPiCmd->setConfiguration('maxValue', '10');
-            $tahomaLocalPiCmd->save();
+        if (self::checkExistCommand($device,'setSecuredPositionTemperature')) {
+            if (!(is_object($eqLogic->getCmd(null, 'HG temperature')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('slider');
+                $tahomaLocalPiCmd->setName('HG temperature');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setSecuredPositionTemperature');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                $tahomaLocalPiCmd->setConfiguration('minValue', '5');
+                $tahomaLocalPiCmd->setConfiguration('maxValue', '10');
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            if (is_object($eqLogic->getCmd(null, 'HG temperature'))) {
+                $cmd = $eqLogic->getCmd(null, 'HG temperature');
+                $cmd->remove();
+                $eqLogic->save();
+            }
         }
 
     } else {
         $response = false;
     }
     //log::add(__CLASS__, 'debug','|     create generic response  : ' .$response);
+    return $response;
+}
+
+private static function checkExistCommand($device,$cmdName) {
+    $response = false;
+
+    if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
+        foreach($device['definition']['commands'] as $cmd) {
+            if ($cmd['commandName'] == $cmdName) {
+                $response=true;
+                break;
+            }
+        }
+    }
     return $response;
 }
 
