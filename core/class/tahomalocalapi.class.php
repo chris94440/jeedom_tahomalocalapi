@@ -547,6 +547,24 @@ private static function createGenericActions($eqLogic, $device) {
             self::removeCmdFromNameOrLogicalId($eqLogic,'Auto');         
         }
 
+        
+        if (self::checkExistCommand($device,'refreshHeatingLevel')) {
+            if (!(is_object($eqLogic->getCmd(null, 'refreshHeatingLevel')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('refreshHeatingLevel');
+                $tahomaLocalPiCmd->setLogicalId('refreshHeatingLevel');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'refreshHeatingLevel');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 0);
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            self::removeCmdFromNameOrLogicalId($eqLogic,'refreshHeatingLevel'); 
+        }
+        
         if (self::checkExistCommand($device,'setHeatingLevel')) {
             if (!(is_object($eqLogic->getCmd(null, 'Off')))) {
                 $tahomaLocalPiCmd = new tahomalocalapiCmd();
