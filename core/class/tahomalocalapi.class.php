@@ -474,8 +474,9 @@ private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
 
 
 private static function createGenericActions($eqLogic, $device) {
+    //log::add(__CLASS__, 'debug','|     create generic action for device ' .$device['definition']['uiClass'] . ' and eqLogic : ' . $eqLogic->getName());
     $response = true;
-    if ($device['uiClass'] == "HitachiHeatingSystem") {
+    if ($device['definition']['uiClass'] == "HitachiHeatingSystem") {
         if (!(is_object($eqLogic->getCmd(null, 'Automatic')))) {
             $tahomaLocalPiCmd = new tahomalocalapiCmd();
             $tahomaLocalPiCmd->setType('action');
@@ -502,7 +503,7 @@ private static function createGenericActions($eqLogic, $device) {
             $tahomaLocalPiCmd->save();
         }
 
-    } else if ($device['uiClass'] == "HeatingSystem") {
+    } else if ($device['definition']['uiClass'] == "HeatingSystem") {
         if (!(is_object($eqLogic->getCmd(null, 'On')))) {
             $tahomaLocalPiCmd = new tahomalocalapiCmd();
             $tahomaLocalPiCmd->setType('action');
@@ -629,6 +630,7 @@ private static function createGenericActions($eqLogic, $device) {
     } else {
         $response = false;
     }
+    //log::add(__CLASS__, 'debug','|     create generic response  : ' .$response);
     return $response;
 }
 
