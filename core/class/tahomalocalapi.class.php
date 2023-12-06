@@ -474,7 +474,7 @@ private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
 
 
 private static function createGenericActions($eqLogic, $device) {
-    log::add(__CLASS__, 'debug','|     create generic action for device ' .$device['uiClass'] . ' and eqLogic : ' . $eqLogic->getName());
+    log::add(__CLASS__, 'debug','|     create generic action for device ' .$device['definition']['uiClass'] . ' and eqLogic : ' . $eqLogic->getName());
     $response = true;
     if ($device['uiClass'] == "HitachiHeatingSystem") {
         if (!(is_object($eqLogic->getCmd(null, 'Automatic')))) {
