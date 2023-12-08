@@ -725,7 +725,7 @@ private static function createGenericActions($eqLogic, $device) {
     return $response;
 }
 
-private static removeCmdFromNameOrLogicalId($eqLogic,$cmdName) {
+private static function removeCmdFromNameOrLogicalId($eqLogic,$cmdName) {
     $cmd=$eqLogic->getCmd(null, $cmdName);
     if (is_object($cmd)) {
         $cmd->remove();
