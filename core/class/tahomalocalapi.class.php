@@ -474,7 +474,7 @@ private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
 
 
 private static function createGenericActions($eqLogic, $device) {
-    //log::add(__CLASS__, 'debug','|     create generic action for device ' .$device['definition']['uiClass'] . ' and eqLogic : ' . $eqLogic->getName());
+    log::add(__CLASS__, 'debug','|     create generic action for device ' .$device['definition']['uiClass'] . ' and eqLogic : ' . $eqLogic->getName());
     $response = true;
     if ($device['definition']['uiClass'] == "HitachiHeatingSystem") {
         if (self::checkExistCommand($device,'setAutoManu')) {
@@ -751,6 +751,7 @@ private static function checkExistCommand($device,$cmdName) {
             }
         }
     }
+    log::add(__CLASS__, 'debug','|     ' . __function__ . ' cmdName  ' . $cmdName . ' -> ' .$response);
     return $response;
 }
 
