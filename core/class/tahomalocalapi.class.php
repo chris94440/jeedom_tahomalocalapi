@@ -727,26 +727,17 @@ private static function createGenericActions($eqLogic, $device) {
 
 private static function removeCmdFromNameOrLogicalId($eqLogic,$cmdName) {
     log::add(__CLASS__, 'debug','|     ' . __function__ . ' cmdName  ' . $cmdName );
-    foreach($eqLogic->getCmd() as $cmd) {
-        if ($cmd->name() == $cmdName) {
-            log::add(__CLASS__, 'debug','|          -> remove cmd');
-            $cmd->remove();
-            break;
-        }
-    }
-    /*
     $cmd=$eqLogic->getCmd(null, $cmdName);
     if (is_object($cmd)) {
         $cmd->remove();
     } else {
         foreach($eqLogic->getCmd() as $cmd) {
-            if ($cmd->name() == $cmdName) {
+            if ($cmd->getName() == $cmdName) {
                 $cmd->remove();
                 break;
             }
         }
     }
-    */
 }
 
 
