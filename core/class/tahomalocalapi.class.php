@@ -1201,8 +1201,15 @@ private static function notExistsByName($eqLogic,$commandName) {
 
   /*
   * Fonction exécutée automatiquement tous les jours par Jeedom
-  public static function cronDaily() {}
   */
+  public static function cronDaily() {
+    log::add(__CLASS__, 'debug', __FUNCTION__);
+    log::add(__CLASS__, 'debug', ' - stop daemon');
+    self::deamon_stop();
+    self::deamon_start();
+    log::add(__CLASS__, 'debug', ' - start daemon');
+  }
+  
   
   /*
   * Permet de déclencher une action avant modification d'une variable de configuration du plugin
