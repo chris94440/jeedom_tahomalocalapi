@@ -3,9 +3,11 @@
 >**IMPORTANT**
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
-
+# 19/12/2023
+- ajout d'un restart journalier du daemon en attendant de trouver pourquoi il s'arrête soudainement
+  
 # 08/12/2023
-- ajout des modes confort-1 et confort-2 pour la gestion des radiatgeurs
+- ajout des modes confort-1 et confort-2 pour la gestion des radiateurs
 
 # 06/12/2023
 - correction creation automatique des actions générique (heatingSystem & HitachiHeatingSystem)
