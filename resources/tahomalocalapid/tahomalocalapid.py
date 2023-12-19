@@ -75,6 +75,7 @@ def listen():
 			if _tokenTahoma:
 				validateToken()
 	
+	getGateways()
 	getDevicesList()
 	registerListener()	
 
@@ -274,7 +275,7 @@ def getGateways():
 
 		if response.status_code and (response.status_code == 200):
 			logging.debug("Gateways list : %s", response.json())
-			#jeedom_com.send_change_immediate({'gatewaysList' : response.json()})
+			jeedom_com.send_change_immediate({'gatewaysList' : response.json()})
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response : %s", response.json())
@@ -282,7 +283,7 @@ def getGateways():
 			shutdown()	
 
 	except requests.exceptions.HTTPError as err:
-		logging.error("rror when retrieving tahoma devices list -> %s",err)
+		logging.error("Error when retrieving tahoma devices list -> %s",err)
 		shutdown()
 
 def validateToken():
@@ -451,45 +452,39 @@ def execCmd(params):
 
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
-		if params['parameters'] != "":
-			payload=json.dumps({
-					"label": params['commandName'],								
-					"actions": [
-					{
-					"commands": [
-						{
-						"name": params['name'],
-						"parameters": [
-							params['parameters']
-						]
-						}
-					],
-					"deviceURL": params['deviceUrl']
-					}
-				]
-			})
+		newPayload='{"label":"' + params['commandName'] + '", "actions": [{"commands": [{"name": "' + params['name'] + '"'
+		splitParams=params['parameters'].split(',')
+
+		if (params['parameters'] != ''):
+			newPayload +=',"parameters": ['
+			if (type(splitParams) == list):
+				for i in range(len(splitParams)):
+					if i >0:
+						newPayload += ','
+					if (splitParams[i].isnumeric()):
+						logging.debug('numeric')
+						newPayload += splitParams[i]
+					else:
+						logging.debug('not numeric')
+						newPayload += '"' + splitParams[i] + '"'    
+			else:
+				if (params['parameters'].isnumeric()):
+					newPayload += params['parameters']
+				else:
+					newPayload += '"' + params['parameters'] + '"'
+			newPayload += ']}]'
 		else:
-			payload=json.dumps({
-					"label": params['commandName'],								
-					"actions": [
-					{
-					"commands": [
-						{
-						"name": params['name']
-						}
-					],
-					"deviceURL": params['deviceUrl']
-					}
-				]
-			})
+			newPayload += '}]'
+		
+		newPayload += ', "deviceURL":"' + params['deviceUrl'] + '"}]}'
+		logging.debug("	- newPayload :  %s", newPayload)        
 		
 		headers = {
 			'Content-Type' : 'application/json',
 			'Authorization' : 'Bearer ' + _tokenTahoma
 		}
 
-		logging.debug("	- payload :  %s", payload)
-		response = requests.request("POST", url, verify=False, headers=headers, data=payload)
+		response = requests.request("POST", url, verify=False, headers=headers, data=newPayload)
 
 		if response.status_code and (response.status_code == 200):
 			logging.debug("ExecCmd http : %s", response.status_code)
