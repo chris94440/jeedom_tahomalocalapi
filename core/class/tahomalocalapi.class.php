@@ -803,7 +803,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
         }
 
         $tahomaLocalPiCmd->setSubType(self::getCdmdTypeFromDevice($device['states'],$state['name']));        
-        $tahomaLocalPiCmd->setIsVisible(0);
+        //$tahomaLocalPiCmd->setIsVisible(0);
 
         foreach ($device['attributes'] as $attribute) {
             switch ($attribute['name']) {
