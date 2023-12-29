@@ -4,8 +4,7 @@
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 # 29/12/2023
-- modification de la fréquence d'appel du listener des évènement suivant les préconisations de l'api (0.5s -> 1s)
---Fetch events on /events/{listenerId}/fetch once every second at most
+- modification de la fréquence d'appel du listener des évènement suivant les préconisations de l'api (0.5s -> 1s) (source api : Fetch events on /events/{listenerId}/fetch once every second at most)
 
 # 19/12/2023
 - ajout d'un restart journalier du daemon en attendant de trouver pourquoi il s'arrête soudainement
