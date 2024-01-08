@@ -3,6 +3,9 @@
 >**IMPORTANT**
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
+# 08/01/2024
+- ajout des commandes deactivateCalendar, activateCalendar, setPodLedOn, setPodLedOff et setLightingLedPodMode sur les équipements de type box 
+
 # 29/12/2023
 - modification de la fréquence d'appel du listener des évènement suivant les préconisations de l'api (0.5s -> 1s) (source api : Fetch events on /events/{listenerId}/fetch once every second at most)
 
