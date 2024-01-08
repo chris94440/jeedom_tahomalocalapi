@@ -1080,7 +1080,29 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                 }  else if ($command['commandName'] == "advancedRefresh") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                   
+                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                
+                } else if ($command['commandName'] == "deactivateCalendar") {
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('other');
+                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');         
+                } else if ($command['commandName'] == "activateCalendar") {
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('other');
+                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');   
+                } else if ($command['commandName'] == "setPodLedOn") {
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('other');
+                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');     
+                } else if ($command['commandName'] == "setPodLedOff") {
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('other');
+                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');     
+                } else if ($command['commandName'] == "setLightingLedPodMode") {
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('slider');
+                    $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                    $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                    $tahomaLocalPiCmd->setConfiguration('maxValue', '100');                                                                                     
                 } else {
                     $useCmd = false;
                 }
