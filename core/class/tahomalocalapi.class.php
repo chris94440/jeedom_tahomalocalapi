@@ -25,7 +25,7 @@ class tahomalocalapi extends eqLogic {
     */
 	public static function cron() {
 		$autorefresh = config::byKey('autorefresh', __CLASS__);
-		if ($autorefresh != '') {
+		if ($autorefresh != '' && $autorefresh != 'NoRefresh') {
 			try {
                 $c = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
                 if ($c->isDue()) {
