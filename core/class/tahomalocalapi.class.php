@@ -35,7 +35,7 @@ class tahomalocalapi extends eqLogic {
                         $cmdAdvancedRefresh=$tahomaLocalPiEqLogic->getCmd('action','advancedRefresh',true, false);
                         if (is_object($cmdAdvancedRefresh)) {
                             log::add(__CLASS__, 'debug', '|    - execution commande advancedRefresh pour l\'équipement : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
-                            $cmdAdvancedRefresh->execCmd();
+                            $cmdAdvancedRefresh->execCmd();                        
                         }
                         
 
@@ -1226,7 +1226,7 @@ private static function notExistsByName($eqLogic,$commandName) {
                             //check data for closed
                             $cmdOpenClosedState=$eqLogic_found->getCmd('info','core:OpenClosedState',true, false);
 
-                            if (is_object(cmdOpenClosedState) && cmdOpenClosedState->execCmd() == 'closed') {
+                            if (is_object($cmdOpenClosedState) && $cmdOpenClosedState->execCmd() == 'closed') {
                                 $value = 0;    
                             } else {
                                 $value = 100 - $value;
@@ -1235,7 +1235,7 @@ private static function notExistsByName($eqLogic,$commandName) {
                         } elseif ($state['name'] == "core:OpenClosedState") {
                             if ($value == 'closed') {
                                 $cmdClosureState=$eqLogic_found->getCmd('info','core:ClosureState',true, false);
-                                if (is_object(cmdClosureState) && cmdClosureState > 0) {
+                                if (is_object($cmdClosureState) && $cmdClosureState > 0) {
                                     $cmdClosureState->event(0);
                                 }
                             }
