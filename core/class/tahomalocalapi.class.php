@@ -938,8 +938,10 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
 
                 $useCmd = true;
 
+                $cmdNotExist=false;
                 $tahomaLocalPiCmd = $eqLogic->getCmd(null, $command['commandName']);
                 if (!(is_object($tahomaLocalPiCmd)) && self::notExistsByName($eqLogic,$command['commandName'])) {
+                    $cmdNotExist=true;
                     $tahomaLocalPiCmd = new tahomalocalapiCmd();
                 }
                 
@@ -952,24 +954,6 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                     $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
-                /*
-                } else if ($command['commandName'] == "setPosition") {
-                    $tahomaLocalPiCmd->setType('action');
-                    //$tahomaLocalPiCmd->setIsVisible(0);
-                    $tahomaLocalPiCmd->setSubType('slider');
-                    $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
-                    $tahomaLocalPiCmd->setConfiguration('minValue', '0');
-                    $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
-                    $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');                        
-                } else if ($command['commandName'] == "setPositionAndLinearSpeed") {
-                    $tahomaLocalPiCmd->setType('action');
-                    //$tahomaLocalPiCmd->setIsVisible(0);
-                    $tahomaLocalPiCmd->setSubType('slider');
-                    $tahomaLocalPiCmd->setConfiguration('parameters', array('#slider#','lowspeed'));
-                    $tahomaLocalPiCmd->setConfiguration('minValue', '0');
-                    $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
-                    $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
-                */
                 }  else if ( $command['commandName'] == "setClosureAndLinearSpeed") {
                     $tahomaLocalPiCmd->setType('action');
                     //$tahomaLocalPiCmd->setIsVisible(0);
@@ -999,24 +983,32 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                 } else if ($command['commandName'] == "open") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-up"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-up"></i>');
+                    }
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_UP');
                 } else if ($command['commandName'] == "close") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-down"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-down"></i>');
+                    }
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_DOWN');
                 } else if ($command['commandName'] == "lock") {
                     // serrure connectée : commande action ouvrir
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-lock"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-lock"></i>');
+                    }
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'LOCK_CLOSE');
                 } else if ($command['commandName'] == "unlock") {
                     // serrure connectée : commande action fermer
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-unlock"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-unlock"></i>');
+                    }
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'LOCK_OPEN');
                 } else if ($command['commandName'] == "setLockedUnlocked") {
                     // serrure connectée : commande action ouvrir ou fermer
@@ -1025,78 +1017,112 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     //$tahomaLocalPiCmd->setIsVisible(0);
                     $tahomaLocalPiCmd->setConfiguration('parameters', '#select#');
                     $tahomaLocalPiCmd->setConfiguration('listValue', 'unlocked|Ouvrir;locked|Fermer');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-unlock-alt"></i>');
+                    if ($cmdNotExist) {    
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-unlock-alt"></i>');
+                    }
                 } else if ($command['commandName'] == "my") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-star-o"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-star-o"></i>');
+                    }
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STOP');
                 } else if ($command['commandName'] == "stop") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-stop"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-stop"></i>');
+                    }
                 } else if ($command['commandName'] == "on") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');
+                    }
                 } else if ($command['commandName'] == "alarmPartial1") {
                     //zone alarme 1
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');
+                    }
                 } else if ($command['commandName'] == "alarmPartial2") {
                     //zone alarme 2
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');
+                    }
                 } else if ($command['commandName'] == "off") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');
+                    }
                 } else if ($command['commandName'] == "down") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-down"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-down"></i>');
+                    }
                     //$tahomaLocalPiCmd->setIsVisible(0);
                 } else if ($command['commandName'] == "up") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-up"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-up"></i>');
+                    }
                     //$tahomaLocalPiCmd->setIsVisible(0);
                 } else if ($command['commandName'] == "rollOut") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-down"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-down"></i>');
+                    }
                     //$tahomaLocalPiCmd->setIsVisible(0);
                 } else if ($command['commandName'] == "rollUp") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-up"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-arrow-up"></i>');
+                    }
                     //$tahomaLocalPiCmd->setIsVisible(0);
                 } else if ($command['commandName'] == "test") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-exchange"></i>');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-exchange"></i>');
+                    }
                 }  else if ($command['commandName'] == "advancedRefresh") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                
+                    }
                 } else if ($command['commandName'] == "deactivateCalendar") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');         
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');         
+                    }
                 } else if ($command['commandName'] == "activateCalendar") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');   
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');   
+                    }
                 } else if ($command['commandName'] == "setPodLedOn") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');     
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-on"></i>');     
+                    }
                 } else if ($command['commandName'] == "setPodLedOff") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
-                    $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');     
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');     
+                    }
                 } else if ($command['commandName'] == "setLightingLedPodMode") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('slider');
@@ -1167,7 +1193,22 @@ private static function notExistsByName($eqLogic,$commandName) {
 
                         $value = $state['value'];
                         if ($state['name'] == "core:ClosureState") {
-                            $value = 100 - $value;
+                            //check data for closed
+                            $cmdOpenClosedState=$eqLogic_found->getCmd('info','core:OpenClosedState',true, false);
+
+                            if (is_object(cmdOpenClosedState) && cmdOpenClosedState->execCmd() == 'closed') {
+                                $value = 0;    
+                            } else {
+                                $value = 100 - $value;
+                            }
+                            
+                        } elseif ($state['name'] == "core:OpenClosedState") {
+                            if ($value == 'closed') {
+                                $cmdClosureState=$eqLogic_found->getCmd('info','core:ClosureState',true, false);
+                                if (is_object(cmdClosureState) && cmdClosureState > 0) {
+                                    $cmdClosureState->event(0);
+                                }
+                            }
                         }
                         log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
                         $cmd->event($value);
