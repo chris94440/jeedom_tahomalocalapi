@@ -75,10 +75,10 @@ if (!isConnect()) {
         </select>
       </div>
     </div> -->
-    <legend><i class="fas fa-clock"></i> {{Auto-actualisation (cron)}}</legend>
+    <legend><i class="fas fa-clock"></i> {{Auto refresh des équipements (cron)}}</legend>
     <div class="form-group">
-        <label class="col-md-4 control-label">{{Cron}}
-        	<sup><i class="fas fa-question-circle tooltips" title="{{Gestion du cron auto refresh des équipements}}"></i></sup>
+        <label class="col-md-4 control-label">{{Délai cron}}
+        	<sup><i class="fas fa-question-circle tooltips" title="{{Auto refresh des équipements}}"></i></sup>
       	</label>
     	<div class="col-md-4">
        		<select class="configKey form-control" data-l1key="autorefresh" >
