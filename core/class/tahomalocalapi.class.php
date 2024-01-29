@@ -19,6 +19,35 @@
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class tahomalocalapi extends eqLogic {
+
+    /*
+     * Fonction exécutée automatiquement toutes les minutes par Jeedom    
+    */
+	public static function cron() {
+		$autorefresh = config::byKey('autorefresh', __CLASS__);
+		if ($autorefresh != '') {
+			try {
+                $c = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
+                if ($c->isDue()) {
+                    log::add(__CLASS__, 'debug', '***** Exécution du cron Tahomalocalapi ****');
+                  	
+		            foreach (eqLogic::byType(__CLASS__, true) as $tahomaLocalPiEqLogic) {
+                        $cmdAdvancedRefresh=$tahomaLocalPiEqLogic->getCmd('action','advancedRefresh',true, false);
+                        if (is_object($cmdAdvancedRefresh)) {
+                            log::add(__CLASS__, 'debug', '|    - execution advancedRefresh for device : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
+                            $cmdAdvancedRefresh->execCmd();
+                        }
+                        
+
+                   }
+                   
+				}
+			} catch (Exception $exc) {
+				log::add('alarme_IMA', 'error', __("Erreur lors de l'exécution du cron ", __FILE__) . $exc->getMessage());
+			}
+		}
+	}
+
   /* Gestion du démon */
   public static function deamon_info() {
     $return = array();

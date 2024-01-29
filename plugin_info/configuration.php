@@ -77,3 +77,20 @@ if (!isConnect()) {
     </div> -->
   </fieldset>
 </form>
+<form class="form-horizontal">
+    <fieldset>
+    <div class="form-group">
+		<label class="col-lg-3 control-label">{{Auto-actualisation (cron)}}</label>
+		<div class="col-lg-4">
+			<select class="configKey form-control" data-l1key="autorefresh" >
+                <option value="* * * * *">{{Toutes les minutes}}</option>
+                <option value="*/5 * * * *">{{Toutes les 5 minutes}}</option>
+                <option value="*/10 * * * *">{{Toutes les 10 minutes}}</option>
+                <option value="*/15 * * * *">{{Toutes les 15 minutes}}</option>
+                <option value="*/30 * * * *">{{Toutes les 30 minutes}}</option>
+                <option value="*/45 * * * *">{{Toutes les 45 minutes}}</option>
+			</select>
+		</div>
+	</div>
+    </fieldset>
+</form>
