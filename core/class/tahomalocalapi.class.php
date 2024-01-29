@@ -37,8 +37,8 @@ class tahomalocalapi extends eqLogic {
                             log::add(__CLASS__, 'debug', '|    - execution commande advancedRefresh pour l\'équipement : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
                             $cmdAdvancedRefresh->execCmd();    
                             
-                            $cmdOpenClosedState=$eqLogic_found->getCmd('info','core:OpenClosedState',true, false);
-                            $cmdClosureState=$eqLogic_found->getCmd('info','core:ClosureState',true, false);
+                            $cmdOpenClosedState=$tahomaLocalPiEqLogic->getCmd('info','core:OpenClosedState',true, false);
+                            $cmdClosureState=$tahomaLocalPiEqLogic->getCmd('info','core:ClosureState',true, false);
 
                             if (is_object($cmdOpenClosedState) && is_object(cmdClosureState)) {
                                 if ($cmdOpenClosedState->execCmd() == 'closed' && $cmdClosureState->execCmd() > 0) {
