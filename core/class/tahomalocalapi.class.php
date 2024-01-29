@@ -34,16 +34,17 @@ class tahomalocalapi extends eqLogic {
 		            foreach (eqLogic::byType(__CLASS__, true) as $tahomaLocalPiEqLogic) {
                         $cmdAdvancedRefresh=$tahomaLocalPiEqLogic->getCmd('action','advancedRefresh',true, false);
                         if (is_object($cmdAdvancedRefresh)) {
-                            log::add(__CLASS__, 'debug', '|    - execution advancedRefresh for device : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
+                            log::add(__CLASS__, 'debug', '|    - execution commande advancedRefresh pour l\'équipement : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
                             $cmdAdvancedRefresh->execCmd();
                         }
                         
 
                    }
+                   log::add(__CLASS__, 'debug', '***** Fin du cron ahomalocalapi ****');
                    
 				}
 			} catch (Exception $exc) {
-				log::add('alarme_IMA', 'error', __("Erreur lors de l'exécution du cron ", __FILE__) . $exc->getMessage());
+				log::add(__CLASS__, 'error', __("Erreur lors de l\'execution du cron", __FILE__) . $exc->getMessage());
 			}
 		}
 	}
