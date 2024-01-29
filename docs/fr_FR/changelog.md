@@ -3,6 +3,10 @@
 >**IMPORTANT**
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
+# 29/01/2024
+- ajout d'un cron paramétrable pour forcer le refresh des équipements (si action disponible sur celui-ci)
+- forçage du pourcentage de fermeture à 0 si le statut est closed (bug remontée d'info)
+
 # 08/01/2024
 - ajout des commandes deactivateCalendar, activateCalendar, setPodLedOn, setPodLedOff et setLightingLedPodMode sur les équipements de type box 
 
