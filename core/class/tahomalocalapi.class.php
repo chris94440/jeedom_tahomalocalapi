@@ -1166,7 +1166,8 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setSubType('slider');
                     $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
-                    $tahomaLocalPiCmd->setConfiguration('maxValue', '1');                                                                                     
+                    $tahomaLocalPiCmd->setConfiguration('maxValue', '1');
+                    $tahomaLocalPiCmd->setConfiguration('step', '0.1');                                                                                      
                 } else {
                     $useCmd = false;
                 }
@@ -1430,6 +1431,7 @@ class tahomalocalapiCmd extends cmd {
         switch ($this->subType) {
             case 'slider':
                 $type = $this->getConfiguration('request');
+                $step=$this->getConfiguration('step');
                 if (is_array($parameters)) {
                     $params=implode(',',$parameters);
                 }else {
@@ -1441,7 +1443,11 @@ class tahomalocalapiCmd extends cmd {
                         $params = str_replace('#slider#', (100 - intval($_options['slider'])), $params);
                         break;
                     default:
-                        $params = str_replace('#slider#', intval($_options['slider']), $params);
+                        if ($step!='') {
+                            $params = str_replace('#slider#', $_options['slider'], $params);
+                        } else {
+                            $params = str_replace('#slider#', intval($_options['slider']), $params);
+                        }                        
                         break;
                 }               
                 
