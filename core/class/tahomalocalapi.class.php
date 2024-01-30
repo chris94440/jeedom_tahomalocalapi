@@ -1166,7 +1166,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setSubType('slider');
                     $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
-                    $tahomaLocalPiCmd->setConfiguration('maxValue', '100');                                                                                     
+                    $tahomaLocalPiCmd->setConfiguration('maxValue', '1');                                                                                     
                 } else {
                     $useCmd = false;
                 }

@@ -6,6 +6,7 @@
 # 29/01/2024
 - ajout d'un cron paramétrable pour forcer le refresh des équipements (si action disponible sur celui-ci)
 - forçage du pourcentage de fermeture à 0 si le statut est closed (bug remontée d'info)
+- correction valeur min et max du slider setLightingLedPodMode de 0 -> 1 
 
 # 08/01/2024
 - ajout des commandes deactivateCalendar, activateCalendar, setPodLedOn, setPodLedOff et setLightingLedPodMode sur les équipements de type box 
