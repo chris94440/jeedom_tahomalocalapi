@@ -84,6 +84,9 @@ if (!isConnect()) {
        		<select class="configKey form-control" data-l1key="autorefresh" >
               <option value="NoRefresh">{{Aucun refresh}}</option>
               <option value="* * * * *">{{Toutes les minutes}}</option>
+              <option value="*/2 * * * *">{{Toutes les 2 minutes}}</option>
+              <option value="*/3 * * * *">{{Toutes les 3 minutes}}</option>
+              <option value="*/4 * * * *">{{Toutes les 4 minutes}}</option>
               <option value="*/5 * * * *">{{Toutes les 5 minutes}}</option>
               <option value="*/10 * * * *">{{Toutes les 10 minutes}}</option>
               <option value="*/15 * * * *">{{Toutes les 15 minutes}}</option>
