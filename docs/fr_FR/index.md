@@ -62,3 +62,18 @@ Il suffit de cliquer sur le bonton Infos sur la page des équipements
 
 Puis de cliquer sur le bouton copier et de coller le résultat dans un post sur le community
 ![alt text](../img/tahomalocalappi_infosCommunity_copier.JPG "Copier configurations")
+
+# FAQ
+Impossible de démarrer le daemon
+---
+Plusieurs choses peuvent être à l'origine de ce comportement
+* login / mdp incorrect
+se connecter au compte somfy pour vérifier
+
+* adresse ip locale erronée
+* box domotique somfy non accessible depuis le jeedom <br>
+&nbsp;&nbsp;&nbsp;&nbsp; en ssh depuis le jeedom executer la commande suivant : <code>echo > /dev/tcp/IP_LOCAL_BOX_SOMFY/8443</code> <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; si tout est ko : message de type <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -bash: connect: Connexion refusée <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -bash: /dev/tcp/192.168.1.29/8443: Connexion refusée <br>
+    
