@@ -75,5 +75,25 @@ if (!isConnect()) {
         </select>
       </div>
     </div> -->
+    <legend><i class="fas fa-clock"></i> {{Auto refresh des équipements (cron)}}</legend>
+    <div class="form-group">
+        <label class="col-md-4 control-label">{{Délai cron}}
+        	<sup><i class="fas fa-question-circle tooltips" title="{{Auto refresh des équipements}}"></i></sup>
+      	</label>
+    	<div class="col-md-4">
+       		<select class="configKey form-control" data-l1key="autorefresh" >
+              <option value="NoRefresh">{{Aucun refresh}}</option>
+              <option value="* * * * *">{{Toutes les minutes}}</option>
+              <option value="*/2 * * * *">{{Toutes les 2 minutes}}</option>
+              <option value="*/3 * * * *">{{Toutes les 3 minutes}}</option>
+              <option value="*/4 * * * *">{{Toutes les 4 minutes}}</option>
+              <option value="*/5 * * * *">{{Toutes les 5 minutes}}</option>
+              <option value="*/10 * * * *">{{Toutes les 10 minutes}}</option>
+              <option value="*/15 * * * *">{{Toutes les 15 minutes}}</option>
+              <option value="*/30 * * * *">{{Toutes les 30 minutes}}</option>
+              <option value="*/45 * * * *">{{Toutes les 45 minutes}}</option>
+      		</select>
+      	</div>
+    </div>
   </fieldset>
 </form>
