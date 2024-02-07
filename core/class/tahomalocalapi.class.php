@@ -28,7 +28,8 @@ class tahomalocalapi extends eqLogic {
 		if ($autorefresh != '' && $autorefresh != 'NoRefresh') {
 			try {
                 $c = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
-                if ($c->isDue()) {
+                $restartDaemonInprogress=config::byKey('tahomalocalapi_restartDaemonInProgress',  __CLASS__);
+                if ($c->isDue() && $restartDaemonInprogress != 'O') {
                     log::add(__CLASS__, 'debug', '***** Exécution du cron Tahomalocalapi ****');
                   	
 		            foreach (eqLogic::byType(__CLASS__, true) as $tahomaLocalPiEqLogic) {
@@ -90,6 +91,7 @@ class tahomalocalapi extends eqLogic {
 
 /* Start daemon */
 public static function deamon_start() {
+  config::save('tahomalocalapi_restartDaemonInProgress', 'O','tahomalocalapi');
   self::deamon_stop();
   $deamon_info = self::deamon_info();
   if ($deamon_info['launchable'] != 'ok') {
@@ -123,9 +125,11 @@ public static function deamon_start() {
   }
   if ($i >= 30) {
       log::add(__CLASS__, 'error', __('Impossible de lancer le démon, vérifiez le log', __FILE__), 'unableStartDeamon');
+      config::save('tahomalocalapi_restartDaemonInProgress', 'N','tahomalocalapi');
       return false;
   }
   message::removeAll(__CLASS__, 'unableStartDeamon');
+  config::save('tahomalocalapi_restartDaemonInProgress', 'N','tahomalocalapi');
   return true;
 }
 
@@ -179,9 +183,7 @@ public function getEqlogicDetails() {
 }
 
 public static function resetTokenTahoma() {
-    self::deamon_stop();
     config::save('tahomalocalapi_session', '','tahomalocalapi');
-    sleep(5);
     self::deamon_start();
 
 }
@@ -1307,11 +1309,8 @@ private static function notExistsByName($eqLogic,$commandName) {
   * Fonction exécutée automatiquement tous les jours par Jeedom
   */
   public static function cronDaily() {
-    log::add(__CLASS__, 'debug', __FUNCTION__);
-    log::add(__CLASS__, 'debug', ' - stop daemon');
-    self::deamon_stop();
-    self::deamon_start();
-    log::add(__CLASS__, 'debug', ' - start daemon');
+    log::add(__CLASS__, 'debug', __FUNCTION__ . ' -> restart auto du daemon');
+    self::deamon_start();    
   }
   
   
