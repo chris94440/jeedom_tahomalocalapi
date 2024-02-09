@@ -1234,33 +1234,56 @@ private static function notExistsByName($eqLogic,$commandName) {
                         $cmd->setCollectDate('');
 
                         $value = $state['value'];
-                        if ($state['name'] == "core:ClosureState") {
-                            //check data for closed
-                            $cmdOpenClosedState=$eqLogic_found->getCmd('info','core:OpenClosedState',true, false);
-
-                            if (is_object($cmdOpenClosedState) && $cmdOpenClosedState->execCmd() == 'closed' && $value != 100) {
-                                log::add(__CLASS__, 'debug','       -> force ClosureState à 0 car  OpenClosedState closed et ClosureState = ' . $value);
-                                $value = 0;    
-                            } else {
+                        if ($state['name'] == $cmd->getConfiguration('type')) {
+                            $cmd->setCollectDate('');
+    
+                            $value = $state['value'];
+                            if ($state['name'] == "core:ClosureState") {
                                 $value = 100 - $value;
                             }
-                            
-                        } elseif ($state['name'] == "core:OpenClosedState") {
-                            if ($value == 'closed') {
-                                $cmdClosureState=$eqLogic_found->getCmd('info','core:ClosureState',true, false);
-                                if (is_object($cmdClosureState) && $cmdClosureState->execCmd() > 0) {
-                                    log::add(__CLASS__, 'debug','       -> force ClosureState à 0 car  OpenClosedState closed et ClosureState > 0 (' . $cmdClosureState->execCmd() . ')');
-                                    $cmdClosureState->event(0);
-                                }
-                            }
+                            log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
+                            $cmd->event($value);
                         }
-                        log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
-                        $cmd->event($value);
+                        // if ($state['name'] == "core:ClosureState") {
+                        //     //check data for closed
+                        //     $cmdOpenClosedState=$eqLogic_found->getCmd('info','core:OpenClosedState',true, false);
+
+                        //     if (is_object($cmdOpenClosedState) && $cmdOpenClosedState->execCmd() == 'closed' && $value != 100) {
+                        //         log::add(__CLASS__, 'debug','       -> force ClosureState à 0 car  OpenClosedState closed et ClosureState = ' . $value);
+                        //         $value = 0;    
+                        //     } else {
+                        //         $value = 100 - $value;
+                        //     }
+                            
+                        // } elseif ($state['name'] == "core:OpenClosedState") {
+                        //     if ($value == 'closed') {
+                        //         $cmdClosureState=$eqLogic_found->getCmd('info','core:ClosureState',true, false);
+                        //         if (is_object($cmdClosureState) && $cmdClosureState->execCmd() > 0) {
+                        //             log::add(__CLASS__, 'debug','       -> force ClosureState à 0 car  OpenClosedState closed et ClosureState > 0 (' . $cmdClosureState->execCmd() . ')');
+                        //             $cmdClosureState->event(0);
+                        //         }
+                        //     }
+                        // }
+                        // log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
+                        // $cmd->event($value);
                     }
                 }
-            }    
+            }
+            self::forceClosurState($eqLogic_found);    
         }
     }     
+  }
+
+
+  private static function forceClosurState($tahomaLocalPiEqLogic) {
+    $cmdOpenClosedState=$tahomaLocalPiEqLogic->getCmd('info','core:OpenClosedState',true, false);
+    $cmdClosureState=$tahomaLocalPiEqLogic->getCmd('info','core:ClosureState',true, false);
+    if (is_object($cmdOpenClosedState) && is_object(cmdClosureState)) {
+        if ($cmdOpenClosedState->execCmd() == 'closed' && $cmdClosureState->execCmd() > 0) {
+            log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> force ClosureState à 0 car OpenClosedState closed et ClosureState > 0 (' . $cmdClosureState->execCmd() . ')');
+            $cmdClosureState->event(0);
+        }
+    } 
   }
   /*
   * Permet de définir les possibilités de personnalisation du widget (en cas d'utilisation de la fonction 'toHtml' par exemple)
