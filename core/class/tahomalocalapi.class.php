@@ -1269,21 +1269,29 @@ private static function notExistsByName($eqLogic,$commandName) {
                     }
                 }
             }
-            self::forceClosurState($eqLogic_found);    
+            self::forceClosureState($eqLogic_found);    
         }
     }     
   }
 
 
-  private static function forceClosurState($tahomaLocalPiEqLogic) {
+  private static function forceClosureState($tahomaLocalPiEqLogic) {
+    log::add(__CLASS__, 'debug','       '. __FUNCTION__ );
     $cmdOpenClosedState=$tahomaLocalPiEqLogic->getCmd('info','core:OpenClosedState',true, false);
+    if (!is_object(cmdOpenClosedState)) {
+        $cmdOpenClosedState=$tahomaLocalPiEqLogic->getCmd('info','core:OpenClosedUnknownState',true, false);
+    }
+    
     $cmdClosureState=$tahomaLocalPiEqLogic->getCmd('info','core:ClosureState',true, false);
     if (is_object($cmdOpenClosedState) && is_object(cmdClosureState)) {
+        log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> openClosedState : ' . $cmdOpenClosedState->execCmd() . ' | ClosureState : ' . $cmdClosureState->execCmd());
         if ($cmdOpenClosedState->execCmd() == 'closed' && $cmdClosureState->execCmd() > 0) {
-            log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> force ClosureState à 0 car OpenClosedState closed et ClosureState > 0 (' . $cmdClosureState->execCmd() . ')');
+            log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> force ClosureState à 0 car OpenClosedState closed et ClosureState > 0 ');
             $cmdClosureState->event(0);
         }
-    } 
+    } else {
+        log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> pas de commande de type core:OpenClosedState ou core:OpenClosedUnknownState et  core:ClosureState');
+    }
   }
   /*
   * Permet de définir les possibilités de personnalisation du widget (en cas d'utilisation de la fonction 'toHtml' par exemple)
