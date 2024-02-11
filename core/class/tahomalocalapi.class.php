@@ -37,17 +37,8 @@ class tahomalocalapi extends eqLogic {
                         if (is_object($cmdAdvancedRefresh)) {
                             log::add(__CLASS__, 'debug', '|    - execution commande advancedRefresh pour l\'équipement : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
                             $cmdAdvancedRefresh->execCmd();                        
-                        }
-                        
-                        $cmdOpenClosedState=$tahomaLocalPiEqLogic->getCmd('info','core:OpenClosedState',true, false);
-                        $cmdClosureState=$tahomaLocalPiEqLogic->getCmd('info','core:ClosureState',true, false);
-                        if (is_object($cmdOpenClosedState) && is_object(cmdClosureState)) {
-                            if ($cmdOpenClosedState->execCmd() == 'closed' && $cmdClosureState->execCmd() > 0) {
-                                log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> force ClosureState à 0 car OpenClosedState closed et ClosureState > 0 (' . $cmdClosureState->execCmd() . ')');
-                                $cmdClosureState->event(0);
-                            }
-                        } 
-
+                        }                        
+                        self::forceClosureState($tahomaLocalPiEqLogic);
                    }
                    log::add(__CLASS__, 'debug', '***** Fin du cron ahomalocalapi ****');
                    

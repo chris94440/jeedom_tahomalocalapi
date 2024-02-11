@@ -92,6 +92,9 @@ if (!isConnect()) {
               <option value="*/15 * * * *">{{Toutes les 15 minutes}}</option>
               <option value="*/30 * * * *">{{Toutes les 30 minutes}}</option>
               <option value="*/45 * * * *">{{Toutes les 45 minutes}}</option>
+              <option value="0 * * * *">{{Toutes les heures}}</option>
+              <option value="0 */4 * * *">{{Toutes les 4 heures}}</option>
+              <option value="0 0 * * *">{{Une fois par jour}}</option>
       		</select>
       	</div>
     </div>
