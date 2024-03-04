@@ -1292,19 +1292,19 @@ private static function notExistsByName($eqLogic,$commandName) {
     self::sendToDaemon(['action' => 'getGateways']);
   }
 
-    private static function checkGateways($gatewaysList) {
-        log::add(__CLASS__, 'debug', __FUNCTION__ );
+public static function checkGateways($gatewaysList) {
+    log::add(__CLASS__, 'debug', __FUNCTION__ );
 
-        foreach ($gatewaysList as $gateway) {
-            if (array_key_exists('connectivity',$gateway) && array_key_exists('status',$gateway['connectivity'])) {
-                log::add(__CLASS__, 'debug','   --> Gateway status : '. $gateway['connectivity']['status']);
-                if ($gateway['connectivity']['status'] != 'OK') {
-                    log::add(__CLASS__, 'debug','   --> restart daemon because gateway connectivity is down : '. $gateway['connectivity']['status']);
-                    self::deamon_start();
-                    break;
-                }
+    foreach ($gatewaysList as $gateway) {
+        if (array_key_exists('connectivity',$gateway) && array_key_exists('status',$gateway['connectivity'])) {
+            log::add(__CLASS__, 'debug','   --> Gateway status : '. $gateway['connectivity']['status']);
+            if ($gateway['connectivity']['status'] != 'OK') {
+                log::add(__CLASS__, 'debug','   --> restart daemon because gateway connectivity is down : '. $gateway['connectivity']['status']);
+                self::deamon_start();
+                break;
             }
-        }    
+        }
+    }    
   }
 
   /*
