@@ -1355,8 +1355,8 @@ public static function checkGateways($gatewaysList) {
   * Fonction exécutée automatiquement tous les jours par Jeedom
   */
   public static function cronDaily() {
-    log::add(__CLASS__, 'debug', __FUNCTION__ . ' -> restart auto du daemon');
-    self::deamon_start();    
+    //log::add(__CLASS__, 'debug', __FUNCTION__ . ' -> restart auto du daemon');
+    //self::deamon_start();    
   }
   
   
