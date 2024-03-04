@@ -53,7 +53,7 @@ def read_socket():
 			elif message['action'] == 'cancelExecution':
 				logging.info('== action cancelExecution ==')
 				deleteExecution(message['execId'])
-			elif message['action'] =='getGateways'
+			elif message['action'] =='getGateways':
 				logging.info('== action getGateways ==')
 				getGateways()
 			else:
