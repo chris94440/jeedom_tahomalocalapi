@@ -1300,6 +1300,7 @@ public static function checkGateways($gatewaysList) {
             log::add(__CLASS__, 'debug','   --> Gateway status : '. $gateway['connectivity']['status']);
             if ($gateway['connectivity']['status'] != 'OK') {
                 log::add(__CLASS__, 'debug','   --> restart daemon because gateway connectivity is down : '. $gateway['connectivity']['status']);
+                log::add(__CLASS__, 'error',' Restart daemon because gateway connectivity is down : '. $gateway['connectivity']['status']);
                 self::deamon_start();
                 break;
             }
