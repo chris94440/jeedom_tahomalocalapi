@@ -33,14 +33,17 @@ class tahomalocalapi extends eqLogic {
                     log::add(__CLASS__, 'debug', '***** Exécution du cron Tahomalocalapi ****');
                   	
 		            foreach (eqLogic::byType(__CLASS__, true) as $tahomaLocalPiEqLogic) {
+                        /*
                         $cmdAdvancedRefresh=$tahomaLocalPiEqLogic->getCmd('action','advancedRefresh',true, false);
                         if (is_object($cmdAdvancedRefresh)) {
                             log::add(__CLASS__, 'debug', '|    - execution commande advancedRefresh pour l\'équipement : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
                             $cmdAdvancedRefresh->execCmd();                        
-                        }                        
+                        }
+                        */                       
                         self::forceClosureState($tahomaLocalPiEqLogic);
                    }
-                   log::add(__CLASS__, 'debug', '***** Fin du cron ahomalocalapi ****');
+                   self::getGateways();
+                   log::add(__CLASS__, 'debug', '***** Fin du cron Tahomalocalapi ****');
                    
 				}
 			} catch (Exception $exc) {
@@ -1284,6 +1287,29 @@ private static function notExistsByName($eqLogic,$commandName) {
         log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> pas de commande de type core:OpenClosedState ou core:OpenClosedUnknownState et  core:ClosureState');
     }
   }
+
+  private static function getGateways() {
+    self::sendToDaemon(['action' => 'getGateways']);
+  }
+
+    private static function checkGateways($gatewaysList) {
+        log::add(__CLASS__, 'debug','       '. __FUNCTION__ );
+
+        if (array_key_exists('gateways',$gatewaysList)){
+            foreach ($gatewaysList['gateways'] as $gateway) {
+                if (array_key_exists('connectivity',$gateway) && array_key_exists('status',$gateway['connectivity'])) {
+                    log::add(__CLASS__, 'debug','           --> '.json_encode($gateway['connectivity']['status']));
+                    if ($gateway['connectivity']['status'] != 'OK') {
+                        log::add(__CLASS__, 'debug','               --> restart daemon because gateway connectivity is down : '. $gateway['connectivity']['status']));
+                        self::deamon_start();
+                        break;
+                    }
+                }
+            }
+        }
+    
+  }
+
   /*
   * Permet de définir les possibilités de personnalisation du widget (en cas d'utilisation de la fonction 'toHtml' par exemple)
   * Tableau multidimensionnel - exemple: array('custom' => true, 'custom::layout' => false)
