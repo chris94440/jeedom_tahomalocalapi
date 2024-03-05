@@ -90,6 +90,8 @@ def listen():
 
 	except KeyboardInterrupt:
 		shutdown()
+	except:
+		shutdown()
 
 def httpLog():
 	logging.getLogger("requests").setLevel(logging.ERROR)
@@ -260,7 +262,10 @@ def getDevicesList():
 			shutdown()	
 
 	except requests.exceptions.HTTPError as err:
-		logging.error("rror when retrieving tahoma devices list -> %s",err)
+		logging.error("Error when retrieving tahoma devices list -> %s",err)
+		shutdown()
+	except:
+		logging.error("Unexpected errorwhen retrieving tahoma devices list")
 		shutdown()
 
 def getGateways():	
@@ -400,6 +405,9 @@ def fetchListener():
 
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when fetch listener tahoma -> %s",err)
+		shutdown()
+	except:
+		logging.error("Unexpected error when fetch listener tahoma -> %s",err)
 		shutdown()
 
 def getDeviceStates(deviceUrl):
