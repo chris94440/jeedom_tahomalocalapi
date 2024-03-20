@@ -60,6 +60,8 @@ def read_socket():
 				logging.info('== other action not manage yes : ' + message['action']  + ' ==')
 		except Exception as e:
 			logging.error('Send command to demon error: %s' ,e)
+	else:
+		logging.debug("JEEDOM_SOCKET_MESSAGE is empty")
 
 def listen():
 	logging.debug('Listen socket jeedom')
