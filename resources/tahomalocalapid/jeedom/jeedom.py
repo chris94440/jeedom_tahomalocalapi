@@ -311,8 +311,7 @@ class jeedom_socket_handler(StreamRequestHandler):
 	def handle(self):
 		global JEEDOM_SOCKET_MESSAGE
 		logging.info("Client connected to [%s:%d]", self.client_address[0], self.client_address[1])
-		lg = self.rfile.readline()
-		logging.info("	-> put message in jeedom socket [%s]", lg)		
+		lg = self.rfile.readline()	
 		JEEDOM_SOCKET_MESSAGE.put(lg)
 		logging.info("Message read from socket: %s", str(lg.strip()))
 		self.netAdapterClientConnected = False
