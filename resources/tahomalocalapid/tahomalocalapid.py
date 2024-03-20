@@ -91,7 +91,7 @@ def listen():
 			read_socket()
 			fetchListener()
 			nb +=1
-			if int(nb) > 60:
+			if int(nb) > 3600:
 				logging.debug('		-> getGateways() in loop ')
 				getGateways()
 				nb=0
