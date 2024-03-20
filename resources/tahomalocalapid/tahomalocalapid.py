@@ -60,8 +60,8 @@ def read_socket():
 				logging.info('== other action not manage yes : ' + message['action']  + ' ==')
 		except Exception as e:
 			logging.error('Send command to demon error: %s' ,e)
-	else:
-		logging.debug("JEEDOM_SOCKET_MESSAGE is empty")
+	#else:
+	#	logging.debug("JEEDOM_SOCKET_MESSAGE is empty")
 
 def listen():
 	logging.debug('Listen socket jeedom')
@@ -85,10 +85,16 @@ def listen():
 	registerListener()	
 
 	try:
+		nb = 0
 		while 1:
 			time.sleep(1)
 			read_socket()
 			fetchListener()
+			nb +=1
+			if int(nb) > 60:
+				logging.debug('		-> getGateways() in loop ')
+				getGateways()
+				nb=0
 		logging.debug(' * end while in listen .... nothing will append after that')
 	except KeyboardInterrupt:
 		shutdown()

@@ -42,7 +42,7 @@ class tahomalocalapi extends eqLogic {
                         */                       
                         self::forceClosureState($tahomaLocalPiEqLogic);
                    }
-                   self::getGateways();
+                   //self::getGateways();
                    log::add(__CLASS__, 'debug', '***** Fin du cron Tahomalocalapi ****');
                    
 				}
