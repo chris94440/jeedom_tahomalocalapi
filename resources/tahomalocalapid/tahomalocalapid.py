@@ -87,7 +87,7 @@ def listen():
 			time.sleep(1)
 			read_socket()
 			fetchListener()
-
+		logging.debug(' * end while in listen .... nothing will append after that')
 	except KeyboardInterrupt:
 		shutdown()
 	except:
