@@ -86,14 +86,14 @@ def listen():
 
 	try:
 		nb = 0
-		jeedom_com.send_change_immediate({'healthCheck'})
+		jeedom_com.send_change_immediate({'healthCheck' : 'OK'})
 		while 1:
 			time.sleep(1)
 			read_socket()
 			fetchListener()
 			nb +=1
 			if int(nb) > 300:
-				jeedom_com.send_change_immediate({'healthCheck'})
+				jeedom_com.send_change_immediate({'healthCheck': 'OK'})
 				nb=0
 	except KeyboardInterrupt:
 		shutdown()
