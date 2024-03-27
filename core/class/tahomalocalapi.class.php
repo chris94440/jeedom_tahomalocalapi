@@ -1328,7 +1328,7 @@ public static function checkGateways($gatewaysList) {
   */
 
   
-  * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
+  /* Fonction exécutée automatiquement toutes les 5 minutes par Jeedom*/
   public static function cron5() {
     $healthCheckTime = config::byKey('healthCheck', __CLASS__);
     $now = time();
