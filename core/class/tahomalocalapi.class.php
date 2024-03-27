@@ -1334,7 +1334,7 @@ public static function checkGateways($gatewaysList) {
     $now = time();
 
     if (($now - healthCheckTime) > 600) {
-        log::add(__CLASS__, 'debug', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' );
+        log::add(__CLASS__, 'error', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' );
         self::deamon_start();
     }
 
