@@ -30,7 +30,7 @@ class tahomalocalapi extends eqLogic {
                 $c = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
                 $restartDaemonInprogress=config::byKey('tahomalocalapi_restartDaemonInProgress',  __CLASS__);
                 if ($c->isDue() && $restartDaemonInprogress != 'O') {
-                    log::add(__CLASS__, 'debug', '***** Exécution du cron Tahomalocalapi ****');
+                    //log::add(__CLASS__, 'debug', '***** Exécution du cron Tahomalocalapi ****');
                   	
 		            foreach (eqLogic::byType(__CLASS__, true) as $tahomaLocalPiEqLogic) {
                         /*
@@ -43,7 +43,7 @@ class tahomalocalapi extends eqLogic {
                         self::forceClosureState($tahomaLocalPiEqLogic);
                    }
                    //self::getGateways();
-                   log::add(__CLASS__, 'debug', '***** Fin du cron Tahomalocalapi ****');
+                   //log::add(__CLASS__, 'debug', '***** Fin du cron Tahomalocalapi ****');
                    
 				}
 			} catch (Exception $exc) {
@@ -1327,10 +1327,19 @@ public static function checkGateways($gatewaysList) {
   public static function cron() {}
   */
 
-  /*
+  
   * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
-  public static function cron5() {}
-  */
+  public static function cron5() {
+    $healthCheckTime = config::byKey('healthCheck', __CLASS__);
+    $now = time();
+
+    if (($now - healthCheckTime) > 600) {
+        log::add(__CLASS__, 'debug', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' );
+        self::deamon_start();
+    }
+
+  }
+  
 
   /*
   * Fonction exécutée automatiquement toutes les 10 minutes par Jeedom

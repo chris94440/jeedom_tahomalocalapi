@@ -43,6 +43,8 @@ try {
             config::save('tahomalocalapi_gatewaysList',  $result['gatewaysList'],'tahomalocalapi');
             tahomalocalapi::checkGateways($result['gatewaysList']);
         }
+    } elseif (isset($result['healthCheck'])) {
+        config::save('healthCheck', time(),'tahomalocalapi');
     }
     
 } catch (Exception $e) {

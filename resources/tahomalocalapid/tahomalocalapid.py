@@ -91,11 +91,9 @@ def listen():
 			read_socket()
 			fetchListener()
 			nb +=1
-			if int(nb) > 3600:
-				logging.debug('		-> getGateways() in loop ')
-				getGateways()
+			if int(nb) > 300:
+				jeedom_com.send_change_immediate({'healthCheck'})
 				nb=0
-		logging.debug(' * end while in listen .... nothing will append after that')
 	except KeyboardInterrupt:
 		shutdown()
 	except:
