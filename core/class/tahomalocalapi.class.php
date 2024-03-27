@@ -1333,10 +1333,8 @@ public static function checkGateways($gatewaysList) {
     $healthCheckTime = config::byKey('healthCheck', __CLASS__);
     $now = time();
 
-    log::add(__CLASS__, 'info', __FUNCTION__ . 'Now : ' . $now . ' vs healthCheck' .$healthCheckTime . '('. ($now - healthCheckTime) . ')');
-
-    if (($now - healthCheckTime) > 600) {
-        log::add(__CLASS__, 'error', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' );
+    if (($now - $healthCheckTime) > 600) {
+        log::add(__CLASS__, 'error', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' . ($now - $healthCheckTime) . 's');
         self::deamon_start();
     }
 
