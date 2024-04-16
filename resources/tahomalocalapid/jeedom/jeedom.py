@@ -56,7 +56,10 @@ class jeedom_com():
 			start_time = datetime.datetime.now()
 			changes = self.changes
 			self.changes = {}
-			logging.info('Send to jeedom: %s', changes)
+
+			if "healthCheck" not in changes:
+				logging.info('Send to jeedom: %s', changes)
+			
 			i=0
 			while i < self.retry:
 				try:
@@ -106,7 +109,9 @@ class jeedom_com():
 		threading.Thread( target=self.thread_change,args=(change,)).start()
 
 	def thread_change(self,change):
-		logging.info('Send to jeedom : %s', change)
+		if "healthCheck" not in change:
+			logging.info('Send to jeedom : %s', change)
+			
 		i=0
 		while i < self.retry:
 			try:
