@@ -30,17 +30,20 @@ class tahomalocalapi extends eqLogic {
                 $c = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
                 $restartDaemonInprogress=config::byKey('tahomalocalapi_restartDaemonInProgress',  __CLASS__);
                 if ($c->isDue() && $restartDaemonInprogress != 'O') {
-                    log::add(__CLASS__, 'debug', '***** Exécution du cron Tahomalocalapi ****');
+                    //log::add(__CLASS__, 'debug', '***** Exécution du cron Tahomalocalapi ****');
                   	
 		            foreach (eqLogic::byType(__CLASS__, true) as $tahomaLocalPiEqLogic) {
+                        /*
                         $cmdAdvancedRefresh=$tahomaLocalPiEqLogic->getCmd('action','advancedRefresh',true, false);
                         if (is_object($cmdAdvancedRefresh)) {
                             log::add(__CLASS__, 'debug', '|    - execution commande advancedRefresh pour l\'équipement : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
                             $cmdAdvancedRefresh->execCmd();                        
-                        }                        
+                        }
+                        */                       
                         self::forceClosureState($tahomaLocalPiEqLogic);
                    }
-                   log::add(__CLASS__, 'debug', '***** Fin du cron ahomalocalapi ****');
+                   //self::getGateways();
+                   //log::add(__CLASS__, 'debug', '***** Fin du cron Tahomalocalapi ****');
                    
 				}
 			} catch (Exception $exc) {
@@ -1267,7 +1270,7 @@ private static function notExistsByName($eqLogic,$commandName) {
 
 
   private static function forceClosureState($tahomaLocalPiEqLogic) {
-    log::add(__CLASS__, 'debug','       '. __FUNCTION__ );
+    //log::add(__CLASS__, 'debug','       '. __FUNCTION__ );
     $cmdOpenClosedState=$tahomaLocalPiEqLogic->getCmd('info','core:OpenClosedState',true, false);
     if (!is_object($cmdOpenClosedState)) {
         $cmdOpenClosedState=$tahomaLocalPiEqLogic->getCmd('info','core:OpenClosedUnknownState',true, false);
@@ -1275,15 +1278,36 @@ private static function notExistsByName($eqLogic,$commandName) {
     
     $cmdClosureState=$tahomaLocalPiEqLogic->getCmd('info','core:ClosureState',true, false);
     if (is_object($cmdOpenClosedState) && is_object($cmdClosureState)) {
-        log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> openClosedState : ' . $cmdOpenClosedState->execCmd() . ' | ClosureState : ' . $cmdClosureState->execCmd());
+        //log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> openClosedState : ' . $cmdOpenClosedState->execCmd() . ' | ClosureState : ' . $cmdClosureState->execCmd());
         if ($cmdOpenClosedState->execCmd() == 'closed' && $cmdClosureState->execCmd() > 0) {
             log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> force ClosureState à 0 car OpenClosedState closed et ClosureState > 0 ');
             $cmdClosureState->event(0);
         }
-    } else {
-        log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> pas de commande de type core:OpenClosedState ou core:OpenClosedUnknownState et  core:ClosureState');
+//    } else {
+//        log::add(__CLASS__, 'debug','       '. __FUNCTION__ .' -> pas de commande de type core:OpenClosedState ou core:OpenClosedUnknownState et  core:ClosureState');
     }
   }
+
+  private static function getGateways() {
+    self::sendToDaemon(['action' => 'getGateways']);
+  }
+
+public static function checkGateways($gatewaysList) {
+    log::add(__CLASS__, 'debug', __FUNCTION__ );
+
+    foreach ($gatewaysList as $gateway) {
+        if (array_key_exists('connectivity',$gateway) && array_key_exists('status',$gateway['connectivity'])) {
+            log::add(__CLASS__, 'debug','   --> Gateway ' . $gateway['gatewayId'] .' status : '. $gateway['connectivity']['status']);
+            if ($gateway['connectivity']['status'] != 'OK') {
+                log::add(__CLASS__, 'debug','   --> restart daemon because gateway connectivity is down : '. $gateway['connectivity']['status']);
+                log::add(__CLASS__, 'error',' Restart daemon because gateway connectivity is down : '. $gateway['connectivity']['status']);
+                self::deamon_start();
+                break;
+            }
+        }
+    }    
+  }
+
   /*
   * Permet de définir les possibilités de personnalisation du widget (en cas d'utilisation de la fonction 'toHtml' par exemple)
   * Tableau multidimensionnel - exemple: array('custom' => true, 'custom::layout' => false)
@@ -1303,10 +1327,19 @@ private static function notExistsByName($eqLogic,$commandName) {
   public static function cron() {}
   */
 
-  /*
-  * Fonction exécutée automatiquement toutes les 5 minutes par Jeedom
-  public static function cron5() {}
-  */
+  
+  /* Fonction exécutée automatiquement toutes les 5 minutes par Jeedom*/
+  public static function cron5() {
+    $healthCheckTime = config::byKey('healthCheck', __CLASS__);
+    $now = time();
+
+    if (($now - $healthCheckTime) > 600) {
+        log::add(__CLASS__, 'error', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' . ($now - $healthCheckTime) . 's');
+        self::deamon_start();
+    }
+
+  }
+  
 
   /*
   * Fonction exécutée automatiquement toutes les 10 minutes par Jeedom
@@ -1332,8 +1365,8 @@ private static function notExistsByName($eqLogic,$commandName) {
   * Fonction exécutée automatiquement tous les jours par Jeedom
   */
   public static function cronDaily() {
-    log::add(__CLASS__, 'debug', __FUNCTION__ . ' -> restart auto du daemon');
-    self::deamon_start();    
+    //log::add(__CLASS__, 'debug', __FUNCTION__ . ' -> restart auto du daemon');
+    //self::deamon_start();    
   }
   
   
