@@ -76,9 +76,14 @@ class tahomalocalapi extends eqLogic {
     } elseif ($pswd == '') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
-    // } elseif ($clientId == '') {
-    //     $return['launchable'] = 'nok';
-    //     $return['launchable_message'] = __('La clé d\'application n\'est pas configurée', __FILE__);
+    } elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "requests"') < 1) { 
+                $return['state'] = 'nok';
+    } elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "pyudev"') < 1) { 
+                $return['state'] = 'nok';
+    } elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "pyserial"') < 1) { 
+                $return['state'] = 'nok';
+    } else {
+      $return['state'] = 'ok';
     }
     return $return;
 }
