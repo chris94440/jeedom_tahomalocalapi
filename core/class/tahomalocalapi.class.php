@@ -19,7 +19,6 @@
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class tahomalocalapi extends eqLogic {
-  /* Gestion du démon */
   public static function deamon_info() {
     $return = array();
     $return['log'] = __CLASS__;
@@ -35,6 +34,8 @@ class tahomalocalapi extends eqLogic {
     $return['launchable'] = 'ok';
     $user = config::byKey('user', __CLASS__); // exemple si votre démon à besoin de la config user,
     $pswd = config::byKey('password', __CLASS__); // password,
+    $pinCode=config::byKey('pincode', __CLASS__);
+    $tahomaBoxIp=config::byKey('boxLocalIp', __CLASS__);
     // $clientId = config::byKey('clientId', __CLASS__); // et clientId
     $portDaemon=config::byKey('daemonPort', __CLASS__);
     if ($user == '') {
@@ -43,14 +44,18 @@ class tahomalocalapi extends eqLogic {
     } elseif ($pswd == '') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
+    } elseif ($pinCode == '') {
+        $return['launchable'] = 'nok';
+        $return['launchable_message'] = __('Le code pin de la box tahoma n\'est pas configuré', __FILE__);
+    } elseif ($tahomaBoxIp == '') {
+        $return['launchable'] = 'nok';
+        $return['launchable_message'] = __('L\'adresse IP de la box tahoma n\'est pas configuré', __FILE__);
     } elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "requests"') < 1) { 
                 $return['state'] = 'nok';
     } elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "pyudev"') < 1) { 
                 $return['state'] = 'nok';
     } elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "pyserial"') < 1) { 
-                $return['state'] = 'nok';
-    } else {
-      $return['state'] = 'ok';
+                $return['state'] = 'nok';    
     }
     return $return;
 }
