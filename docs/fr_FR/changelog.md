@@ -7,8 +7,25 @@
 # 14/09/2024
 - correction redemarrage daemon après installation des dépendances
   
+# 06/05/2024
+- correction problème perte de connexion du daemon avec la box somfy
+
+# 29/01/2024
+- ajout d'un cron paramétrable pour forcer le refresh des équipements (si action disponible sur celui-ci)
+- forçage du pourcentage de fermeture à 0 si le statut est closed (bug remontée d'info)
+- correction valeur min et max du slider setLightingLedPodMode de 0 -> 1 
+
+# 08/01/2024
+- ajout des commandes deactivateCalendar, activateCalendar, setPodLedOn, setPodLedOff et setLightingLedPodMode sur les équipements de type box 
+
+# 29/12/2023
+- modification de la fréquence d'appel du listener des évènement suivant les préconisations de l'api (0.5s -> 1s) (source api : Fetch events on /events/{listenerId}/fetch once every second at most)
+
+# 19/12/2023
+- ajout d'un restart journalier du daemon en attendant de trouver pourquoi il s'arrête soudainement
+  
 # 08/12/2023
-- ajout des modes confort-1 et confort-2 pour la gestion des radiatgeurs
+- ajout des modes confort-1 et confort-2 pour la gestion des radiateurs
 
 # 06/12/2023
 - correction creation automatique des actions générique (heatingSystem & HitachiHeatingSystem)

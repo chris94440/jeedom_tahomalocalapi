@@ -41,7 +41,10 @@ try {
             $jsonMef=str_replace(array('\\','"{','}"'), array('','{','}'),json_encode($result['gatewaysList']));
             log::add('tahomalocalapi', 'debug', 'Gateways list : ' . $jsonMef);
             config::save('tahomalocalapi_gatewaysList',  $result['gatewaysList'],'tahomalocalapi');
+            tahomalocalapi::checkGateways($result['gatewaysList']);
         }
+    } elseif (isset($result['healthCheck'])) {
+        config::save('healthCheck', time(),'tahomalocalapi');
     }
     
 } catch (Exception $e) {

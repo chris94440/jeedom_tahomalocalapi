@@ -53,10 +53,15 @@ def read_socket():
 			elif message['action'] == 'cancelExecution':
 				logging.info('== action cancelExecution ==')
 				deleteExecution(message['execId'])
+			elif message['action'] =='getGateways':
+				logging.info('== action getGateways ==')
+				getGateways()
 			else:
 				logging.info('== other action not manage yes : ' + message['action']  + ' ==')
 		except Exception as e:
 			logging.error('Send command to demon error: %s' ,e)
+	#else:
+	#	logging.debug("JEEDOM_SOCKET_MESSAGE is empty")
 
 def listen():
 	logging.debug('Listen socket jeedom')
@@ -80,12 +85,19 @@ def listen():
 	registerListener()	
 
 	try:
+		nb = 0
+		jeedom_com.send_change_immediate({'healthCheck' : 'OK'})
 		while 1:
-			time.sleep(0.5)
+			time.sleep(1)
 			read_socket()
 			fetchListener()
-
+			nb +=1
+			if int(nb) > 300:
+				jeedom_com.send_change_immediate({'healthCheck': 'OK'})
+				nb=0
 	except KeyboardInterrupt:
+		shutdown()
+	except:
 		shutdown()
 
 def httpLog():
@@ -257,7 +269,10 @@ def getDevicesList():
 			shutdown()	
 
 	except requests.exceptions.HTTPError as err:
-		logging.error("rror when retrieving tahoma devices list -> %s",err)
+		logging.error("Error when retrieving tahoma devices list -> %s",err)
+		shutdown()
+	except:
+		logging.error("Unexpected errorwhen retrieving tahoma devices list")
 		shutdown()
 
 def getGateways():	
@@ -383,13 +398,13 @@ def fetchListener():
 				for item in json_data:
 					#logging.debug(item['name'] + ' -> ' + item['deviceURL'])
 					jeedom_com.send_change_immediate({'eventItem' : item})
-					if 'actions' in item:						
-						for action in item['actions']:
-							if 'command' in action:
-								if action['command'] != "advancedRefresh":
-									if (action['deviceURL'] != ''):
-										logging.debug("			-> execute execForceRefresh for device " + action['deviceURL'])
-										execForceRefresh(action['deviceURL'])
+					#if 'actions' in item:						
+						#for action in item['actions']:
+							#if 'command' in action:
+								#if action['command'] != "advancedRefresh":
+									#if (action['deviceURL'] != ''):
+										#logging.debug("			-> execute execForceRefresh for device " + action['deviceURL'])
+										#execForceRefresh(action['deviceURL'])
 		else:
 			logging.error("Http code : %s", response.status_code)
 			logging.error("Response header : %s", response.headers)		
@@ -397,6 +412,9 @@ def fetchListener():
 
 	except requests.exceptions.HTTPError as err:
 		logging.error("Error when fetch listener tahoma -> %s",err)
+		shutdown()
+	except:
+		logging.error("Unexpected error when fetch listener tahoma -> %s",err)
 		shutdown()
 
 def getDeviceStates(deviceUrl):
@@ -506,7 +524,7 @@ def execForceRefresh(deviceUrl):
 	try:
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
-		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": ["p1"]}],"deviceURL": deviceUrl}]})
+		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": []}],"deviceURL": deviceUrl}]})
 		
 		headers = {
 			'Content-Type' : 'application/json',
