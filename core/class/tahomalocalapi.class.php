@@ -52,6 +52,7 @@ class tahomalocalapi extends eqLogic {
 		}
 	}
 
+
   public static function deamon_info() {
     $return = array();
     $return['log'] = __CLASS__;
