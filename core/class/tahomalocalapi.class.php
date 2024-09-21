@@ -84,10 +84,23 @@ class tahomalocalapi extends eqLogic {
     } elseif ($tahomaBoxIp == '') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('L\'adresse IP de la box tahoma n\'est pas configuré', __FILE__);
-    } elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "requests|pyudev|pyserial"') < 3) {  
-                $return['state'] = 'nok';   
+    //} elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "requests|pyudev|pyserial"') < 3) { 
+    //            $return['state'] = 'nok';
     }
     return $return;
+}
+  
+public static function dependancy_info() {
+	$return = array();
+	$return['log'] = log::getPathToLog(__CLASS__ . '_update');
+	$return['progress_file'] = jeedom::getTmpFolder(__CLASS__) . '/dependance';
+	$return['state'] = 'ok';
+	if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependance')) {
+	$return['state'] = 'in_progress';
+	} elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "requests|pyudev|pyserial"') < 4) {
+	$return['state'] = 'nok';
+	}
+	return $return;
 }
 
 /* Start daemon */
