@@ -30,20 +30,9 @@ class tahomalocalapi extends eqLogic {
                 $c = new Cron\CronExpression(checkAndFixCron($autorefresh), new Cron\FieldFactory);
                 $restartDaemonInprogress=config::byKey('tahomalocalapi_restartDaemonInProgress',  __CLASS__);
                 if ($c->isDue() && $restartDaemonInprogress != 'O') {
-                    //log::add(__CLASS__, 'debug', '***** Exécution du cron Tahomalocalapi ****');
-                  	
 		            foreach (eqLogic::byType(__CLASS__, true) as $tahomaLocalPiEqLogic) {
-                        /*
-                        $cmdAdvancedRefresh=$tahomaLocalPiEqLogic->getCmd('action','advancedRefresh',true, false);
-                        if (is_object($cmdAdvancedRefresh)) {
-                            log::add(__CLASS__, 'debug', '|    - execution commande advancedRefresh pour l\'équipement : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
-                            $cmdAdvancedRefresh->execCmd();                        
-                        }
-                        */                       
                         self::forceClosureState($tahomaLocalPiEqLogic);
                    }
-                   //self::getGateways();
-                   //log::add(__CLASS__, 'debug', '***** Fin du cron Tahomalocalapi ****');
                    
 				}
 			} catch (Exception $exc) {
@@ -84,8 +73,6 @@ class tahomalocalapi extends eqLogic {
     } elseif ($tahomaBoxIp == '') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('L\'adresse IP de la box tahoma n\'est pas configuré', __FILE__);
-    //} elseif (exec(system::getCmdSudo() . 'pip3 list | grep -Ewc "requests|pyudev|pyserial"') < 3) { 
-    //            $return['state'] = 'nok';
     }
     return $return;
 }
@@ -111,22 +98,34 @@ public static function deamon_start() {
   if ($deamon_info['launchable'] != 'ok') {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
   }
-
-  $path = realpath(dirname(__FILE__) . '/../../resources/tahomalocalapid'); 
-  $cmd = 'python3 ' . $path . '/tahomalocalapid.py'; // nom du démon
-  $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
-  $cmd .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55009'); // port du daemon
-  $cmd .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/tahomalocalapi/core/php/jeeTahomalocalapi.php'; // chemin de la callback url 
-  $cmd .= ' --user "' . trim(str_replace('"', '\"', config::byKey('user', __CLASS__))) . '"'; // user compte somfy
-  $cmd .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password compte Somfy
-  $cmd .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
-  $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
-  $cmd .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
-  $cmd .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // local IP box Somfy
-  $cmd .= ' --tahoma_token "' . trim(str_replace('"', '\"', (config::byKey('tahomalocalapi_session',  __CLASS__))['token'])) . '"'; // TahomaSession  
+   
+  $request .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
+  $request .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55009'); // port du daemon
+  $request .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/tahomalocalapi/core/php/jeeTahomalocalapi.php'; // chemin de la callback url 
+  $request .= ' --user "' . trim(str_replace('"', '\"', config::byKey('user', __CLASS__))) . '"'; // user compte somfy
+  $request .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password compte Somfy
+  $request .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
+  $request .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
+  $request .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
+  $request .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // local IP box Somfy
   
-  log::add(__CLASS__, 'info', 'Lancement démon');
-  $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
+  $tahomaSession=config::byKey('tahomalocalapi_session',  __CLASS__);
+  if (is_array($tahomaSession) && array_key_exists('token', $tahomaSession)) {
+  	$request .= ' --tahoma_token "' . trim(str_replace('"', '\"', $tokenTahoma['token'])) . '"'; // TahomaSession  
+  }
+  
+  $tahomalocalapi_path = realpath(dirname(__FILE__) . '/../../resources/tahomalocalapid/');
+  $pyenv_path = realpath(dirname(__FILE__) . '/../../resources/python_venv');
+  $cmd = 'export PYENV_ROOT="' . $pyenv_path . '"; command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"; eval "$(pyenv init -)"; ';
+  $cmd .= 'cd ' . $tahomalocalapi_path . '; ';
+  $cmd .= 'nice -n 19 python3 tahomalocalapid.py' . $request;
+  log::add(__CLASS__, 'info', 'Lancement du daemon tahomalocalapi : ' . $cmd);     
+  $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &');
+  
+  
+  //log::add(__CLASS__, 'info', 'Lancement démon');
+  //$result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
+  
   $i = 0;
   while ($i < 20) {
       $deamon_info = self::deamon_info();
@@ -1353,7 +1352,7 @@ public static function checkGateways($gatewaysList) {
     $healthCheckTime = config::byKey('healthCheck', __CLASS__);
     $now = time();
 
-    if (($now - $healthCheckTime) > 600) {
+    if (is_numeric($healthCheckTime) && ($now - $healthCheckTime) > 600) {
         log::add(__CLASS__, 'error', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' . ($now - $healthCheckTime) . 's');
         self::deamon_start();
     }
