@@ -1184,7 +1184,21 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                     $tahomaLocalPiCmd->setConfiguration('maxValue', '1');
                     $tahomaLocalPiCmd->setConfiguration('step', '0.1');
-                    $tahomaLocalPiCmd->setDisplay('parameters', array('step' => 0.1));                    
+                    $tahomaLocalPiCmd->setDisplay('parameters', array('step' => 0.1));
+                } else if ($command['commandName'] == "setPedestrianPosition") {
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('slider');
+                    $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                    $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                    $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                    //$tahomaLocalPiCmd->setConfiguration('step', '0.1');
+                    //$tahomaLocalPiCmd->setDisplay('parameters', array('step' => 0.1));
+                } else if ($command['commandName'] == "refreshPedestrianPosition") {
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('other');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                
+                    }                                       
                 } else {
                     $useCmd = false;
                 }
