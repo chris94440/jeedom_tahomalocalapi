@@ -1186,6 +1186,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-toggle-off"></i>');     
                     }
                 } else if ($command['commandName'] == "setLightingLedPodMode") {
+                    /*
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('slider');
                     $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
@@ -1193,6 +1194,9 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setConfiguration('maxValue', '1');
                     $tahomaLocalPiCmd->setConfiguration('step', '0.1');
                     $tahomaLocalPiCmd->setDisplay('parameters', array('step' => 0.1));
+                    */
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('other');
                 } else if ($command['commandName'] == "setPedestrianPosition") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('slider');
