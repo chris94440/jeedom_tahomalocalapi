@@ -112,6 +112,13 @@ public static function deamon_start() {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
   }
 
+  $uuid =(config::byKey('tahomalocalapi_session',  __CLASS__))['uuid'];
+  if ($uuid == '') {
+        $uuid = self::guidv4();
+        log::add(__CLASS__, 'info', '  - no uuid for this jeedom box, generate it -> ' . $uuid);
+        config::save('tahomalocalapi_session', array('pinCode' => $pincode, 'token' => '', 'uuid' => $uuid),'tahomalocalapi');
+  }
+
   $path = realpath(dirname(__FILE__) . '/../../resources/tahomalocalapid'); 
   $cmd = 'python3 ' . $path . '/tahomalocalapid.py'; // nom du démon
   $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
@@ -124,6 +131,7 @@ public static function deamon_start() {
   $cmd .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
   $cmd .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // local IP box Somfy
   $cmd .= ' --tahoma_token "' . trim(str_replace('"', '\"', (config::byKey('tahomalocalapi_session',  __CLASS__))['token'])) . '"'; // TahomaSession  
+  $cmd .= ' --uuid "' . trim(str_replace('"', '\"', (config::byKey('tahomalocalapi_session',  __CLASS__))['uuid'])) . '"'; // TahomaSession  
   
   log::add(__CLASS__, 'info', 'Lancement démon');
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
@@ -1221,6 +1229,16 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
     }
     
   }
+
+private static function guidv4() {
+    $data = random_bytes(16);
+    assert(strlen($data) == 16);
+
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s',str_split(bin2hex($data), 4));
+}
 
 private static function notExistsByName($eqLogic,$commandName) {
     $response=true;

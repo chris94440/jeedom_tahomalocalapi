@@ -6,6 +6,7 @@
 
 # 21/11/204
 - ajout des commandes actions setPedestrianPosition et refreshPedestrianPosition
+- ajout de la generation d'un uuid par box pour permettre le fonctionnement d'une box de backup ou d'une seconde box utilisant la meme box Somfy
 
 # 14/09/2024
 - correction redemarrage daemon après installation des dépendances

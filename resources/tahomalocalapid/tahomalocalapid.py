@@ -210,7 +210,7 @@ def availableToken():
 			json_data = response.json()
 			for item in json_data:
 				#logging.info(" token  : %s", item)
-				if (item['label'] == 'JeedomTahomaLocalApi_token' and item['scope'] == 'devmode'):
+				if ((item['label'] == 'JeedomTahomaLocalApi_token' or item['label'] == 'JeedomTahomaLocalApi_token_' + _uuid )and item['scope'] == 'devmode'):
 					deleteToken(item['uuid'])
 		else:
 			logging.error("Http code : %s", response.status_code)
@@ -313,7 +313,7 @@ def validateToken():
 		}
 
 		payload=json.dumps({
-				"label": "JeedomTahomaLocalApi_token",				
+				"label": "JeedomTahomaLocalApi_token" + _uuid,				
 				"token": _tokenTahoma ,
 				"scope": "devmode"
 		})		
@@ -326,7 +326,7 @@ def validateToken():
 			logging.error("Response header : %s", response.headers)
 			shutdown()
 		else:
-			jeedom_com.send_change_immediate({'tahomaSession' : {'pinCode' : _pincode, 'token' : _tokenTahoma}})
+			jeedom_com.send_change_immediate({'tahomaSession' : {'pinCode' : _pincode, 'token' : _tokenTahoma,'uuid' : _uuid}})
 		
 
 	except requests.exceptions.HTTPError as err:
@@ -626,6 +626,7 @@ parser.add_argument("--pswd", help="Password for local api Tahoma", type=str)
 parser.add_argument("--pincode", help="Tahoma pin code", type=str)
 parser.add_argument("--boxLocalIp", help="Tahoma IP", type=str)
 parser.add_argument("--tahoma_token", help="Tahoma token", type=str)
+parser.add_argument("--uuid", help="Plugin uuid", type=str)
 args = parser.parse_args()
 
 if args.device:
@@ -652,6 +653,8 @@ if args.boxLocalIp:
 	_ipBox='https://' + args.boxLocalIp + ':8443'
 if args.tahoma_token:
 	_tokenTahoma=args.tahoma_token
+if args.uuid:
+	_uuid=args.uuid
 
 _socket_port = int(_socket_port)
 
@@ -670,6 +673,7 @@ logging.info('User: %s', _user)
 logging.info('Pin ocde: %s', _pincode)
 logging.info('Box IP: %s', _ipBox)
 logging.info('Tahoma token: %s', _tokenTahoma)
+logging.info('Plugin uuid: %s', _uuid)
 logging.info('*-------------------------------------------------------------------------*')
 
 signal.signal(signal.SIGINT, handler)
