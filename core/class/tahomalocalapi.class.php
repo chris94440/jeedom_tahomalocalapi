@@ -1196,6 +1196,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                 } else if ($command['commandName'] == "setPedestrianPosition") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
+                    $tahomaLocalPiCmd->setConfiguration('parameters', '');
                     /*
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('slider');
