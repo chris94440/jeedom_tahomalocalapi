@@ -51,6 +51,18 @@ class tahomalocalapi extends eqLogic {
 			}
 		}
 	}
+	
+	public static function advancedRefreshAllEq() {
+		log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
+		foreach (eqLogic::byType(__CLASS__, true) as $tahomaLocalPiEqLogic) {
+			$cmdAdvancedRefresh=$tahomaLocalPiEqLogic->getCmd('action','advancedRefresh',true, false);
+			if (is_object($cmdAdvancedRefresh)) {
+				log::add(__CLASS__, 'debug', '|    - execution commande advancedRefresh pour l\'équipement : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
+				$cmdAdvancedRefresh->execCmd();                        
+			}
+		}
+		log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
+	}
 
 
   public static function deamon_info() {
