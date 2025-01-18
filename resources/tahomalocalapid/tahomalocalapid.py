@@ -524,7 +524,7 @@ def execForceRefresh(deviceUrl):
 	try:
 		url = _ipBox +'/enduser-mobile-web/1/enduserAPI/exec/apply'
 
-		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": []}],"deviceURL": deviceUrl}]})
+		payload=json.dumps({"label":"advancedRefresh","actions": [{"commands": [{"name": "advancedRefresh", "parameters": ["advanced"]}],"deviceURL": deviceUrl}]})
 		
 		headers = {
 			'Content-Type' : 'application/json',
