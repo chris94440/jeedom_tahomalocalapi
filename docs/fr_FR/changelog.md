@@ -4,7 +4,12 @@
 >
 >S'il n'y a pas d'information sur la mise à jour, c'est que celle-ci concerne uniquement de la mise à jour de documentation, de traduction ou de texte.
 
-# 21/11/204
+# 18/01/2025
+- remplacement du fichier jeedom.py suite sur consommation du plugin
+- évolution / correction de la commande advancedRefresh
+- ajout d'une fonction public permettant de faire un advancedRefresh de tous les équipement via un bloc code -> tahomalocalapi::advancedRefreshAllEq();
+
+# 21/11/2024
 - ajout des commandes actions setPedestrianPosition et refreshPedestrianPosition
 - ajout de la generation d'un uuid par box pour permettre le fonctionnement d'une box de backup ou d'une seconde box utilisant la meme box Somfy
 
