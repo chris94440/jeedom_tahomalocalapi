@@ -1158,6 +1158,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                 }  else if ($command['commandName'] == "advancedRefresh") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
+					$tahomaLocalPiCmd->setConfiguration('parameters', 'advanced');
                     if ($cmdNotExist) {
                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                
                     }
