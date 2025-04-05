@@ -1403,10 +1403,9 @@ public static function checkGateways($gatewaysList) {
     $healthCheckTime = config::byKey('healthCheck', __CLASS__);
     $now = time();
 	$sendDaemonNotifError=config::byKey('cfgAlertErrorOnDaemon', __CLASS__);
-	
 
     if (($now - $healthCheckTime) > 600) {
-		if (sendDaemonNotifError == '1') {
+		if ($sendDaemonNotifError == '1') {
 			log::add(__CLASS__, 'error', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' . ($now - $healthCheckTime) . 's');
 		}
         
