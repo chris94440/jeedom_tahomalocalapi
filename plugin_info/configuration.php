@@ -107,7 +107,7 @@ if (!isConnect()) {
 		</label>
 		<div class="col-md-4">
 			<div class="input-group">
-				<input type="checkbox" class="eqLogicAttr" data-l1key="cfgAlertErrorOnDaemon" checked/>
+				<input type="checkbox" class="configKey form-control" data-l1key="cfgAlertErrorOnDaemon" checked/>
 			</div>
 		</div>
 	</div>
