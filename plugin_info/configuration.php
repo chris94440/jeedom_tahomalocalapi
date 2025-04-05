@@ -98,5 +98,18 @@ if (!isConnect()) {
       		</select>
       	</div>
     </div>
+	<legend><i class="fas fa-clock"></i> {{Gestion logs}}</legend>
+    <div class="form-group">
+		<label class="col-md-4 control-label">{{Alerte erreur connexion box Somfy}}
+			<sup>
+				<i class="fa fa-question-circle tooltips" title="{{Envoyer une notification si le daemon perd la connexion avec la box domotique Somfy}}"></i>
+			</sup>
+		</label>
+		<div class="col-md-4">
+			<div class="input-group">
+				<input type="checkbox" class="eqLogicAttr" data-l1key="cfgAlertErrorOnDaemon" checked/>
+			</div>
+		</div>
+	</div>
   </fieldset>
 </form>
