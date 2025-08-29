@@ -151,6 +151,11 @@ def loginTahoma():
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
 
+		logging.debug("loginTahoma - start - ********************")
+		logging.debug("  - url : %s", url)
+		logging.debug("  - data : %s", payload)        
+		logging.debug("loginTahoma - start - ********************")        
+
 		response = requests.request("POST", url, headers=headers, data=payload)
 
 		if response.status_code and (response.status_code == 200):
