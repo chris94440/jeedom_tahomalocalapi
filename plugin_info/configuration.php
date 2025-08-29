@@ -26,8 +26,16 @@ if (!isConnect()) {
   <fieldset>
   	<legend><i class="fas fa-list-alt"></i> {{Configuration connexion compte Somfy}}</legend>
     <div class="form-group">
+      <label class="col-md-4 control-label">{{Token compte Somfy}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Si alimenté ne pas alimenter login/mdp }}"></i></sup>
+      </label>
+      <div class="col-md-4">
+        <input class="configKey form-control" data-l1key="tokenTahoma"/>
+      </div>
+    </div>
+    <div class="form-group">
       <label class="col-md-4 control-label">{{Nom utilisateur compte Somfy}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Nom utilisateur Somfy}}"></i></sup>
+        <sup><i class="fas fa-question-circle tooltips" title="{{Nom utilisateur Somfy | A alimenter si token tahoma non alimenté}}"></i></sup>
       </label>
       <div class="col-md-4">
         <input class="configKey form-control" data-l1key="user"/>
@@ -35,7 +43,7 @@ if (!isConnect()) {
     </div>
     <div class="form-group">
       <label class="col-md-4 control-label">{{Mot de passe compte Somfy}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Utilisateur Somfy }}"></i></sup>
+        <sup><i class="fas fa-question-circle tooltips" title="{{Mot de passe compte Somfy | A alimenter si token tahoma non alimenté }}"></i></sup>
       </label>
       <div class="col-md-4">
         <input type="password" class="configKey form-control" data-l1key="password"/>
