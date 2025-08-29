@@ -59,12 +59,16 @@ class tahomalocalapi extends eqLogic {
     $pswd = config::byKey('password', __CLASS__); // password,
     $pinCode=config::byKey('pincode', __CLASS__);
     $tahomaBoxIp=config::byKey('boxLocalIp', __CLASS__);
-    // $clientId = config::byKey('clientId', __CLASS__); // et clientId
     $portDaemon=config::byKey('daemonPort', __CLASS__);
-    if ($user == '') {
+    $tokenTahoma=config::byKey('tokenTahoma', __CLASS__);
+
+    if ($user == '' and $pswd == '' and $tokenTahoma =='') {
+        $return['launchable'] = 'nok';
+        $return['launchable_message'] = __('Le token Tahoma ou le couple login-mdp est obligatoire', __FILE__);
+    } elseif ($user == '' and $tokenTahoma =='') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas configuré', __FILE__);
-    } elseif ($pswd == '') {
+    } elseif ($pswd == ''  and $tokenTahoma =='') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
     } elseif ($pinCode == '') {
@@ -98,34 +102,45 @@ public static function deamon_start() {
   if ($deamon_info['launchable'] != 'ok') {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
   }
-   
-  $request .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
+
+  $uuid =(config::byKey('tahomalocalapi_session',  __CLASS__))['uuid'];
+  if ($uuid == '') {
+    $uuid = self::guidv4();
+    log::add(__CLASS__, 'info', '  - no uuid for this jeedom box, generate it -> ' . $uuid);
+    config::save('tahomalocalapi_session', array('pinCode' => $pincode, 'token' => '', 'uuid' => $uuid),'tahomalocalapi');
+  }
+
+    $tokenTahoma=trim(config::byKey('tokenTahoma', __CLASS__));
+    log::add(__CLASS__, 'debug','Token en dur ? ' . $tokenTahoma);
+    if ($tokenTahoma=='') {
+        $tokenTahoma=trim(config::byKey('tahomalocalapi_session',  __CLASS__)['token']);
+    }
+
+  $request  = ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
   $request .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55009'); // port du daemon
-  $request .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/tahomalocalapi/core/php/jeeTahomalocalapi.php'; // chemin de la callback url 
+  $request .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/tahomalocalapi/core/php/jeeTahomalocalapi.php'; // chemin de la callback url
   $request .= ' --user "' . trim(str_replace('"', '\"', config::byKey('user', __CLASS__))) . '"'; // user compte somfy
   $request .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password compte Somfy
   $request .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
   $request .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
   $request .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
   $request .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // local IP box Somfy
-  
-  $tahomaSession=config::byKey('tahomalocalapi_session',  __CLASS__);
-  if (is_array($tahomaSession) && array_key_exists('token', $tahomaSession)) {
-  	$request .= ' --tahoma_token "' . trim(str_replace('"', '\"', $tokenTahoma['token'])) . '"'; // TahomaSession  
-  }
+  $request .= ' --tahoma_token "' . trim(str_replace('"', '\"', $tokenTahoma)). '"'; // TahomaSession
+  $request .= ' --uuid "' . trim(str_replace('"', '\"', (config::byKey('tahomalocalapi_session',  __CLASS__))['uuid'])) . '"'; // TahomaSession
+
   
   $tahomalocalapi_path = realpath(dirname(__FILE__) . '/../../resources/tahomalocalapid/');
   $pyenv_path = realpath(dirname(__FILE__) . '/../../resources/python_venv');
   $cmd = 'export PYENV_ROOT="' . $pyenv_path . '"; command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"; eval "$(pyenv init -)"; ';
   $cmd .= 'cd ' . $tahomalocalapi_path . '; ';
   $cmd .= 'nice -n 19 python3 tahomalocalapid.py' . $request;
-  log::add(__CLASS__, 'info', 'Lancement du daemon tahomalocalapi : ' . $cmd);     
+  log::add(__CLASS__, 'info', 'Lancement du daemon tahomalocalapi : ' . $cmd);
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &');
-  
-  
+
+
   //log::add(__CLASS__, 'info', 'Lancement démon');
-  //$result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
-  
+  //$result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &');
+
   $i = 0;
   while ($i < 20) {
       $deamon_info = self::deamon_info();
@@ -1183,7 +1198,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                     $tahomaLocalPiCmd->setConfiguration('maxValue', '1');
                     $tahomaLocalPiCmd->setConfiguration('step', '0.1');
-                    $tahomaLocalPiCmd->setDisplay('parameters', array('step' => 0.1));                    
+                    $tahomaLocalPiCmd->setDisplay('parameters', array('step' => 0.1));
                 } else {
                     $useCmd = false;
                 }
