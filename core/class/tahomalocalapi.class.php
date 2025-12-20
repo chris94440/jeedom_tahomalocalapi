@@ -531,7 +531,7 @@ private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
                     if ($state['name'] == "core:ClosureState") {
                         $value = 100 - $value;
                     }
-                  	log::add(__CLASS__, 'debug','|     update cmd : '.$command->getName().' value ' .$value);
+                  	log::add(__CLASS__, 'debug','|     update cmd : '.$command->getName().' value ' .json_encode($value));
                     $command->event($value);
                 }
             }
@@ -959,7 +959,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
             default:
                 break;
         }
-        if ($linkedCmdName !== '') {
+        if ($aLinkedCmdName !== '') {
             foreach ($eqLogic->getCmd() as $action) {
                 foreach($aLinkedCmdName as $linkedCmdName) {
                     if ($action->getConfiguration('commandName') == $linkedCmdName) {
