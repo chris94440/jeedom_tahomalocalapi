@@ -13,7 +13,7 @@ Si le mode développeur n'est pas disponible regardez si vous n'avez pas une MAJ
 Paramétrage du plugin
 ---
 Le plugin doit se connecter à votre box, il a donc besoin  
-* devos identifiants / mot de passe
+* de vos identifiants / mot de passe
 * d'infortmations liées à votre box
 ** adresse ip locale
 ** code pin 

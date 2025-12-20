@@ -26,8 +26,16 @@ if (!isConnect()) {
   <fieldset>
   	<legend><i class="fas fa-list-alt"></i> {{Configuration connexion compte Somfy}}</legend>
     <div class="form-group">
+      <label class="col-md-4 control-label">{{Token compte Somfy}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Si alimenté ne pas alimenter login/mdp }}"></i></sup>
+      </label>
+      <div class="col-md-4">
+        <input class="configKey form-control" data-l1key="tokenTahoma"/>
+      </div>
+    </div>
+    <div class="form-group">
       <label class="col-md-4 control-label">{{Nom utilisateur compte Somfy}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Nom utilisateur Somfy}}"></i></sup>
+        <sup><i class="fas fa-question-circle tooltips" title="{{Nom utilisateur Somfy | A alimenter si token tahoma non alimenté}}"></i></sup>
       </label>
       <div class="col-md-4">
         <input class="configKey form-control" data-l1key="user"/>
@@ -35,7 +43,7 @@ if (!isConnect()) {
     </div>
     <div class="form-group">
       <label class="col-md-4 control-label">{{Mot de passe compte Somfy}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Utilisateur Somfy }}"></i></sup>
+        <sup><i class="fas fa-question-circle tooltips" title="{{Mot de passe compte Somfy | A alimenter si token tahoma non alimenté }}"></i></sup>
       </label>
       <div class="col-md-4">
         <input type="password" class="configKey form-control" data-l1key="password"/>
@@ -98,5 +106,18 @@ if (!isConnect()) {
       		</select>
       	</div>
     </div>
+	<legend><i class="fas fa-clock"></i> {{Gestion logs}}</legend>
+    <div class="form-group">
+		<label class="col-md-4 control-label">{{Alerte erreur connexion box Somfy}}
+			<sup>
+				<i class="fa fa-question-circle tooltips" title="{{Envoyer une notification si le daemon perd la connexion avec la box domotique Somfy}}"></i>
+			</sup>
+		</label>
+		<div class="col-md-4">
+			<div class="input-group">
+				<input type="checkbox" class="configKey form-control" data-l1key="cfgAlertErrorOnDaemon" checked/>
+			</div>
+		</div>
+	</div>
   </fieldset>
 </form>

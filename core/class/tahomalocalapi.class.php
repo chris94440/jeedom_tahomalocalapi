@@ -51,6 +51,18 @@ class tahomalocalapi extends eqLogic {
 			}
 		}
 	}
+	
+	public static function advancedRefreshAllEq() {
+		log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
+		foreach (eqLogic::byType(__CLASS__, true) as $tahomaLocalPiEqLogic) {
+			$cmdAdvancedRefresh=$tahomaLocalPiEqLogic->getCmd('action','advancedRefresh',true, false);
+			if (is_object($cmdAdvancedRefresh)) {
+				log::add(__CLASS__, 'debug', '|    - execution commande advancedRefresh pour l\'équipement : ' . $tahomaLocalPiEqLogic->getName() . '('.$tahomaLocalPiEqLogic->getLogicalId().')');
+				$cmdAdvancedRefresh->execCmd();                        
+			}
+		}
+		log::add(__CLASS__, 'debug', '+------------------------------ '. __FUNCTION__. ' ---------------------------------');
+	}
 
 
   public static function deamon_info() {
@@ -70,12 +82,16 @@ class tahomalocalapi extends eqLogic {
     $pswd = config::byKey('password', __CLASS__); // password,
     $pinCode=config::byKey('pincode', __CLASS__);
     $tahomaBoxIp=config::byKey('boxLocalIp', __CLASS__);
-    // $clientId = config::byKey('clientId', __CLASS__); // et clientId
     $portDaemon=config::byKey('daemonPort', __CLASS__);
-    if ($user == '') {
+    $tokenTahoma=config::byKey('tokenTahoma', __CLASS__);
+    
+    if ($user == '' and $pswd == '' and $tokenTahoma =='') {
+        $return['launchable'] = 'nok';
+        $return['launchable_message'] = __('Le token Tahoma ou le couple login-mdp est obligatoire', __FILE__);
+    } elseif ($user == '' and $tokenTahoma =='') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas configuré', __FILE__);
-    } elseif ($pswd == '') {
+    } elseif ($pswd == ''  and $tokenTahoma =='') {
         $return['launchable'] = 'nok';
         $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
     } elseif ($pinCode == '') {
@@ -112,6 +128,20 @@ public static function deamon_start() {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
   }
 
+  $uuid =(config::byKey('tahomalocalapi_session',  __CLASS__))['uuid'];
+  if ($uuid == '') {
+        $uuid = self::guidv4();
+        log::add(__CLASS__, 'info', '  - no uuid for this jeedom box, generate it -> ' . $uuid);
+        config::save('tahomalocalapi_session', array('pinCode' => $pincode, 'token' => '', 'uuid' => $uuid),'tahomalocalapi');
+  }
+  
+  
+  $tokenTahoma=trim(config::byKey('tokenTahoma', __CLASS__));
+  log::add(__CLASS__, 'debug','Token en dur ? ' . $tokenTahoma);
+  if ($tokenTahoma=='') {
+  	$tokenTahoma=trim(config::byKey('tahomalocalapi_session',  __CLASS__)['token']);
+  }
+
   $path = realpath(dirname(__FILE__) . '/../../resources/tahomalocalapid'); 
   $cmd = 'python3 ' . $path . '/tahomalocalapid.py'; // nom du démon
   $cmd .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
@@ -123,7 +153,8 @@ public static function deamon_start() {
   $cmd .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
   $cmd .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
   $cmd .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // local IP box Somfy
-  $cmd .= ' --tahoma_token "' . trim(str_replace('"', '\"', (config::byKey('tahomalocalapi_session',  __CLASS__))['token'])) . '"'; // TahomaSession  
+  $cmd .= ' --tahoma_token "' . trim(str_replace('"', '\"', $tokenTahoma)). '"'; // TahomaSession  
+  $cmd .= ' --uuid "' . trim(str_replace('"', '\"', (config::byKey('tahomalocalapi_session',  __CLASS__))['uuid'])) . '"'; // TahomaSession  
   
   log::add(__CLASS__, 'info', 'Lancement démon');
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
@@ -500,7 +531,7 @@ private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
                     if ($state['name'] == "core:ClosureState") {
                         $value = 100 - $value;
                     }
-                  	log::add(__CLASS__, 'debug','|     update cmd : '.$command->getName().' value ' .$value);
+                  	log::add(__CLASS__, 'debug','|     update cmd : '.$command->getName().' value ' .json_encode($value));
                     $command->event($value);
                 }
             }
@@ -928,7 +959,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
             default:
                 break;
         }
-        if ($linkedCmdName !== '') {
+        if ($aLinkedCmdName !== '') {
             foreach ($eqLogic->getCmd() as $action) {
                 foreach($aLinkedCmdName as $linkedCmdName) {
                     if ($action->getConfiguration('commandName') == $linkedCmdName) {
@@ -1150,6 +1181,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                 }  else if ($command['commandName'] == "advancedRefresh") {
                     $tahomaLocalPiCmd->setType('action');
                     $tahomaLocalPiCmd->setSubType('other');
+					$tahomaLocalPiCmd->setConfiguration('parameters', 'advanced');
                     if ($cmdNotExist) {
                         $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                
                     }
@@ -1184,7 +1216,26 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                     $tahomaLocalPiCmd->setConfiguration('maxValue', '1');
                     $tahomaLocalPiCmd->setConfiguration('step', '0.1');
-                    $tahomaLocalPiCmd->setDisplay('parameters', array('step' => 0.1));                    
+                    $tahomaLocalPiCmd->setDisplay('parameters', array('step' => 0.1));
+                } else if ($command['commandName'] == "setPedestrianPosition") {
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('other');
+                    $tahomaLocalPiCmd->setConfiguration('parameters', '');
+                    /*
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('slider');
+                    $tahomaLocalPiCmd->setConfiguration('parameters', '#slider#');
+                    $tahomaLocalPiCmd->setConfiguration('minValue', '0');
+                    $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
+                    //$tahomaLocalPiCmd->setConfiguration('step', '0.1');
+                    //$tahomaLocalPiCmd->setDisplay('parameters', array('step' => 0.1));
+                    */
+                } else if ($command['commandName'] == "refreshPedestrianPosition") {
+                    $tahomaLocalPiCmd->setType('action');
+                    $tahomaLocalPiCmd->setSubType('other');
+                    if ($cmdNotExist) {
+                        $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-refresh"></i>');                
+                    }                                       
                 } else {
                     $useCmd = false;
                 }
@@ -1207,6 +1258,16 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
     }
     
   }
+
+private static function guidv4() {
+    $data = random_bytes(16);
+    assert(strlen($data) == 16);
+
+    $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+    $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s',str_split(bin2hex($data), 4));
+}
 
 private static function notExistsByName($eqLogic,$commandName) {
     $response=true;
@@ -1352,9 +1413,13 @@ public static function checkGateways($gatewaysList) {
   public static function cron5() {
     $healthCheckTime = config::byKey('healthCheck', __CLASS__);
     $now = time();
+	$sendDaemonNotifError=config::byKey('cfgAlertErrorOnDaemon', __CLASS__);
 
     if (($now - $healthCheckTime) > 600) {
-        log::add(__CLASS__, 'error', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' . ($now - $healthCheckTime) . 's');
+		if ($sendDaemonNotifError == '1') {
+			log::add(__CLASS__, 'error', __FUNCTION__ . ' !!!! Plus de communication avec le daemon depuis plus de 5 minutes ...' . ($now - $healthCheckTime) . 's');
+		}
+        
         self::deamon_start();
     }
 
