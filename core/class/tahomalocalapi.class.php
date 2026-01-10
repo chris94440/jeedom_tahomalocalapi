@@ -103,18 +103,11 @@ public static function deamon_start() {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
   }
 
-  $uuid =(config::byKey('tahomalocalapi_session',  __CLASS__))['uuid'];
-  if ($uuid == '') {
-    $uuid = self::guidv4();
-    log::add(__CLASS__, 'info', '  - no uuid for this jeedom box, generate it -> ' . $uuid);
-    config::save('tahomalocalapi_session', array('pinCode' => $pincode, 'token' => '', 'uuid' => $uuid),'tahomalocalapi');
+  $tokenTahoma=trim(config::byKey('tokenTahoma', __CLASS__));
+  log::add(__CLASS__, 'debug','Token en dur ? ' . $tokenTahoma);
+  if ($tokenTahoma=='') {
+    $tokenTahoma=trim(config::byKey('tahomalocalapi_session',  __CLASS__)['token']);
   }
-
-    $tokenTahoma=trim(config::byKey('tokenTahoma', __CLASS__));
-    log::add(__CLASS__, 'debug','Token en dur ? ' . $tokenTahoma);
-    if ($tokenTahoma=='') {
-        $tokenTahoma=trim(config::byKey('tahomalocalapi_session',  __CLASS__)['token']);
-    }
 
   $request  = ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
   $request .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55009'); // port du daemon
@@ -126,9 +119,7 @@ public static function deamon_start() {
   $request .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
   $request .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // local IP box Somfy
   $request .= ' --tahoma_token "' . trim(str_replace('"', '\"', $tokenTahoma)). '"'; // TahomaSession
-  $request .= ' --uuid "' . trim(str_replace('"', '\"', (config::byKey('tahomalocalapi_session',  __CLASS__))['uuid'])) . '"'; // TahomaSession
 
-  
   $tahomalocalapi_path = realpath(dirname(__FILE__) . '/../../resources/tahomalocalapid/');
   $pyenv_path = realpath(dirname(__FILE__) . '/../../resources/python_venv');
   $cmd = 'export PYENV_ROOT="' . $pyenv_path . '"; command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"; eval "$(pyenv init -)"; ';
