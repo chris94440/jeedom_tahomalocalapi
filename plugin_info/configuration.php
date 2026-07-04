@@ -42,6 +42,14 @@ if (!isConnect()) {
       </div>
     </div>
     <div class="form-group">
+      <label class="col-md-4 control-label">{{Token Application Somfy}}
+        <sup><i class="fas fa-question-circle tooltips" title="{{Token Somfy }}"></i></sup>
+      </label>
+      <div class="col-md-4">
+        <input class="configKey form-control" data-l1key="tahomalocalapi_token"/>
+      </div>
+    </div>
+    <div class="form-group">
       <label class="col-md-4 control-label">{{Code pin box Somfy}}
         <sup><i class="fas fa-question-circle tooltips" title="{{Code pin box Somfy accessible depuis le compte client }}"></i></sup>
       </label>
