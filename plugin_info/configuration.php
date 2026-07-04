@@ -67,14 +67,6 @@ if (!isConnect()) {
         <input class="configKey form-control" data-l1key="socketport" placeholder="55009 par défaut"/>
       </div>
     </div>
-      <!-- <div class="col-md-4">
-        <select class="configKey form-control" data-l1key="daemonPort">
-          <option value=""></option>
-          <option value="value1">value1</option>
-          <option value="value2">value2</option>
-        </select>
-      </div>
-    </div> -->
     <legend><i class="fas fa-clock"></i> {{Auto refresh des équipements (cron)}}</legend>
     <div class="form-group">
         <label class="col-md-4 control-label">{{Délai cron}}
