@@ -1,6 +1,6 @@
 {
 	"id" : "tahomalocalapi",
-	"name" : "tahomalocalapi",
+	"name" : "Tahoma Local API",
 	"description" : {
 		"fr_FR": "Acces aux APIs local Somfy"
 	},
