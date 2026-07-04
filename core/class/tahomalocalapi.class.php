@@ -310,7 +310,7 @@ public function getImage() {
   	return str_replace(array('/var/www/html/'),array(''),$path);
 }
 
-public function imageExist($componentName) {
+public static function imageExist($componentName) {
     $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$componentName);
     $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';
 
@@ -1575,7 +1575,7 @@ class tahomalocalapiCmd extends cmd {
             $parameters = "";
         } else if ($commandName == "setClosure") {
             $parameters = array_map('intval', explode(",", $parameters));
-        } else {
+        } else if ($commandName != "setClosureAndLinearSpeed") {
             $parameters = explode(",", $parameters);
         }
 
