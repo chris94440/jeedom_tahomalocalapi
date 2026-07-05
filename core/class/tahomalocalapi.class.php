@@ -137,7 +137,7 @@ public static function deamon_start() {
       sleep(1);
       $i++;
   }
-  if ($i >= 30) {
+  if ($i >= 20) {
       log::add(__CLASS__, 'error', __('Impossible de lancer le démon, vérifiez le log', __FILE__), 'unableStartDeamon');
       config::save('tahomalocalapi_restartDaemonInProgress', 'N','tahomalocalapi');
       return false;
@@ -928,17 +928,14 @@ private static function createCmdsState($eqLogic, $device, $states) {
             default:
                 break;
         }
-        if ($linkedCmdName !== '') {
-            foreach ($eqLogic->getCmd() as $action) {
-                foreach($aLinkedCmdName as $linkedCmdName) {
-                    if ($action->getConfiguration('commandName') == $linkedCmdName) {
-                        $action->setValue($tahomaLocalPiCmd->getId());                        
-                        $action->save();
-                    }
+        foreach ($eqLogic->getCmd() as $action) {
+            foreach($aLinkedCmdName as $linkedCmdName) {
+                if ($action->getConfiguration('commandName') == $linkedCmdName) {
+                    $action->setValue($tahomaLocalPiCmd->getId());                        
+                    $action->save();
                 }
             }
         }
-        
     }
 }
 
