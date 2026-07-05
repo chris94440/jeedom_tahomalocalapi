@@ -768,7 +768,7 @@ private static function createGenericActions($eqLogic, $device) {
                 $tahomaLocalPiCmd->setType('action');
                 $tahomaLocalPiCmd->setSubType('other');
                 $tahomaLocalPiCmd->setName('Aération');
-                $tahomaLocalPiCmd->setLogicalId('Aération');
+                $tahomaLocalPiCmd->setLogicalId('Aeration');
                 $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
                 $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
                 $tahomaLocalPiCmd->setConfiguration('commandName', 'setClosure');
@@ -778,7 +778,7 @@ private static function createGenericActions($eqLogic, $device) {
                 $tahomaLocalPiCmd->save();
             }
         } else {
-            self::removeCmdFromNameOrLogicalId($eqLogic,'Aération');
+            self::removeCmdFromNameOrLogicalId($eqLogic,'Aeration');
         }
     }
 
@@ -829,6 +829,7 @@ private static function createGenericActions($eqLogic, $device) {
                 $cmd->setType('action');
                 $cmd->setSubType('slider');
                 $cmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $cmd->setConfiguration('commandName', 'setClosureAutoSpeed');
                 $cmd->setConfiguration('request', 'closure');
                 $cmd->setConfiguration('minValue', '0');
                 $cmd->setConfiguration('maxValue', '100');
