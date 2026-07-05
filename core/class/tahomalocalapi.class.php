@@ -759,6 +759,90 @@ private static function createGenericActions($eqLogic, $device) {
     } else {
         $response = false;
     }
+
+    // Ajout spécifique Moteur Velux : bouton "aération" à 10%
+    if ($device['controllableName'] == "io:WindowOpenerVeluxIOComponent") {
+        if (self::checkExistCommand($device,'setClosure')) {
+            if (!(is_object($eqLogic->getCmd(null, 'Aération')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('Aération');
+                $tahomaLocalPiCmd->setLogicalId('Aération');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setClosure');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', '90');
+                $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-wind"></i>');
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            self::removeCmdFromNameOrLogicalId($eqLogic,'Aération');
+        }
+    }
+
+    // Mode silence (volets avec vitesse réglable)
+	if ($device['controllableName'] == "io:RollerShutterVeluxIOComponent") {
+    	if (self::checkExistCommand($device,'setClosureAndLinearSpeed')) {
+            $cmd = $eqLogic->getCmd(null, 'silentMode');
+            if (!is_object($cmd)) {
+                $cmd = new tahomalocalapiCmd();
+                $cmd->setEqLogic_id($eqLogic->getId());
+                $cmd->setLogicalId('silentMode');
+                $cmd->setName(__('silentMode', __FILE__));
+                $cmd->setType('info');
+                $cmd->setSubType('binary');
+                $cmd->setIsVisible(1);
+                $cmd->setIsHistorized(0);
+                $cmd->save();
+                $eqLogic->checkAndUpdateCmd('silentMode', 0);
+            }
+            $cmd = $eqLogic->getCmd(null, 'On_SilentMode');
+            if (!is_object($cmd)) {
+                $cmd = new tahomalocalapiCmd();
+                $cmd->setEqLogic_id($eqLogic->getId());
+                $cmd->setLogicalId('On_SilentMode');
+                $cmd->setName(__('On_SilentMode', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            $cmd = $eqLogic->getCmd(null, 'Off_SilentMode');
+            if (!is_object($cmd)) {
+                $cmd = new tahomalocalapiCmd();
+                $cmd->setEqLogic_id($eqLogic->getId());
+                $cmd->setLogicalId('Off_SilentMode');
+                $cmd->setName(__('Off_SilentMode', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            $cmd = $eqLogic->getCmd(null, 'setClosureAutoSpeed');
+            if (!is_object($cmd)) {
+                $cmd = new tahomalocalapiCmd();
+                $cmd->setEqLogic_id($eqLogic->getId());
+                $cmd->setLogicalId('setClosureAutoSpeed');
+                $cmd->setName(__('setClosureAutoSpeed', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('slider');
+                $cmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $cmd->setConfiguration('request', 'closure');
+                $cmd->setConfiguration('minValue', '0');
+                $cmd->setConfiguration('maxValue', '100');
+                $cmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                $cmd->setIsVisible(1);
+                $cmd->save();
+        	}
+    	} else {
+        	self::removeCmdFromNameOrLogicalId($eqLogic,'silentMode');
+        	self::removeCmdFromNameOrLogicalId($eqLogic,'On_SilentMode');
+        	self::removeCmdFromNameOrLogicalId($eqLogic,'Off_SilentMode');
+        	self::removeCmdFromNameOrLogicalId($eqLogic,'setClosureAutoSpeed');
+        }
+    }
     //log::add(__CLASS__, 'debug','|     create generic response  : ' .$response);
     return $response;
 }
@@ -777,7 +861,6 @@ private static function removeCmdFromNameOrLogicalId($eqLogic,$cmdName) {
         }
     }
 }
-
 private static function checkExistCommand($device,$cmdName) {
     $response = false;
     if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
@@ -876,8 +959,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
             case 'core:ClosureState':
                 array_push($aLinkedCmdName,'setClosure');
                 array_push($aLinkedCmdName,'setClosureAndLinearSpeed');
-                //array_push($aLinkedCmdName,'setPosition');
-                //array_push($aLinkedCmdName,'setPositionAndLinearSpeed');
+                array_push($aLinkedCmdName,'setClosureAutoSpeed');
                 $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STATE');
                 $tahomaLocalPiCmd->save();
                 break;
@@ -1395,60 +1477,6 @@ public static function checkGateways($gatewaysList) {
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
-	if (is_object($this->getCmd(null, 'setClosureAndLinearSpeed'))) {
-		$cmd = $this->getCmd(null, 'silentMode');
-		if (!is_object($cmd)) {
-    		$cmd = new tahomalocalapiCmd();
-    		$cmd->setEqLogic_id($this->getId());
-    		$cmd->setLogicalId('silentMode');
-    		$cmd->setName(__('silentMode', __FILE__));
-    		$cmd->setType('info');
-    		$cmd->setSubType('binary');
-    		$cmd->setIsVisible(1);
-    		$cmd->setIsHistorized(0);
-    		$cmd->save();
-    		$this->checkAndUpdateCmd('silentMode', 0);
-		}
-		$cmd = $this->getCmd(null, 'On_SilentMode');
-		if (!is_object($cmd)) {
-    		$cmd = new tahomalocalapiCmd();
-    		$cmd->setEqLogic_id($this->getId());
-    		$cmd->setLogicalId('On_SilentMode');
-    		$cmd->setName(__('On_SilentMode', __FILE__));
-    		$cmd->setType('action');
-    		$cmd->setSubType('other');
-    		$cmd->setIsVisible(1);
-    		$cmd->save();
-		}
-		$cmd = $this->getCmd(null, 'Off_SilentMode');
-		if (!is_object($cmd)) {
-    		$cmd = new tahomalocalapiCmd();
-    		$cmd->setEqLogic_id($this->getId());
-    		$cmd->setLogicalId('Off_SilentMode');
-    		$cmd->setName(__('Off_SilentMode', __FILE__));
-    		$cmd->setType('action');
-    		$cmd->setSubType('other');
-    		$cmd->setIsVisible(1);
-    		$cmd->save();
-		}
-        $cmd = $this->getCmd(null, 'setClosureAutoSpeed');
-        if (!is_object($cmd)) {
-          $cmd = new tahomalocalapiCmd();
-          $cmd->setEqLogic_id($this->getId());
-          $cmd->setLogicalId('setClosureAutoSpeed');
-          $cmd->setName(__('setClosureAutoSpeed', __FILE__));
-          $cmd->setType('action');
-          $cmd->setSubType('slider');
-          $cmd->setValue($this->getCmd(null, 'core:ClosureState')->getId());
-		  $cmd->setConfiguration('deviceURL', $this->getConfiguration('deviceURL'));
-          $cmd->setConfiguration('request', 'closure');
-          $cmd->setConfiguration('minValue', '0');
-          $cmd->setConfiguration('maxValue', '100');
-          $cmd->setDisplay('generic_type', 'FLAP_SLIDER');
-          $cmd->setIsVisible(1);
-          $cmd->save();
-        }
-  	}
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
