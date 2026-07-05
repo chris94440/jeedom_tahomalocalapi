@@ -1395,6 +1395,60 @@ public static function checkGateways($gatewaysList) {
 
   // Fonction exécutée automatiquement après la sauvegarde (création ou mise à jour) de l'équipement
   public function postSave() {
+	if (is_object($this->getCmd(null, 'setClosureAndLinearSpeed'))) {
+		$cmd = $this->getCmd(null, 'silentMode');
+		if (!is_object($cmd)) {
+    		$cmd = new tahomalocalapiCmd();
+    		$cmd->setEqLogic_id($this->getId());
+    		$cmd->setLogicalId('silentMode');
+    		$cmd->setName(__('silentMode', __FILE__));
+    		$cmd->setType('info');
+    		$cmd->setSubType('binary');
+    		$cmd->setIsVisible(1);
+    		$cmd->setIsHistorized(0);
+    		$cmd->save();
+    		$this->checkAndUpdateCmd('silentMode', 0);
+		}
+		$cmd = $this->getCmd(null, 'On_SilentMode');
+		if (!is_object($cmd)) {
+    		$cmd = new tahomalocalapiCmd();
+    		$cmd->setEqLogic_id($this->getId());
+    		$cmd->setLogicalId('On_SilentMode');
+    		$cmd->setName(__('On_SilentMode', __FILE__));
+    		$cmd->setType('action');
+    		$cmd->setSubType('other');
+    		$cmd->setIsVisible(1);
+    		$cmd->save();
+		}
+		$cmd = $this->getCmd(null, 'Off_SilentMode');
+		if (!is_object($cmd)) {
+    		$cmd = new tahomalocalapiCmd();
+    		$cmd->setEqLogic_id($this->getId());
+    		$cmd->setLogicalId('Off_SilentMode');
+    		$cmd->setName(__('Off_SilentMode', __FILE__));
+    		$cmd->setType('action');
+    		$cmd->setSubType('other');
+    		$cmd->setIsVisible(1);
+    		$cmd->save();
+		}
+        $cmd = $this->getCmd(null, 'setClosureAutoSpeed');
+        if (!is_object($cmd)) {
+          $cmd = new tahomalocalapiCmd();
+          $cmd->setEqLogic_id($this->getId());
+          $cmd->setLogicalId('setClosureAutoSpeed');
+          $cmd->setName(__('setClosureAutoSpeed', __FILE__));
+          $cmd->setType('action');
+          $cmd->setSubType('slider');
+          $cmd->setValue($this->getCmd(null, 'core:ClosureState')->getId());
+		  $cmd->setConfiguration('deviceURL', $this->getConfiguration('deviceURL'));
+          $cmd->setConfiguration('request', 'closure');
+          $cmd->setConfiguration('minValue', '0');
+          $cmd->setConfiguration('maxValue', '100');
+          $cmd->setDisplay('generic_type', 'FLAP_SLIDER');
+          $cmd->setIsVisible(1);
+          $cmd->save();
+        }
+  	}
   }
 
   // Fonction exécutée automatiquement avant la suppression de l'équipement
@@ -1454,11 +1508,25 @@ class tahomalocalapiCmd extends cmd {
     $parameters2=$this->getConfiguration('parameters2');
     $execId=$eqLogic->getConfiguration('execId');
 
+ 	if ($logicalId == 'setClosureAutoSpeed') {
+        $value = $_options['slider'];
+        $silent = $eqLogic->getCmd(null, 'silentMode');
+        $isSilent = is_object($silent) && intval($silent->execCmd()) === 1;
+    	$commandName = $isSilent ? 'setClosureAndLinearSpeed' : 'setClosure';
+		$parameters = $isSilent ? array('#slider#','lowspeed') : '#slider#';
+    } else if ($logicalId == 'On_SilentMode') {
+        $eqLogic->checkAndUpdateCmd('silentMode', 1);
+        return;
+    } else if ($logicalId == 'Off_SilentMode') {
+        $eqLogic->checkAndUpdateCmd('silentMode', 0);
+        return;
+    }
+
     $type=$this->type;
     $subType=$this->subType;
     log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType . '| exec id : ' . $execId);
 
-    if ($this->type == 'action') {
+    if ($this->type == 'action' and $logicalId != 'On_SilentMode' and $logicalId != 'Off_SilentMode') {
         switch ($this->subType) {
             case 'slider':
                 $type = $this->getConfiguration('request');
