@@ -98,21 +98,22 @@ public static function deamon_start() {
   if ($deamon_info['launchable'] != 'ok') {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
   }
-   
+  $request = '';
   $request .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
   $request .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55009'); // port du daemon
   $request .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/tahomalocalapi/core/php/jeeTahomalocalapi.php'; // chemin de la callback url 
-  $request .= ' --user "' . trim(str_replace('"', '\"', config::byKey('user', __CLASS__))) . '"'; // user compte somfy
-  $request .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password compte Somfy
+  //$request .= ' --user "' . trim(str_replace('"', '\"', config::byKey('user', __CLASS__))) . '"'; // user compte somfy
+  //$request .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password compte Somfy
   $request .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
   $request .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
   $request .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
   $request .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // local IP box Somfy
   
-  $tahomaSession=config::byKey('tahomalocalapi_session',  __CLASS__);
-  if (is_array($tahomaSession) && array_key_exists('token', $tahomaSession)) {
-  	$request .= ' --tahoma_token "' . trim(str_replace('"', '\"', $tokenTahoma['token'])) . '"'; // TahomaSession  
-  }
+  //$tahomaSession=config::byKey('tahomalocalapi_session',  __CLASS__);
+  //if (is_array($tahomaSession) && array_key_exists('token', $tahomaSession)) {
+  	//$request .= ' --tahoma_token "' . trim(str_replace('"', '\"', $tokenTahoma['token'])) . '"'; // TahomaSession  
+  //}
+  $request .= ' --tahoma_token "' . trim(str_replace('"', '\"', config::byKey('tahomalocalapi_token', __CLASS__))) . '"';
   
   $tahomalocalapi_path = realpath(dirname(__FILE__) . '/../../resources/tahomalocalapid/');
   $pyenv_path = realpath(dirname(__FILE__) . '/../../resources/python_venv');
@@ -121,7 +122,6 @@ public static function deamon_start() {
   $cmd .= 'nice -n 19 python3 tahomalocalapid.py' . $request;
   log::add(__CLASS__, 'info', 'Lancement du daemon tahomalocalapi : ' . $cmd);     
   $result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &');
-  
   
   //log::add(__CLASS__, 'info', 'Lancement démon');
   //$result = exec($cmd . ' >> ' . log::getPathToLog('tahomalocalapi_daemon') . ' 2>&1 &'); 
@@ -136,7 +136,7 @@ public static function deamon_start() {
       sleep(1);
       $i++;
   }
-  if ($i >= 30) {
+  if ($i >= 20) {
       log::add(__CLASS__, 'error', __('Impossible de lancer le démon, vérifiez le log', __FILE__), 'unableStartDeamon');
       config::save('tahomalocalapi_restartDaemonInProgress', 'N','tahomalocalapi');
       return false;
@@ -198,7 +198,6 @@ public function getEqlogicDetails() {
 public static function resetTokenTahoma() {
     config::save('tahomalocalapi_session', '','tahomalocalapi');
     self::deamon_start();
-
 }
 
 public static function getDevicesDetails() {
@@ -227,8 +226,6 @@ public static function getDevicesDetails() {
     $htmlTabGateways.='</table>';
     $htmlTabGateways.='</br>';
 
-
-
     $aDevicesList=config::byKey('tahomalocalapi_devicesList',  __CLASS__);
     log::add(__CLASS__, 'debug', '|  '. json_encode($aDevicesList));
     $htmlTab='<table style="margin: 0 auto; border: 1px solid">';
@@ -247,8 +244,6 @@ public static function getDevicesDetails() {
     //$htmlTab.='<td style="text-align: center;width: 800px;border: 1px solid;word-wrap: break-word;word-break: break-all;">RAW</td>';
     $htmlTab.='</tr>';
 
-
-    
     $eqLogics=eqLogic::byType(__CLASS__);
     foreach ($aDevicesList as $device) {
         $bFound=false;
@@ -263,7 +258,6 @@ public static function getDevicesDetails() {
         $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['label'].'</td>';
         $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['deviceURL'].'</td>';
         $htmlTab.='<td style="text-align: center; width: 200px;border: 1px solid">'.$device['controllableName'].'</td>';        
-        
 
         if ($bFound) {
             $htmlTab.='<td style="text-align: center;border: 1px solid""><i class="fas fa-check"></i></td>';
@@ -296,30 +290,25 @@ public static function getDevicesDetails() {
 public function getImage() {
     $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$this->getConfiguration('type'));
     $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';
-
     if (!(file_exists($path))) {
         $path = '/var/www/html/plugins/tahomalocalapi/data/img/' . $typeMef . '.png';
         if (!(file_exists($path))) {
             $path = 'plugins/tahomalocalapi/data/img/io_logo.png';
         }
     }
-
-    
     //log::add(__CLASS__, 'debug', 'getImage '. $this->getConfiguration('type') . ' -> ' . $path);
   	return str_replace(array('/var/www/html/'),array(''),$path);
 }
 
-public function imageExist($componentName) {
+public static function imageExist($componentName) {
     $typeMef=str_replace(array('internal:','io:','rts:'),array(''),$componentName);
     $path='/var/www/html/plugins/tahomalocalapi/data/img/custom/' . $typeMef . '.png';
-
     if (!(file_exists($path))) {
         $path = '/var/www/html/plugins/tahomalocalapi/data/img/' . $typeMef . '.png';
         if (!(file_exists($path))) {
             return false;
         }
     }
-
     return true;  	
 }
 
@@ -414,7 +403,6 @@ public static function sendToDaemon($params) {
              $eqLogic->setConfiguration( 'rawDevice',json_encode($device));
            	 $eqLogic->save();
          }
-      	
 
         /***********************************/
         //create Actions commands
@@ -439,9 +427,7 @@ public static function sendToDaemon($params) {
      } else {
         log::add(__CLASS__, 'debug', '+----------------------End----- create_or_update_devices  -> nb of items received : '. sizeof($devices) . ' vs nb of items analyzed : ' .$itemAnalyzed .'--------------------------');
      }
-
   }
-
 
 private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
   	log::add(__CLASS__, 'debug','+ update state' . '-----' . $eqLogic->getName() . ' ('.$eqLogic->getLogicalId() .') -------------');
@@ -524,7 +510,6 @@ private static function updateAllCmdsGenericTypeAndSaveValue($eqLogic,$device) {
   	
   	log::add(__CLASS__, 'debug','+--------------------------------------------------------------------------------------------------');
 }
-
 
 private static function createGenericActions($eqLogic, $device) {
     log::add(__CLASS__, 'debug','|     create generic action for device ' .$device['definition']['uiClass'] . ' and eqLogic : ' . $eqLogic->getName());
@@ -774,6 +759,91 @@ private static function createGenericActions($eqLogic, $device) {
     } else {
         $response = false;
     }
+
+    // Ajout spécifique Moteur Velux : bouton "aération" à 10%
+    if ($device['controllableName'] == "io:WindowOpenerVeluxIOComponent") {
+        if (self::checkExistCommand($device,'setClosure')) {
+            if (!(is_object($eqLogic->getCmd(null, 'Aération')))) {
+                $tahomaLocalPiCmd = new tahomalocalapiCmd();
+                $tahomaLocalPiCmd->setType('action');
+                $tahomaLocalPiCmd->setSubType('other');
+                $tahomaLocalPiCmd->setName('Aération');
+                $tahomaLocalPiCmd->setLogicalId('Aeration');
+                $tahomaLocalPiCmd->setEqLogic_id($eqLogic->getId());
+                $tahomaLocalPiCmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $tahomaLocalPiCmd->setConfiguration('commandName', 'setClosure');
+                $tahomaLocalPiCmd->setConfiguration('nparams', 1);
+                $tahomaLocalPiCmd->setConfiguration('parameters', '90');
+                $tahomaLocalPiCmd->setDisplay('icon', '<i class="fa fa-wind"></i>');
+                $tahomaLocalPiCmd->save();
+            }
+        } else {
+            self::removeCmdFromNameOrLogicalId($eqLogic,'Aeration');
+        }
+    }
+
+    // Mode silence (volets avec vitesse réglable)
+	if ($device['controllableName'] == "io:RollerShutterVeluxIOComponent") {
+    	if (self::checkExistCommand($device,'setClosureAndLinearSpeed')) {
+            $cmd = $eqLogic->getCmd(null, 'silentMode');
+            if (!is_object($cmd)) {
+                $cmd = new tahomalocalapiCmd();
+                $cmd->setEqLogic_id($eqLogic->getId());
+                $cmd->setLogicalId('silentMode');
+                $cmd->setName(__('silentMode', __FILE__));
+                $cmd->setType('info');
+                $cmd->setSubType('binary');
+                $cmd->setIsVisible(1);
+                $cmd->setIsHistorized(0);
+                $cmd->save();
+                $eqLogic->checkAndUpdateCmd('silentMode', 0);
+            }
+            $cmd = $eqLogic->getCmd(null, 'On_SilentMode');
+            if (!is_object($cmd)) {
+                $cmd = new tahomalocalapiCmd();
+                $cmd->setEqLogic_id($eqLogic->getId());
+                $cmd->setLogicalId('On_SilentMode');
+                $cmd->setName(__('On_SilentMode', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            $cmd = $eqLogic->getCmd(null, 'Off_SilentMode');
+            if (!is_object($cmd)) {
+                $cmd = new tahomalocalapiCmd();
+                $cmd->setEqLogic_id($eqLogic->getId());
+                $cmd->setLogicalId('Off_SilentMode');
+                $cmd->setName(__('Off_SilentMode', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            $cmd = $eqLogic->getCmd(null, 'setClosureAutoSpeed');
+            if (!is_object($cmd)) {
+                $cmd = new tahomalocalapiCmd();
+                $cmd->setEqLogic_id($eqLogic->getId());
+                $cmd->setLogicalId('setClosureAutoSpeed');
+                $cmd->setName(__('setClosureAutoSpeed', __FILE__));
+                $cmd->setType('action');
+                $cmd->setSubType('slider');
+                $cmd->setConfiguration('deviceURL', $device['deviceURL']);
+                $cmd->setConfiguration('commandName', 'setClosureAutoSpeed');
+                $cmd->setConfiguration('request', 'closure');
+                $cmd->setConfiguration('minValue', '0');
+                $cmd->setConfiguration('maxValue', '100');
+                $cmd->setDisplay('generic_type', 'FLAP_SLIDER');
+                $cmd->setIsVisible(1);
+                $cmd->save();
+        	}
+    	} else {
+        	self::removeCmdFromNameOrLogicalId($eqLogic,'silentMode');
+        	self::removeCmdFromNameOrLogicalId($eqLogic,'On_SilentMode');
+        	self::removeCmdFromNameOrLogicalId($eqLogic,'Off_SilentMode');
+        	self::removeCmdFromNameOrLogicalId($eqLogic,'setClosureAutoSpeed');
+        }
+    }
     //log::add(__CLASS__, 'debug','|     create generic response  : ' .$response);
     return $response;
 }
@@ -792,11 +862,8 @@ private static function removeCmdFromNameOrLogicalId($eqLogic,$cmdName) {
         }
     }
 }
-
-
 private static function checkExistCommand($device,$cmdName) {
     $response = false;
-
     if (array_key_exists('definition',$device) && array_key_exists('commands',$device['definition'])) {
         foreach($device['definition']['commands'] as $cmd) {
             if ($cmd['commandName'] == $cmdName) {
@@ -883,7 +950,6 @@ private static function createCmdsState($eqLogic, $device, $states) {
                     break;
                 default:
                     break;
-
             }
         }
         $tahomaLocalPiCmd->save();
@@ -894,8 +960,7 @@ private static function createCmdsState($eqLogic, $device, $states) {
             case 'core:ClosureState':
                 array_push($aLinkedCmdName,'setClosure');
                 array_push($aLinkedCmdName,'setClosureAndLinearSpeed');
-                //array_push($aLinkedCmdName,'setPosition');
-                //array_push($aLinkedCmdName,'setPositionAndLinearSpeed');
+                array_push($aLinkedCmdName,'setClosureAutoSpeed');
                 $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_STATE');
                 $tahomaLocalPiCmd->save();
                 break;
@@ -927,17 +992,14 @@ private static function createCmdsState($eqLogic, $device, $states) {
             default:
                 break;
         }
-        if ($linkedCmdName !== '') {
-            foreach ($eqLogic->getCmd() as $action) {
-                foreach($aLinkedCmdName as $linkedCmdName) {
-                    if ($action->getConfiguration('commandName') == $linkedCmdName) {
-                        $action->setValue($tahomaLocalPiCmd->getId());                        
-                        $action->save();
-                    }
+        foreach ($eqLogic->getCmd() as $action) {
+            foreach($aLinkedCmdName as $linkedCmdName) {
+                if ($action->getConfiguration('commandName') == $linkedCmdName) {
+                    $action->setValue($tahomaLocalPiCmd->getId());                        
+                    $action->save();
                 }
             }
         }
-        
     }
 }
 
@@ -1007,7 +1069,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                     $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
-                }  else if ( $command['commandName'] == "setClosureAndLinearSpeed") {
+                } else if ( $command['commandName'] == "setClosureAndLinearSpeed") {
                     $tahomaLocalPiCmd->setType('action');
                     //$tahomaLocalPiCmd->setIsVisible(0);
                     $tahomaLocalPiCmd->setSubType('slider');
@@ -1016,7 +1078,7 @@ private static function createCmdsAction($eqLogic, $device, $commands) {
                     $tahomaLocalPiCmd->setConfiguration('minValue', '0');
                     $tahomaLocalPiCmd->setConfiguration('maxValue', '100');
                     $tahomaLocalPiCmd->setDisplay('generic_type', 'FLAP_SLIDER');
-                }else if ($command['commandName'] == "setIntensity") {
+                } else if ($command['commandName'] == "setIntensity") {
                     $tahomaLocalPiCmd->setType('action');
                     //$tahomaLocalPiCmd->setIsVisible(0);
                     $tahomaLocalPiCmd->setSubType('slider');
@@ -1257,28 +1319,6 @@ private static function notExistsByName($eqLogic,$commandName) {
                             log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
                             $cmd->event($value);
                         }
-                        // if ($state['name'] == "core:ClosureState") {
-                        //     //check data for closed
-                        //     $cmdOpenClosedState=$eqLogic_found->getCmd('info','core:OpenClosedState',true, false);
-
-                        //     if (is_object($cmdOpenClosedState) && $cmdOpenClosedState->execCmd() == 'closed' && $value != 100) {
-                        //         log::add(__CLASS__, 'debug','       -> force ClosureState à 0 car  OpenClosedState closed et ClosureState = ' . $value);
-                        //         $value = 0;    
-                        //     } else {
-                        //         $value = 100 - $value;
-                        //     }
-                            
-                        // } elseif ($state['name'] == "core:OpenClosedState") {
-                        //     if ($value == 'closed') {
-                        //         $cmdClosureState=$eqLogic_found->getCmd('info','core:ClosureState',true, false);
-                        //         if (is_object($cmdClosureState) && $cmdClosureState->execCmd() > 0) {
-                        //             log::add(__CLASS__, 'debug','       -> force ClosureState à 0 car  OpenClosedState closed et ClosureState > 0 (' . $cmdClosureState->execCmd() . ')');
-                        //             $cmdClosureState->event(0);
-                        //         }
-                        //     }
-                        // }
-                        // log::add(__CLASS__, 'debug','       -> valeur MAJ : ' . $value);
-                        // $cmd->event($value);
                     }
                 }
             }
@@ -1488,30 +1528,43 @@ class tahomalocalapiCmd extends cmd {
 
   // Exécution d'une commande
   public function execute($_options = array()) {
-    $eqlogic = $this->getEqLogic();
+    $eqLogic = $this->getEqLogic();
     $logicalId=$this->getLogicalId();
 
     $deviceUrl=$this->getConfiguration('deviceURL');
     $commandName=$this->getConfiguration('commandName');
     $parameters=$this->getConfiguration('parameters');
     $parameters2=$this->getConfiguration('parameters2');
-    $execId=$eqlogic->getConfiguration('execId');
+    $execId=$eqLogic->getConfiguration('execId');
+
+ 	if ($logicalId == 'setClosureAutoSpeed') {
+        $value = $_options['slider'];
+        $silent = $eqLogic->getCmd(null, 'silentMode');
+        $isSilent = is_object($silent) && intval($silent->execCmd()) === 1;
+    	$commandName = $isSilent ? 'setClosureAndLinearSpeed' : 'setClosure';
+		$parameters = $isSilent ? array('#slider#','lowspeed') : '#slider#';
+    } else if ($logicalId == 'On_SilentMode') {
+        $eqLogic->checkAndUpdateCmd('silentMode', 1);
+        return;
+    } else if ($logicalId == 'Off_SilentMode') {
+        $eqLogic->checkAndUpdateCmd('silentMode', 0);
+        return;
+    }
 
     $type=$this->type;
     $subType=$this->subType;
     log::add('tahomalocalapi', 'debug','   - Execution demandée ' . $deviceUrl . ' | commande : ' . $commandName . '| parametres : '.$parameters . '| type : ' . $type . '| Sous type : '. $subType . '| exec id : ' . $execId);
 
-    if ($this->type == 'action') {
+    if ($this->type == 'action' and $logicalId != 'On_SilentMode' and $logicalId != 'Off_SilentMode') {
         switch ($this->subType) {
             case 'slider':
                 $type = $this->getConfiguration('request');
                 $step=$this->getConfiguration('step');
                 if (is_array($parameters)) {
                     $params=implode(',',$parameters);
-                }else {
+                } else {
                     $params=$parameters;
                 }
-                
                 switch ($type) {
                     case 'closure':
                         $params = str_replace('#slider#', (100 - intval($_options['slider'])), $params);
@@ -1521,36 +1574,10 @@ class tahomalocalapiCmd extends cmd {
                             $params = str_replace('#slider#', $_options['slider'], $params);
                         } else {
                             $params = str_replace('#slider#', intval($_options['slider']), $params);
-                        }                        
-                        break;
-                }               
-                
-                $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $params, 'name' =>  $this->getName(), 'execId' => $execId]);
-                /*
-                switch ($type) {
-                    case 'orientation':
-                        if ($commandName == "setOrientation") {
-                            $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
-                              return;
                         }
-                        break;
-                    case 'closure':
-                        if ($commandName == "setClosure") {
-                            $parameters = 100 - $parameters;
-
-                            $parameters = array_map('intval', explode(",", $parameters));
-                            $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(),'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
-
-                            return;
-                        }
-                        break;
-                    default:
-                        $parameters = array_map('intval', explode(",", $parameters));
-                        $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters[0], 'name' =>  $this->getName(), 'execId' => $execId]);
                         break;
                 }
-                */
+                $eqLogic->sendToDaemon(['deviceId' => $eqLogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $params, 'name' =>  $commandName, 'execId' => $execId]);
             case 'select':
                 if ($commandName == 'setLockedUnlocked') {
                     $parameters = str_replace('#select#', $_options['select'], $parameters[0]);
@@ -1559,33 +1586,30 @@ class tahomalocalapiCmd extends cmd {
           	case 'other':
                 if ($commandName == "cancelExecutions") {
                     log::add('tahomalocalapi', 'debug', "will cancelExecutions: (" . $execId . ")");
-                    $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'cancelExecution', 'execId' => $execId]);
+                    $eqLogic->sendToDaemon(['deviceId' => $eqLogic->getId(), 'action' => 'cancelExecution', 'execId' => $execId]);
                 } else {
-                    $eqlogic->sendToDaemon(['deviceId' => $eqlogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $commandName, 'execId' => $execId]);
+                    $eqLogic->sendToDaemon(['deviceId' => $eqLogic->getId(), 'action' => 'execCmd', 'deviceUrl' => $deviceUrl, 'commandName'=>$commandName, 'parameters' =>  $parameters, 'name' =>  $commandName, 'execId' => $execId]);
                 }
             	return;
             default:
             log::add('tahomalocalapi', 'error','   - Execution demandée | subtype not managed -> ' . $type);
                 break;
-           
         }
 
         if ($this->getConfiguration('nparams') == 0) {
             $parameters = "";
         } else if ($commandName == "setClosure") {
             $parameters = array_map('intval', explode(",", $parameters));
-        } else {
+        } else if ($commandName != "setClosureAndLinearSpeed") {
             $parameters = explode(",", $parameters);
         }
 
-        
         return;
     }
 
     if ($this->type == 'info') {
         return;
     }
-
   }
 
   /*     * **********************Getteur Setteur*************************** */
