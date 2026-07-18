@@ -103,22 +103,27 @@ public static function deamon_start() {
   if ($deamon_info['launchable'] != 'ok') {
       throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
   }
+  $token=config::byKey('tahomalocalapi_token', __CLASS__);
+  
   $request = '';
   $request .= ' --loglevel ' . log::convertLogLevel(log::getLogLevel(__CLASS__));
   $request .= ' --socketport ' . config::byKey('socketport', __CLASS__, '55009'); // port du daemon
   $request .= ' --callback ' . network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/tahomalocalapi/core/php/jeeTahomalocalapi.php'; // chemin de la callback url 
-  //$request .= ' --user "' . trim(str_replace('"', '\"', config::byKey('user', __CLASS__))) . '"'; // user compte somfy
-  //$request .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password compte Somfy
   $request .= ' --apikey ' . jeedom::getApiKey(__CLASS__); // l'apikey pour authentifier les échanges suivants
   $request .= ' --pid ' . jeedom::getTmpFolder(__CLASS__) . '/tahomalocalapid.pid'; // et on précise le chemin vers le pid file (ne pas modifier)
   $request .= ' --pincode "' . trim(str_replace('"', '\"', config::byKey('pincode', __CLASS__))) . '"'; // Pin code box Somfy
   $request .= ' --boxLocalIp "' . trim(str_replace('"', '\"', config::byKey('boxLocalIp', __CLASS__))) . '"'; // local IP box Somfy
   
-  //$tahomaSession=config::byKey('tahomalocalapi_session',  __CLASS__);
-  //if (is_array($tahomaSession) && array_key_exists('token', $tahomaSession)) {
-  	//$request .= ' --tahoma_token "' . trim(str_replace('"', '\"', $tokenTahoma['token'])) . '"'; // TahomaSession  
-  //}
-  $request .= ' --tahoma_token "' . trim(str_replace('"', '\"', config::byKey('tahomalocalapi_token', __CLASS__))) . '"';
+  if ($token == '') {
+      $request .= ' --user "' . trim(str_replace('"', '\"', config::byKey('user', __CLASS__))) . '"'; // user compte somfy
+      $request .= ' --pswd "' . trim(str_replace('"', '\"', config::byKey('password', __CLASS__))) . '"'; // et password compte Somfy
+      $tahomaSession=config::byKey('tahomalocalapi_session',  __CLASS__);
+      if (is_array($tahomaSession) && array_key_exists('token', $tahomaSession)) {
+        $request .= ' --tahoma_token "' . trim(str_replace('"', '\"', $tokenTahoma['token'])) . '"'; // TahomaSession  
+      }
+  } else {
+      $request .= ' --tahoma_token "' . trim(str_replace('"', '\"', config::byKey('tahomalocalapi_token', __CLASS__))) . '"';
+  }
   
   $tahomalocalapi_path = realpath(dirname(__FILE__) . '/../../resources/tahomalocalapid/');
   $pyenv_path = realpath(dirname(__FILE__) . '/../../resources/python_venv');
