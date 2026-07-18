@@ -58,7 +58,7 @@ if (!isConnect()) {
       </div>
     </div>
     <div class="form-group">
-      <label class="col-md-4 control-label">{{Adresse IP local de la box Somfy}}
+      <label class="col-md-4 control-label">{{Adresse IP locale de la box Somfy}}
         <sup><i class="fas fa-question-circle tooltips" title="{{Adresse IP locale de la box Somfy}}"></i></sup>
       </label>
       <div class="col-md-4">
