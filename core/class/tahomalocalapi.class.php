@@ -73,10 +73,10 @@ class tahomalocalapi extends eqLogic {
     } elseif ($token == '' and $user == '' or $pswd == '') {
         if ($user == '') {
             $return['launchable'] = 'nok';
-            $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas configuré', __FILE__);
+            $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas renseigné', __FILE__);
         } elseif ($pswd == '') {
             $return['launchable'] = 'nok';
-            $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
+            $return['launchable_message'] = __('Le mot de passe n\'est pas renseigné', __FILE__);
         }
     }
     return $return;
