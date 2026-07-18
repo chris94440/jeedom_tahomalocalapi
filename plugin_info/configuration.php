@@ -66,7 +66,6 @@ if (!isConnect()) {
    	<legend><i class="fas fa-list-alt"></i> {{Configuration daemon}}</legend>
     <div class="form-group">
       <label class="col-md-4 control-label">{{Port du daemon}}
-        <sup><i class="fas fa-question-circle tooltips" title="{{Port du daemon}}"></i></sup>
       </label>
       <div class="col-md-4">
         <input class="configKey form-control" data-l1key="socketport" placeholder="55009 par défaut"/>
