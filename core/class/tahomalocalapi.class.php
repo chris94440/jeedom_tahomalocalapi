@@ -58,21 +58,26 @@ class tahomalocalapi extends eqLogic {
     $user = config::byKey('user', __CLASS__); // exemple si votre démon à besoin de la config user,
     $pswd = config::byKey('password', __CLASS__); // password,
     $pinCode=config::byKey('pincode', __CLASS__);
+    $token=config::byKey('tahomalocalapi_token', __CLASS__);
     $tahomaBoxIp=config::byKey('boxLocalIp', __CLASS__);
-    // $clientId = config::byKey('clientId', __CLASS__); // et clientId
     $portDaemon=config::byKey('daemonPort', __CLASS__);
-    if ($user == '') {
+    if ($pinCode == '') {
         $return['launchable'] = 'nok';
-        $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas configuré', __FILE__);
-    } elseif ($pswd == '') {
-        $return['launchable'] = 'nok';
-        $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
-    } elseif ($pinCode == '') {
-        $return['launchable'] = 'nok';
-        $return['launchable_message'] = __('Le code pin de la box tahoma n\'est pas configuré', __FILE__);
+        $return['launchable_message'] = __('Le code pin de la box n\'est pas renseigné', __FILE__);
     } elseif ($tahomaBoxIp == '') {
         $return['launchable'] = 'nok';
-        $return['launchable_message'] = __('L\'adresse IP de la box tahoma n\'est pas configuré', __FILE__);
+        $return['launchable_message'] = __('L\'adresse IP de la box n\'est pas renseigné', __FILE__);
+    } elseif ($token == '' and $user == '' and $pswd == '') {
+        $return['launchable'] = 'nok';
+        $return['launchable_message'] = __('Token ou couple identifiant/mot de passe obligatoire', __FILE__);
+    } elseif ($token == '' and $user == '' or $pswd == '') {
+        if ($user == '') {
+            $return['launchable'] = 'nok';
+            $return['launchable_message'] = __('Le nom d\'utilisateur n\'est pas configuré', __FILE__);
+        } elseif ($pswd == '') {
+            $return['launchable'] = 'nok';
+            $return['launchable_message'] = __('Le mot de passe n\'est pas configuré', __FILE__);
+        }
     }
     return $return;
 }
