@@ -1294,6 +1294,54 @@ private static function notExistsByName($eqLogic,$commandName) {
 
   public static function updateItems($item){
     log::add(__CLASS__, 'debug', 'updateItems -> '. json_encode($item));
+
+    // TaHoma peut envoyer des ExecutionStateChangedEvent sans deviceURL/deviceStates.
+    // En cas d'echec, ces évènements doivent être remontés en ERROR dans Jeedom.
+    if (isset($item['name']) && $item['name'] === 'ExecutionStateChangedEvent' && isset($item['newState']) && $item['newState'] === 'FAILED') {
+        $rawError = isset($item['rawError']) && is_array($item['rawError']) ? $item['rawError'] : array();
+        $failureType = isset($item['failureType']) ? $item['failureType'] : 'UNKNOWN';
+        $result = isset($rawError['result']) ? $rawError['result'] : 'N/A';
+        $detailedError = isset($rawError['detailedError']) ? $rawError['detailedError'] : 'N/A';
+        $execId = isset($item['execId']) ? $item['execId'] : 'N/A';
+        $eqLogics=eqLogic::byType(__CLASS__);
+
+        if (isset($item['failedCommands']) && is_array($item['failedCommands']) && count($item['failedCommands']) > 0) {
+            foreach ($item['failedCommands'] as $failedCommand) {
+                $deviceUrl = isset($failedCommand['deviceUrl']) ? $failedCommand['deviceUrl'] : 'N/A';
+                $commandFailureType = isset($failedCommand['failureType']) ? $failedCommand['failureType'] : $failureType;
+                $eqLogicName = $deviceUrl;
+
+                foreach ($eqLogics as $eqLogic) {
+                    if ($deviceUrl === $eqLogic->getConfiguration('deviceURL')) {
+                        $eqLogicName = $eqLogic->getHumanName();
+                        break;
+                    }
+                }
+
+                log::add(
+                    __CLASS__,
+                    'error',
+                    "TaHoma - Echec d'execution sur \"" . $eqLogicName .
+                    '" | deviceURL=' . $deviceUrl .
+                    ' | failureType=' . $commandFailureType .
+                    ' | result=' . $result .
+                    ' | detailedError=' . $detailedError .
+                    ' | execId=' . $execId
+                );
+            }
+        } else {
+            log::add(
+                __CLASS__,
+                'error',
+                "TaHoma - Echec d'execution" .
+                ' | failureType=' . $failureType .
+                ' | result=' . $result .
+                ' | detailedError=' . $detailedError .
+                ' | execId=' . $execId
+            );
+        }
+    }
+
     $eqLogics=eqLogic::byType(__CLASS__);
     if (array_key_exists('deviceURL', $item)) {        
         $found = false;
